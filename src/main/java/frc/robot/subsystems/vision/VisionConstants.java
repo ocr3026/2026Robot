@@ -13,9 +13,10 @@ public final class VisionConstants {
 
 
     //TODO : UPDATE THE VALUES WHEN THE ROBOT IS BUILT TS
-    public static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+    public static AprilTagFieldLayout aprilTagLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
 	public static String camera0Name = "Arducam_OV9281_USB_Camera";
+	// TODO: UPDAET THESE
 	public static Transform3d robotToCamera0 = new Transform3d(
 			Inches.of(5).in(Meters),
 			Inches.of(11.5).in(Meters),

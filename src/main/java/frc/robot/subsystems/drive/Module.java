@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 
 public class Module {
+
+    // Initialize many variables
     private final ModuleIO io;
     private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
     private final int index;
@@ -25,6 +27,8 @@ public class Module {
 
     private SwerveModulePosition[] odometryPositions = new SwerveModulePosition[] {};
 
+
+    // Method for instantiating each module object
     public Module(ModuleIO io, int index, SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> constants) {
         this.io = io;
         this.index = index;
@@ -34,7 +38,9 @@ public class Module {
         turnEncoderDisconnectedAlert = new Alert("Disconnected turn encoder on module " + Integer.toString(index) + ".", AlertType.kError);
     }
 
+    // Periodic function for each module, runs once every period (20ms)
     public void periodic() {
+        // Update inputs for logging
         io.updateInputs(inputs);
 
         Logger.processInputs("Drive/Module" + Integer.toString(index), inputs);
@@ -43,7 +49,7 @@ public class Module {
         odometryPositions = new SwerveModulePosition[sampleCount];
         for (int i = 0; i < sampleCount; i++) {
             double positionMeters = inputs.odometryDrivePositionsRad[i] * constants.WheelRadius;
-            Rotation2d angle = inputs.odometryTurnPositions[i];
+            Rotation2d angle = inputs.turnPositionsRad[i];
             odometryPositions[i] = new SwerveModulePosition(positionMeters, angle);
         }
 
