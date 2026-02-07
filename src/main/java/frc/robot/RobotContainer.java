@@ -12,6 +12,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
@@ -20,6 +22,7 @@ import frc.robot.subsystems.drive.GyroIONavX;
 import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
+import frc.robot.subsystems.drive.ModuleIOTalon;
 import frc.robot.subsystems.drive.ModuleIOTalonReal;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
@@ -28,6 +31,9 @@ import frc.robot.subsystems.vision.VisionIOPhotonvision;
 import frc.robot.subsystems.vision.VisionIOPhotonvisionSim;
 
 public class RobotContainer {
+
+  public static final CommandJoystick translationJoystick = new CommandJoystick(0);
+	public static final CommandJoystick rotationJoystick = new CommandJoystick(1);
 
   private final DriveSubsystem drive;
   private final Vision vision;
@@ -38,7 +44,7 @@ public class RobotContainer {
 
     switch(Constants.currentMode) {
       case REAL:
-        drive = new DriveSubsystem(new GyroIONavX(), new ModuleIOTalonReal(TunerConstants.FrontLeft), new ModuleIOTalonReal(TunerConstants.FrontRight), new ModuleIOTalonReal(TunerConstants.BackLeft), new ModuleIOTalonReal(TunerConstants.BackRight), (pose) -> {});
+        drive = new DriveSubsystem(new GyroIONavX(), new ModuleIOTalon(TunerConstants.FrontLeft), new ModuleIOTalon(TunerConstants.FrontRight), new ModuleIOTalon(TunerConstants.BackLeft), new ModuleIOTalon(TunerConstants.BackRight), (pose) -> {});
         this.vision = new Vision(drive, new VisionIOPhotonvision(VisionConstants.camera0Name, VisionConstants.robotToCamera0));
 
         break;
@@ -76,7 +82,21 @@ public class RobotContainer {
     configureBindings();
   }
 
-  private void configureBindings() {}
+  private void configureBindings() {
+    		drive.setDefaultCommand(DriveCommands.joystickDrive(
+				drive,
+				() -> -translationJoystick.getY(),
+				() -> -translationJoystick.getX(),
+				() -> -rotationJoystick.getX()));
+
+        final Runnable resetGyro = Constants.currentMode == Constants.Mode.SIM
+				? () -> drive.setPose(
+						driveSimulation
+								.getSimulatedDriveTrainPose()) // reset odometry to actual robot pose during simulation
+				: () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d()));
+
+		Keybinds.resetGyroTrigger.onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
+  }
 
   public Command getAutonomousCommand() {
     return Commands.print("No autonomous command configured");

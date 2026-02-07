@@ -10,6 +10,7 @@ import com.ctre.phoenix6.StatusSignal;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
+import frc.robot.generated.TunerConstants;
 
 import static edu.wpi.first.units.Units.Hertz;
 
@@ -45,7 +46,7 @@ public class PhoenixOdometryThread extends Thread {
 
     @Override
     public void start() {
-        if (!timestampQueues.isEmpty() && RobotBase.isReal()) {
+        if (timestampQueues.size() > 0 && RobotBase.isReal()) {
             super.start();
         }
     }
@@ -55,11 +56,16 @@ public class PhoenixOdometryThread extends Thread {
         signalsLock.lock();
         DriveSubsystem.odometryLock.lock();
         try{
-            BaseStatusSignal[] newSignals = new BaseStatusSignal[phoenixSignals.length];
+            //if(phoenixSignals.length > 1) {
+            BaseStatusSignal[] newSignals = new BaseStatusSignal[phoenixSignals.length + 1];
             System.arraycopy(phoenixSignals, 0, newSignals, 0, phoenixSignals.length);
             newSignals[phoenixSignals.length] = signal;
             phoenixSignals = newSignals;
             phoenixQueues.add(queue);
+            //}
+            //else {
+                System.out.println("Array size 0");
+            //}
         } finally {
             signalsLock.unlock();
             DriveSubsystem.odometryLock.unlock();
@@ -98,12 +104,9 @@ public class PhoenixOdometryThread extends Thread {
             signalsLock.lock();
 
             try {
-                if (/*isCANFD &&*/  phoenixSignals.length > 0) {
-                    BaseStatusSignal.waitForAll(2.0 / DriveConstants.odometryFrequency.in(Hertz), phoenixSignals);
-                } else {
                     Thread.sleep((long) (1000.0 / DriveConstants.odometryFrequency.in(Hertz)));
                     if (phoenixSignals.length > 0) BaseStatusSignal.refreshAll(phoenixSignals);
-                }
+                
             }
             catch (InterruptedException e) {
                 e.printStackTrace();

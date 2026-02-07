@@ -1,5 +1,7 @@
 package frc.robot.subsystems.drive;
 
+import static edu.wpi.first.units.Units.Hertz;
+
 import java.util.Queue;
 
 import com.studica.frc.AHRS;
@@ -7,10 +9,8 @@ import com.studica.frc.AHRS.NavXComType;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.FrequencyUnit;
 
 public class GyroIONavX implements GyroIO {
-    private static final FrequencyUnit Hertz = null;
     private final AHRS navX = new AHRS(NavXComType.kMXP_SPI, (byte) DriveConstants.odometryFrequency.in(Hertz));
     private final Queue<Double> yawPositionQueue;
     private final Queue<Double> yawTimestampQueue;

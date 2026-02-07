@@ -256,7 +256,7 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
         return getPose().getRotation();
     }
 
-	/** Resets the current odometry pose */
+	/** Sets the current odometry pose, use to reset the odometry */
     public void setPose(Pose2d pose) {
         resetSimulationPoseCallback.accept(pose);
         poseEstimator.resetPosition(rawGyroRotation, getModulePositions(), pose);

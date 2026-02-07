@@ -26,11 +26,13 @@ import edu.wpi.first.units.measure.*;
 
 import static frc.robot.Util.Util.*;
 
+import java.util.Queue;
+
 import frc.robot.Constants;
 import frc.robot.Constants.*;
 
 
-public abstract class ModuleIOTalon implements ModuleIO {
+public class ModuleIOTalon implements ModuleIO {
     protected final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> constants;
 
     protected final TalonFX driveTalon;
@@ -47,6 +49,12 @@ public abstract class ModuleIOTalon implements ModuleIO {
     // protected final PositionTorqueCurrentFOC positionTorqueCurrentRequest = new PositionTorqueCurrentFOC(0.0);
     // protected final VelocityTorqueCurrentFOC velocityTorqueCurrentRequest = new VelocityTorqueCurrentFOC(0.0);
 
+
+    private final Queue<Double> timestampQueue;
+    private final Queue<Double> drivePositionQueue;
+    private final Queue<Double> turnPositionQueue;
+
+
     protected final StatusSignal<Angle> drivePosition;
     protected final StatusSignal<AngularVelocity> driveVelocity;
     protected final StatusSignal<Current> driveCurrent;
@@ -61,7 +69,7 @@ public abstract class ModuleIOTalon implements ModuleIO {
     private final Debouncer turnConnectedDebounce = new Debouncer(0.5);
     private final Debouncer turnEncoderConnectedDebounce = new Debouncer(0.5);
 
-    protected ModuleIOTalon(SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> constants) {
+    public ModuleIOTalon(SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> constants) {
         this.constants = constants;
 
         driveTalon = new TalonFX(constants.DriveMotorId);
@@ -115,6 +123,10 @@ public abstract class ModuleIOTalon implements ModuleIO {
                 : SensorDirectionValue.CounterClockwise_Positive;
         encoder.getConfigurator().apply(encoderConfig);
 
+
+        
+
+
         drivePosition = driveTalon.getPosition();
         driveVelocity = driveTalon.getVelocity();
         driveAppliedVolts = driveTalon.getMotorVoltage();
@@ -124,6 +136,10 @@ public abstract class ModuleIOTalon implements ModuleIO {
         turnVelocity = turnTalon.getVelocity();
         turnAppliedVolts = turnTalon.getMotorVoltage();
         turnCurrent = turnTalon.getStatorCurrent();
+
+        timestampQueue = PhoenixOdometryThread.getInstance().makeTimestampQueue();
+        drivePositionQueue = PhoenixOdometryThread.getInstance().registerSignal(drivePosition.clone());
+        turnPositionQueue = PhoenixOdometryThread.getInstance().registerSignal(turnAbsolutePosition.clone());
 
         BaseStatusSignal.setUpdateFrequencyForAll(DriveConstants.odometryFrequency, turnAbsolutePosition, drivePosition);
         BaseStatusSignal.setUpdateFrequencyForAll(50.0, driveVelocity, driveAppliedVolts, driveCurrent, turnVelocity, turnAppliedVolts, turnCurrent);
@@ -139,6 +155,20 @@ public abstract class ModuleIOTalon implements ModuleIO {
 
 
         // Update the inputs - if the drive, turn motors are connected and the encoders
+        inputs.odometryTimestamps = timestampQueue.stream().mapToDouble((Double value) -> value).toArray();
+        inputs.odometryDrivePositionsRad =
+        drivePositionQueue.stream()
+            .mapToDouble((Double value) -> Units.rotationsToRadians(value))
+            .toArray();
+
+        inputs.turnPositionsRad =
+        turnPositionQueue.stream()
+            .map((Double value) -> Rotation2d.fromRotations(value))
+            .toArray(Rotation2d[]::new);
+            
+    timestampQueue.clear();
+    drivePositionQueue.clear();
+    turnPositionQueue.clear();
         inputs.driveConnected = driveConnectedDebounce.calculate(driveStatus.isOK());
         inputs.drivePositionRad =
                 Units.rotationsToRadians(drivePosition.getValueAsDouble()) / constants.DriveMotorGearRatio;

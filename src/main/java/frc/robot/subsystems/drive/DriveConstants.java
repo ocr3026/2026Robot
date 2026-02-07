@@ -27,10 +27,10 @@ public class DriveConstants {
         public static final double WHEEL_COF = 1.2;
 
         // Dist between middle of left and right wheels
-        public static final Distance trackWidth = Inches.of(24.75);
+        public static final Distance trackWidth = Inches.of(21.875);
 
         // Dist between middle of front and back wheels
-	public static final Distance wheelBase = Inches.of(24.75);
+	public static final Distance wheelBase = Inches.of(21.875);
 
         public static final Translation2d[] moduleTranslations = new Translation2d[] {
 		new Translation2d(trackWidth.div(2).in(Meters), wheelBase.div(2).in(Meters)),
