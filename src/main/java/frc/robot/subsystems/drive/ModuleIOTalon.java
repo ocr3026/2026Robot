@@ -71,10 +71,10 @@ public class ModuleIOTalon implements ModuleIO {
 
     public ModuleIOTalon(SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> constants) {
         this.constants = constants;
-
         driveTalon = new TalonFX(constants.DriveMotorId);
         turnTalon = new TalonFX(constants.SteerMotorId);
         encoder = new CANcoder(constants.EncoderId);
+                DriveConstants.m_orchestra.addInstrument(driveTalon);
 
         var driveConfig = constants.DriveMotorInitialConfigs;
         driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;

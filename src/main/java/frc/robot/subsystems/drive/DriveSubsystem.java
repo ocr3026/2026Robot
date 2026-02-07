@@ -76,6 +76,12 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
 		modules[1] = new Module(frModuleIO, 1, TunerConstants.FrontRight);
 		modules[2] = new Module(rlModuleIO, 2, TunerConstants.BackLeft);
 		modules[3] = new Module(rrModuleIO, 3, TunerConstants.BackRight);
+        var status = DriveConstants.m_orchestra.loadMusic("test.chrp");
+        if (!status.isOK()) {
+   // log error
+   Logger.recordOutput("Song Error","Failed To Load Song");
+}
+
 
 		HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_AdvantageKit);
 
