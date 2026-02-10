@@ -35,4 +35,6 @@ public interface ModuleIO {
     default void setDriveVelocity(double veloctiyRadPerSec) {}
 
     default void setTurnPosition(Rotation2d rotation) {}
+
+    default void updateMotorConfigs() {}
 }

@@ -12,7 +12,7 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 
 import frc.robot.Util.Util;
 
-public class ModuleIOSim extends ModuleIOTalon{
+public class ModuleIOSim extends ModuleIOTalon {
     private final SwerveModuleSimulation simulation;
 
     public ModuleIOSim(SwerveModuleConstants constants, SwerveModuleSimulation simulation) {
@@ -22,6 +22,10 @@ public class ModuleIOSim extends ModuleIOTalon{
         simulation.useDriveMotorController(new Util.TalonFXMotorControllerSim(driveTalon));
 
         simulation.useSteerMotorController(new Util.TalonFXMotorControllerWithRemoteCancoderSim(turnTalon, encoder));
+    }
+    @Override
+    public void updateMotorConfigs() {
+        
     }
 
     @Override

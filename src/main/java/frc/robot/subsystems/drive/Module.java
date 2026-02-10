@@ -19,7 +19,7 @@ public class Module {
     private final ModuleIO io;
     private final ModuleIOInputsAutoLogged inputs = new ModuleIOInputsAutoLogged();
     private final int index;
-    private final SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> constants;
+    public SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> constants;
 
     private final Alert driveDisconnectedAlert;
     private final Alert turnDisconnectedAlert;
@@ -60,6 +60,10 @@ public class Module {
 
     public Rotation2d getAngle() {
         return inputs.turnAbsolutePosition;
+    }
+
+    public void updatePID() {
+        io.updateMotorConfigs();
     }
 
     public void runSetpoint(SwerveModuleState state) {
