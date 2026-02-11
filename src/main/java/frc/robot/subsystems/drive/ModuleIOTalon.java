@@ -30,6 +30,8 @@ import static frc.robot.Util.Util.*;
 
 import java.util.Queue;
 
+import org.littletonrobotics.junction.Logger;
+
 import frc.robot.Constants;
 import frc.robot.Constants.*;
 
@@ -70,17 +72,25 @@ public class ModuleIOTalon implements ModuleIO {
     private final Debouncer driveConnectedDebounce = new Debouncer(0.5);
     private final Debouncer turnConnectedDebounce = new Debouncer(0.5);
     private final Debouncer turnEncoderConnectedDebounce = new Debouncer(0.5);
+    TalonFXConfiguration driveConfig = new TalonFXConfiguration();
+    TalonFXConfiguration turnConfig = new TalonFXConfiguration();
 
     public ModuleIOTalon(SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration> constants) {
         this.constants = constants;
         driveTalon = new TalonFX(constants.DriveMotorId);
         turnTalon = new TalonFX(constants.SteerMotorId);
         encoder = new CANcoder(constants.EncoderId);
-                DriveConstants.m_orchestra.addInstrument(driveTalon);
-                DriveConstants.m_orchestra.addInstrument(turnTalon);
+        driveConfig = constants.DriveMotorInitialConfigs;
+        // var statusD = DriveConstants.m_orchestra.addInstrument(driveTalon);
+        // var statusT = DriveConstants.m_orchestra.addInstrument(turnTalon);
+        // Logger.recordOutput("DriveMotorStatus", statusD);
+        // Logger.recordOutput("TurnMotorStatus", statusT);
 
 
-        var driveConfig = constants.DriveMotorInitialConfigs;
+
+
+
+
         driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         driveConfig.Slot0 = constants.DriveMotorGains;
         driveConfig.TorqueCurrent.PeakForwardTorqueCurrent = constants.SlipCurrent;
@@ -94,7 +104,6 @@ public class ModuleIOTalon implements ModuleIO {
         tryUntilOk(5, () -> driveTalon.getConfigurator().apply(driveConfig, 0.25));
         tryUntilOk(5, () -> driveTalon.setPosition(0.0, 0.25));
 
-        var turnConfig = new TalonFXConfiguration();
         turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         turnConfig.Slot0 = constants.SteerMotorGains;
         if (Constants.currentMode == Constants.Mode.SIM) {
@@ -148,6 +157,13 @@ public class ModuleIOTalon implements ModuleIO {
         BaseStatusSignal.setUpdateFrequencyForAll(DriveConstants.odometryFrequency, turnAbsolutePosition, drivePosition);
         BaseStatusSignal.setUpdateFrequencyForAll(50.0, driveVelocity, driveAppliedVolts, driveCurrent, turnVelocity, turnAppliedVolts, turnCurrent);
         ParentDevice.optimizeBusUtilizationForAll(driveTalon, turnTalon);
+
+    }
+
+    @Override
+    public void updateMotorConfigs() {
+        turnConfig.Slot0 = constants.SteerMotorGains;
+        tryUntilOk(5, () -> turnTalon.getConfigurator().apply(turnConfig, 0.25));
 
     }
 

@@ -2,15 +2,26 @@ fpackage frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Reader;
+import java.io.Writer;
+import java.util.Arrays;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import frc.robot.subsystems.vision.*;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.signals.StaticFeedforwardSignValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
@@ -37,6 +48,7 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -69,18 +81,76 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
 
 	private final Field2d field = new Field2d();
 
+    public static double updateP = 0.0f;
+    public static double updateI = 0.0f;
+    public static double updateD = 0.0f;
+
+    
+
+    PIDJson updateJson = new PIDJson(updateP, updateI, updateD);
+
 	public DriveSubsystem(GyroIO gyroIO, ModuleIO flModuleIO, ModuleIO frModuleIO, ModuleIO rlModuleIO, ModuleIO rrModuleIO, Consumer<Pose2d> resetSimulationPoseCallback) {
+        
+
+
 		this.gyroIO = gyroIO;
 		this.resetSimulationPoseCallback = resetSimulationPoseCallback;
 		modules[0] = new Module(flModuleIO, 0, TunerConstants.FrontLeft);
 		modules[1] = new Module(frModuleIO, 1, TunerConstants.FrontRight);
 		modules[2] = new Module(rlModuleIO, 2, TunerConstants.BackLeft);
 		modules[3] = new Module(rrModuleIO, 3, TunerConstants.BackRight);
-        var status = DriveConstants.m_orchestra.loadMusic("test.chrp");
-        if (!status.isOK()) {
-   // log error
-   Logger.recordOutput("Song Error","Failed To Load Song");
-}
+        // var status = DriveConstants.m_orchestra.loadMusic("YaketySax.chrp");
+        // if (!status.isOK()) {
+        //     // log error
+        //     Logger.recordOutput("SongError","Failed To Load Song");
+        // }
+
+        try (Reader reader = new FileReader(TunerConstants.filePath)) {
+            PIDJson pidJson = TunerConstants.gson.fromJson(reader, PIDJson.class);
+            updateP = pidJson.getP();
+            updateI = pidJson.getI();
+            updateD = pidJson.getD();
+
+            
+            Logger.recordOutput("PIDJson/fileP", updateP);
+            Logger.recordOutput("PIDJson/fileI", updateI);
+            Logger.recordOutput("PIDJson/fileD", updateD);
+
+            SmartDashboard.putNumber("changeP" , updateP);
+            SmartDashboard.putNumber("changeI", updateI);
+            SmartDashboard.putNumber("changeD", updateD);
+
+            TunerConstants.steerGains = new Slot0Configs()
+            .withKP(updateP)
+            .withKI(updateI)
+            .withKD(updateD)
+            .withKS(TunerConstants.kS)
+            .withKV(TunerConstants.kV)
+            .withKA(TunerConstants.kA)
+            .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
+
+            int x = 0;
+            for(Module m : modules) {
+                x++;
+                
+                m.constants.withSteerMotorGains(TunerConstants.steerGains);
+                m.updatePID();
+                
+                
+                Logger.recordOutput("PIDJson/SteerGains" + x, m.constants.SteerMotorGains.kP);
+            }
+        } 
+        catch(IOException e) {
+                Logger.recordOutput("PIDJson/Error", Arrays.stream(e.getStackTrace()).map(StackTraceElement::toString).collect(Collectors.joining(System.lineSeparator() + "\tat")));
+        }
+        //write to file
+        try(Writer writer = new FileWriter(TunerConstants.filePath)) {
+            TunerConstants.gson.toJson(updateJson, writer);
+        }
+        catch(IOException e) {
+            Logger.recordOutput("PIDJson/Error", Arrays.stream(e.getStackTrace()).map(StackTraceElement::toString).collect(Collectors.joining(System.lineSeparator() + "\tat")));
+        }
+
 
 
 		HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_AdvantageKit);
@@ -111,9 +181,44 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
                 new SysIdRoutine.Mechanism((voltage) -> runCharacterization(voltage.in(Volts)), null, this));
 
 	}
-
+    File file = new File(TunerConstants.filePath);
 	@Override
 	public void periodic() {
+        //boolean isWriteable = file.setWritable(true);
+        Logger.recordOutput("PIDJson/fileWriteable", file.canWrite());
+        if(SmartDashboard.getNumber("changeP", 0.0) != updateP || SmartDashboard.getNumber("changeI", 0.0) != updateI || SmartDashboard.getNumber("changeD", 0.0) != updateD) {
+            updateP = SmartDashboard.getNumber("changeP", 0.0);
+            updateI = SmartDashboard.getNumber("changeI", 0.0);
+            updateD = SmartDashboard.getNumber("changeD", 0.0);
+
+            updateJson = new PIDJson(updateP, updateI, updateD);
+
+            //write to file
+            try(Writer writer = new FileWriter(TunerConstants.filePath)) {
+                TunerConstants.gson.toJson(updateJson, writer);
+            }
+            catch(IOException e) {
+                Logger.recordOutput("PIDJson/Error", Arrays.stream(e.getStackTrace()).map(StackTraceElement::toString).collect(Collectors.joining(System.lineSeparator() + "\tat")));
+            }
+            Logger.recordOutput("PIDJson/fileP", updateP);
+
+            TunerConstants.steerGains = new Slot0Configs()
+            .withKP(updateP)
+            .withKI(updateI)
+            .withKD(updateD)
+            .withKS(TunerConstants.kS)
+            .withKV(TunerConstants.kV)
+            .withKA(TunerConstants.kA)
+            .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
+            int x = 0;
+            for(Module m : modules) {
+                x++;
+                m.constants.withSteerMotorGains(TunerConstants.steerGains);
+                m.updatePID();
+                Logger.recordOutput("PIDJson/SteerGains" + x, m.constants.SteerMotorGains.kP);
+            }
+
+        }
 		odometryLock.lock();
 		gyroIO.updateInputs(gyroInputs);
 		Logger.processInputs("Drive/Gyro", gyroInputs);
@@ -121,6 +226,8 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
             module.periodic();
         }
         odometryLock.unlock();
+
+        Logger.recordOutput("PIDJson/realP", TunerConstants.steerGains.kP);
 
 		//stops all modules if driver station is disabled
 		if (DriverStation.isDisabled()) {

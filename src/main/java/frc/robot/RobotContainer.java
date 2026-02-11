@@ -24,7 +24,6 @@ import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalon;
-import frc.robot.subsystems.drive.ModuleIOTalonReal;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
@@ -96,7 +95,9 @@ public class RobotContainer {
 								.getSimulatedDriveTrainPose()) // reset odometry to actual robot pose during simulation
 				: () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d()));
 
-        Keybinds.playSong.onTrue(new InstantCommand(() -> DriveConstants.m_orchestra.play()));
+        //Keybinds.playSong.onTrue(new InstantCommand(() -> DriveConstants.m_orchestra.play()));
+                //Keybinds.playSong.onFalse(new InstantCommand(() -> DriveConstants.m_orchestra.stop()));
+
 
 		Keybinds.resetGyroTrigger.onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
   }
