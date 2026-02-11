@@ -11,6 +11,7 @@ import com.ctre.phoenix6.controls.VelocityTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.DeviceIdentifier;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
@@ -23,6 +24,7 @@ import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.*;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 
 import static frc.robot.Util.Util.*;
 
@@ -75,6 +77,8 @@ public class ModuleIOTalon implements ModuleIO {
         turnTalon = new TalonFX(constants.SteerMotorId);
         encoder = new CANcoder(constants.EncoderId);
                 DriveConstants.m_orchestra.addInstrument(driveTalon);
+                DriveConstants.m_orchestra.addInstrument(turnTalon);
+
 
         var driveConfig = constants.DriveMotorInitialConfigs;
         driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
