@@ -1,4 +1,4 @@
-fpackage frc.robot.subsystems.drive;
+package frc.robot.subsystems.drive;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -81,18 +81,20 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
 
 	private final Field2d field = new Field2d();
 
-    public static double updateP = 0.0f;
-    public static double updateI = 0.0f;
-    public static double updateD = 0.0f;
+    public static double updateSteerP = 0.0f;
+    public static double updateSteerI = 0.0f;
+    public static double updateSteerD = 0.0f;
+
+    public static double updateDriveP = 0.0f;
+    public static double updateDriveI = 0.0f;
+    public static double updateDriveD = 0.0f;
+    public static double updateDriveV = 0.0f;
 
     
 
-    PIDJson updateJson = new PIDJson(updateP, updateI, updateD);
+    PIDJson updateJson = new PIDJson(updateDriveP, updateDriveI, updateDriveD, updateDriveV, updateSteerP, updateSteerI, updateSteerD);
 
 	public DriveSubsystem(GyroIO gyroIO, ModuleIO flModuleIO, ModuleIO frModuleIO, ModuleIO rlModuleIO, ModuleIO rrModuleIO, Consumer<Pose2d> resetSimulationPoseCallback) {
-        
-
-
 		this.gyroIO = gyroIO;
 		this.resetSimulationPoseCallback = resetSimulationPoseCallback;
 		modules[0] = new Module(flModuleIO, 0, TunerConstants.FrontLeft);
@@ -107,33 +109,47 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
 
         try (Reader reader = new FileReader(TunerConstants.filePath)) {
             PIDJson pidJson = TunerConstants.gson.fromJson(reader, PIDJson.class);
-            updateP = pidJson.getP();
-            updateI = pidJson.getI();
-            updateD = pidJson.getD();
+            updateSteerP = pidJson.getSP();
+            updateSteerI = pidJson.getSI();
+            updateSteerD = pidJson.getSD();
+
+            updateDriveP = pidJson.getDP();
+            updateDriveI = pidJson.getDI();
+            updateDriveD = pidJson.getDD();
+            updateDriveV = pidJson.getDV();
 
             
-            Logger.recordOutput("PIDJson/fileP", updateP);
-            Logger.recordOutput("PIDJson/fileI", updateI);
-            Logger.recordOutput("PIDJson/fileD", updateD);
+            Logger.recordOutput("PIDJson/fileP", updateSteerP);
+            Logger.recordOutput("PIDJson/fileI", updateSteerI);
+            Logger.recordOutput("PIDJson/fileD", updateSteerD);
 
-            SmartDashboard.putNumber("changeP" , updateP);
-            SmartDashboard.putNumber("changeI", updateI);
-            SmartDashboard.putNumber("changeD", updateD);
+            SmartDashboard.putNumber("changeDP" , updateDriveP);
+            SmartDashboard.putNumber("changeDI", updateDriveI);
+            SmartDashboard.putNumber("changeDD", updateDriveD);
+            SmartDashboard.putNumber("changeDV", updateDriveV);
+
+
+            SmartDashboard.putNumber("changeSP" , updateSteerP);
+            SmartDashboard.putNumber("changeSI", updateSteerI);
+            SmartDashboard.putNumber("changeSD", updateSteerD);
 
             TunerConstants.steerGains = new Slot0Configs()
-            .withKP(updateP)
-            .withKI(updateI)
-            .withKD(updateD)
-            .withKS(TunerConstants.kS)
-            .withKV(TunerConstants.kV)
-            .withKA(TunerConstants.kA)
+            .withKP(updateSteerP)
+            .withKI(updateSteerI)
+            .withKD(updateSteerD)
+            .withKS(TunerConstants.skS)
+            .withKV(TunerConstants.skV)
+            .withKA(TunerConstants.skA)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
+
+            TunerConstants.driveGains = new Slot0Configs().withKP(updateDriveP).withKI(updateDriveI).withKD(updateDriveD).withKS(TunerConstants.dkS).withKV(updateDriveV);
 
             int x = 0;
             for(Module m : modules) {
                 x++;
                 
                 m.constants.withSteerMotorGains(TunerConstants.steerGains);
+                m.constants.withDriveMotorGains(TunerConstants.driveGains);
                 m.updatePID();
                 
                 
@@ -142,13 +158,6 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
         } 
         catch(IOException e) {
                 Logger.recordOutput("PIDJson/Error", Arrays.stream(e.getStackTrace()).map(StackTraceElement::toString).collect(Collectors.joining(System.lineSeparator() + "\tat")));
-        }
-        //write to file
-        try(Writer writer = new FileWriter(TunerConstants.filePath)) {
-            TunerConstants.gson.toJson(updateJson, writer);
-        }
-        catch(IOException e) {
-            Logger.recordOutput("PIDJson/Error", Arrays.stream(e.getStackTrace()).map(StackTraceElement::toString).collect(Collectors.joining(System.lineSeparator() + "\tat")));
         }
 
 
@@ -186,34 +195,43 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
 	public void periodic() {
         //boolean isWriteable = file.setWritable(true);
         Logger.recordOutput("PIDJson/fileWriteable", file.canWrite());
-        if(SmartDashboard.getNumber("changeP", 0.0) != updateP || SmartDashboard.getNumber("changeI", 0.0) != updateI || SmartDashboard.getNumber("changeD", 0.0) != updateD) {
-            updateP = SmartDashboard.getNumber("changeP", 0.0);
-            updateI = SmartDashboard.getNumber("changeI", 0.0);
-            updateD = SmartDashboard.getNumber("changeD", 0.0);
+        if(SmartDashboard.getNumber("changeSP", 0.0) != updateSteerP || SmartDashboard.getNumber("changeSI", 0.0) != updateSteerI || SmartDashboard.getNumber("changeSD", 0.0) != updateSteerD || SmartDashboard.getNumber("changeDP", 0.0) != updateDriveP || SmartDashboard.getNumber("changeDI", 0.0) != updateDriveI ||  SmartDashboard.getNumber("changeDD", 0.0) != updateDriveD ||  SmartDashboard.getNumber("changeDV", 0.0) != updateDriveV) {
+            updateSteerP = SmartDashboard.getNumber("changeSP", 0.0);
+            updateSteerI = SmartDashboard.getNumber("changeSI", 0.0);
+            updateSteerD = SmartDashboard.getNumber("changeSD", 0.0);
 
-            updateJson = new PIDJson(updateP, updateI, updateD);
+            updateDriveP = SmartDashboard.getNumber("changeDP", 0.0);
+            updateDriveI = SmartDashboard.getNumber("changeDI", 0.0);
+            updateDriveD = SmartDashboard.getNumber("changeDD", 0.0);
+            updateDriveV = SmartDashboard.getNumber("changeDV", 0.0);
+            updateJson = new PIDJson(updateDriveP, updateDriveI, updateDriveD, updateDriveV, updateSteerP, updateSteerI, updateSteerD);
 
             //write to file
             try(Writer writer = new FileWriter(TunerConstants.filePath)) {
                 TunerConstants.gson.toJson(updateJson, writer);
+                writer.close();
             }
             catch(IOException e) {
                 Logger.recordOutput("PIDJson/Error", Arrays.stream(e.getStackTrace()).map(StackTraceElement::toString).collect(Collectors.joining(System.lineSeparator() + "\tat")));
             }
-            Logger.recordOutput("PIDJson/fileP", updateP);
+            Logger.recordOutput("PIDJson/fileP", updateSteerP);
 
             TunerConstants.steerGains = new Slot0Configs()
-            .withKP(updateP)
-            .withKI(updateI)
-            .withKD(updateD)
-            .withKS(TunerConstants.kS)
-            .withKV(TunerConstants.kV)
-            .withKA(TunerConstants.kA)
+            .withKP(updateSteerP)
+            .withKI(updateSteerI)
+            .withKD(updateSteerD)
+            .withKS(TunerConstants.skS)
+            .withKV(TunerConstants.skV)
+            .withKA(TunerConstants.skA)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
+            
+            TunerConstants.driveGains = new Slot0Configs().withKP(updateDriveP).withKI(updateDriveI).withKD(updateDriveD).withKS(TunerConstants.dkS).withKV(updateDriveV);
+
             int x = 0;
             for(Module m : modules) {
                 x++;
                 m.constants.withSteerMotorGains(TunerConstants.steerGains);
+                m.constants.withDriveMotorGains(TunerConstants.driveGains);
                 m.updatePID();
                 Logger.recordOutput("PIDJson/SteerGains" + x, m.constants.SteerMotorGains.kP);
             }

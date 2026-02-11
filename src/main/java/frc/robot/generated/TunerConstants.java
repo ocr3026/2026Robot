@@ -51,23 +51,30 @@ public class TunerConstants {
     public static String filePath = "/home/lvuser/pid/pid.json";
     public static Gson gson = new Gson();
 
-        public static final double kS = 0.1;
-        public static final double kV = 1.91;
-        public static final double kA = 0.0f;
+        public static final double skS = 0.1;
+        public static final double skV = 1.91;
+        public static final double skA = 0.0f;
+        
+        public static final double dkS = 0.17;
+
+        //sp = 50
+        //si =0
+        //sd =0
+        
 
 
     public static Slot0Configs steerGains = new Slot0Configs()
             .withKP(100)
             .withKI(0)
             .withKD(0.5)
-            .withKS(kS)
-            .withKV(kV)
-            .withKA(kA)
+            .withKS(skS)
+            .withKV(skV)
+            .withKA(skA)
             .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
-    private static final Slot0Configs driveGains =
-            new Slot0Configs().withKP(0.1).withKI(0).withKD(0).withKS(0).withKV(0.124);
+    public static Slot0Configs driveGains =
+            new Slot0Configs().withKP(0.1).withKI(0).withKD(0).withKS(dkS).withKV(0.124);
 
     // The closed-loop output type to use for the steer motors;
     // This affects the PID/FF gains for the steer motors
@@ -152,11 +159,13 @@ public class TunerConstants {
                     .withSteerFrictionVoltage(kSteerFrictionVoltage)
                     .withDriveFrictionVoltage(kDriveFrictionVoltage);
 
+        // READ THE ABSOULTE ENCORDER POSITION NO OFFSET - FLIP THE SIGN IN THE CODE
+
     // Front Left
     private static final int kFrontLeftDriveMotorId = 5;
     private static final int kFrontLeftSteerMotorId = 6;
     private static final int kFrontLeftEncoderId = 9;
-    private static final Angle kFrontLeftEncoderOffset = Rotations.of(0);
+    private static final Angle kFrontLeftEncoderOffset = Rotations.of(-0.224365);
     private static final boolean kFrontLeftSteerMotorInverted = true;
     private static final boolean kFrontLeftEncoderInverted = false;
 
@@ -167,7 +176,7 @@ public class TunerConstants {
     private static final int kFrontRightDriveMotorId = 3;
     private static final int kFrontRightSteerMotorId = 4;
     private static final int kFrontRightEncoderId = 11;
-    private static final Angle kFrontRightEncoderOffset = Rotations.of(0);
+    private static final Angle kFrontRightEncoderOffset = Rotations.of(0.061523);
     private static final boolean kFrontRightSteerMotorInverted = true;
     private static final boolean kFrontRightEncoderInverted = false;
 
@@ -178,7 +187,7 @@ public class TunerConstants {
     private static final int kBackLeftDriveMotorId = 7;
     private static final int kBackLeftSteerMotorId = 8;
     private static final int kBackLeftEncoderId = 10;
-    private static final Angle kBackLeftEncoderOffset = Rotations.of(0);
+    private static final Angle kBackLeftEncoderOffset = Rotations.of(0.169434);
     private static final boolean kBackLeftSteerMotorInverted = true;
     private static final boolean kBackLeftEncoderInverted = false;
 
@@ -189,7 +198,7 @@ public class TunerConstants {
     private static final int kBackRightDriveMotorId = 1;
     private static final int kBackRightSteerMotorId = 2;
     private static final int kBackRightEncoderId = 12;
-    private static final Angle kBackRightEncoderOffset = Rotations.of(0);
+    private static final Angle kBackRightEncoderOffset = Rotations.of(0.141113);
     private static final boolean kBackRightSteerMotorInverted = true;
     private static final boolean kBackRightEncoderInverted = false;
 

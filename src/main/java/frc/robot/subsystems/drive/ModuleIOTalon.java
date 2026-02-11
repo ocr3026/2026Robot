@@ -163,7 +163,12 @@ public class ModuleIOTalon implements ModuleIO {
     @Override
     public void updateMotorConfigs() {
         turnConfig.Slot0 = constants.SteerMotorGains;
+        driveConfig.Slot0 = constants.DriveMotorGains;
         tryUntilOk(5, () -> turnTalon.getConfigurator().apply(turnConfig, 0.25));
+
+        tryUntilOk(5, () -> driveTalon.getConfigurator().apply(driveConfig, 0.25));
+
+
 
     }
 
