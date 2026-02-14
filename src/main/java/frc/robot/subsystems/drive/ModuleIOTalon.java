@@ -181,10 +181,13 @@ public class ModuleIOTalon implements ModuleIO {
 
         // Update the inputs - if the drive, turn motors are connected and the encoders
         inputs.odometryTimestamps = timestampQueue.stream().mapToDouble((Double value) -> value).toArray();
+        //Logger.recordOutput("constants/stream", drivePositionQueue.stream().mapToDouble(null));
+        Logger.recordOutput("constants/drviepositionsignal", drivePosition.getValueAsDouble());
         inputs.odometryDrivePositionsRad =
         drivePositionQueue.stream()
             .mapToDouble((Double value) -> Units.rotationsToRadians(value))
             .toArray();
+        
 
         inputs.turnPositionsRad =
         turnPositionQueue.stream()

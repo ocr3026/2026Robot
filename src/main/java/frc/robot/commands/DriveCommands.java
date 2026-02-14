@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import org.littletonrobotics.junction.Logger;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -70,17 +72,29 @@ public class DriveCommands {
 
                     // Apply rotation deadband
                     double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
+					Logger.recordOutput("Rotation/Rotation", omega);
+
 
                     // Square rotation value for more precise control
                     omega = Math.copySign(omega * omega, omega);
+					Logger.recordOutput("Rotation/RotationSquared", omega);
+					Logger.recordOutput("Rotation/MaxAngularSpeed", drive.getMaxAngularSpeedRadPerSec());
+					Logger.recordOutput("Rotation/ChassisOmega", omega * drive.getMaxAngularSpeedRadPerSec());
 
                     // Convert to field relative speeds & send command
                     ChassisSpeeds speeds = new ChassisSpeeds(
                             linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
                             linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
                             omega * drive.getMaxAngularSpeedRadPerSec());
+						
                     boolean isFlipped = DriverStation.getAlliance().isPresent()
                             && DriverStation.getAlliance().get() == Alliance.Red;
+							
+					Logger.recordOutput("typespeeds/speeds", speeds);
+					Logger.recordOutput("typespeeds/relative%speeds", ChassisSpeeds.fromFieldRelativeSpeeds(
+                            speeds,
+                            isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation()));
+
                     drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(
                             speeds,
                             isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation()));

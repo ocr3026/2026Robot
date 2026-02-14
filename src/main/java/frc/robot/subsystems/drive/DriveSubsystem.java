@@ -295,9 +295,13 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
         Logger.recordOutput("SwerveStates/Setpoints", setpointStates);
         Logger.recordOutput("SwerveChassisSpeeds/Setpoints", speeds);
 
+
 		 for (int i = 0; i < 4; i++) {
 			// runSetpoint in Module.Java optomizes the setpoints
             modules[i].runSetpoint(setpointStates[i]);
+            Logger.recordOutput("position/moduleX" + i, modules[i].constants.LocationX);
+            Logger.recordOutput("position/moduleY" + i, modules[i].constants.LocationY);
+
         }
 
         // Log optimized setpoints (runSetpoint mutates each state)
@@ -404,6 +408,8 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
     }
 
 	 public double getMaxAngularSpeedRadPerSec() {
+        Logger.recordOutput("Rotation/DriveRadius", DriveConstants.DRIVE_BASE_RADIUS.in(Meters));
+        Logger.recordOutput("Rotation/MaxLinearSpeed", getMaxLinearSpeedMetersPerSec());
         return getMaxLinearSpeedMetersPerSec() / DriveConstants.DRIVE_BASE_RADIUS.in(Meters);
     }
 

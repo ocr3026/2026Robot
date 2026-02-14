@@ -74,7 +74,7 @@ public class TunerConstants {
     // When using closed-loop control, the drive motor uses the control
     // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
     public static Slot0Configs driveGains =
-            new Slot0Configs().withKP(0.1).withKI(0).withKD(0).withKS(dkS).withKV(0.124);
+            new Slot0Configs().withKP(0.0).withKI(0).withKD(0).withKS(dkS).withKV(0.124);
 
     // The closed-loop output type to use for the steer motors;
     // This affects the PID/FF gains for the steer motors
@@ -121,8 +121,9 @@ public class TunerConstants {
     private static final double kCoupleRatio = 3.8181818181818183;
 
     private static final double kDriveGearRatio =  (50.0 / 14.0) * (16.0 / 28.0) * (45.0 / 15.0);
+
     private static final double kSteerGearRatio = 150.0 / 7.0;
-    private static final Distance kWheelRadius = Inches.of(1.95);
+    private static final Distance kWheelRadius = Meters.of(Inches.of(1.95).in(Meters));
 
     private static final boolean kInvertLeftSide = false;
     private static final boolean kInvertRightSide = true;
@@ -169,8 +170,8 @@ public class TunerConstants {
     private static final boolean kFrontLeftSteerMotorInverted = true;
     private static final boolean kFrontLeftEncoderInverted = false;
 
-    private static final Distance kFrontLeftXPos = Inches.of(DriveConstants.trackWidth.div(2).in(Meters));
-    private static final Distance kFrontLeftYPos = Inches.of(DriveConstants.wheelBase.div(2).in(Meters));
+    private static final Distance kFrontLeftXPos = Meters.of(DriveConstants.trackWidth.div(2).in(Meters));
+    private static final Distance kFrontLeftYPos = Meters.of(DriveConstants.wheelBase.div(2).in(Meters));
 
     // Front Right
     private static final int kFrontRightDriveMotorId = 3;
@@ -180,8 +181,8 @@ public class TunerConstants {
     private static final boolean kFrontRightSteerMotorInverted = true;
     private static final boolean kFrontRightEncoderInverted = false;
 
-    private static final Distance kFrontRightXPos = Inches.of(DriveConstants.trackWidth.div(2).in(Meters));
-    private static final Distance kFrontRightYPos = Inches.of(DriveConstants.wheelBase.div(2).unaryMinus().in(Meters));
+    private static final Distance kFrontRightXPos = Meters.of(DriveConstants.trackWidth.div(2).in(Meters));
+    private static final Distance kFrontRightYPos = Meters.of(DriveConstants.wheelBase.div(2).unaryMinus().in(Meters));
 
     // Back Left
     private static final int kBackLeftDriveMotorId = 7;
@@ -191,8 +192,8 @@ public class TunerConstants {
     private static final boolean kBackLeftSteerMotorInverted = true;
     private static final boolean kBackLeftEncoderInverted = false;
 
-    private static final Distance kBackLeftXPos = Inches.of(DriveConstants.trackWidth.div(2).unaryMinus().in(Meters));
-    private static final Distance kBackLeftYPos = Inches.of(DriveConstants.wheelBase.div(2).in(Meters));
+    private static final Distance kBackLeftXPos = Meters.of(DriveConstants.trackWidth.div(2).unaryMinus().in(Meters));
+    private static final Distance kBackLeftYPos = Meters.of(DriveConstants.wheelBase.div(2).in(Meters));
 
     // Back Right
     private static final int kBackRightDriveMotorId = 1;
@@ -202,8 +203,8 @@ public class TunerConstants {
     private static final boolean kBackRightSteerMotorInverted = true;
     private static final boolean kBackRightEncoderInverted = false;
 
-    private static final Distance kBackRightXPos = Inches.of(DriveConstants.trackWidth.div(2).unaryMinus().in(Meters));
-    private static final Distance kBackRightYPos = Inches.of(DriveConstants.wheelBase.div(2).unaryMinus().in(Meters));
+    private static final Distance kBackRightXPos = Meters.of(DriveConstants.trackWidth.div(2).unaryMinus().in(Meters));
+    private static final Distance kBackRightYPos = Meters.of(DriveConstants.wheelBase.div(2).unaryMinus().in(Meters));
 
     public static SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>
             FrontLeft = ConstantCreator.createModuleConstants(
