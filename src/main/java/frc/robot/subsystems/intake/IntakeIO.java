@@ -21,9 +21,9 @@ public interface IntakeIO {
 
 	public default void updateInputs(IntakeIOInputs inputs) {}
 
-	public default void setAngularSpeed(double speed) {}
+	public default void setIntakeLiftSpeed(double speed) {}
 
-	public default void runMotors(double voltage) {}
+	public default void setIntakeSpeed(double speed) {}
 
 	public default void stopMotors() {}
 }

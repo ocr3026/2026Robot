@@ -30,7 +30,7 @@ public class HopperIOSpark implements HopperIO {
     }
 
     @Override
-    public void setAngularSpeed(double speed) {
+    public void setHopperSpeed(double speed) {
         hopperPID.setSetpoint(speed, ControlType.kVoltage);
     }
 }

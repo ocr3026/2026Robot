@@ -22,7 +22,7 @@ public interface HopperIO {
 
 	public default void updateInputs(HopperIOInputs inputs) {}
 
-	public default void setAngularSpeed(double speed) {}
+	public default void setHopperSpeed(double speed) {}
 
 	public default void runMotors(double voltage) {}
 

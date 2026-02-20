@@ -13,8 +13,14 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.HopperCommands;
+import frc.robot.commands.IntakeCommands;
+import frc.robot.commands.ShooterCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
@@ -24,8 +30,11 @@ import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalon;
+import frc.robot.subsystems.hopper.HopperIOSpark;
 import frc.robot.subsystems.hopper.HopperSubsystem;
+import frc.robot.subsystems.shooter.ShooterIOSpark;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
+import frc.robot.subsystems.intake.IntakeIOSpark;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
@@ -37,19 +46,25 @@ public class RobotContainer {
 
   public static final CommandJoystick translationJoystick = new CommandJoystick(0);
 	public static final CommandJoystick rotationJoystick = new CommandJoystick(1);
+  public static final CommandXboxController m_driverController = new CommandXboxController(2);
 
   private final DriveSubsystem drive;
   private final Vision vision;
+  private final ShooterSubsystem shooter;
+  private final HopperSubsystem hopper;
+  private final IntakeSubsystem intake;
 
   private SwerveDriveSimulation driveSimulation = null;
 
   public RobotContainer() {
-
+        shooter = new ShooterSubsystem(new ShooterIOSpark());
+        hopper = new HopperSubsystem(new HopperIOSpark());
+        intake = new IntakeSubsystem(new IntakeIOSpark());
     switch(Constants.currentMode) {
       case REAL:
         drive = new DriveSubsystem(new GyroIONavX(), new ModuleIOTalon(TunerConstants.FrontLeft), new ModuleIOTalon(TunerConstants.FrontRight), new ModuleIOTalon(TunerConstants.BackLeft), new ModuleIOTalon(TunerConstants.BackRight), (pose) -> {});
         this.vision = new Vision(drive, new VisionIOPhotonvision(VisionConstants.camera0Name, VisionConstants.robotToCamera0));
-
+        
         break;
       case SIM:
           driveSimulation = new SwerveDriveSimulation(DriveConstants.mapleSimConfig, new Pose2d(3,3, new Rotation2d()));
@@ -85,6 +100,8 @@ public class RobotContainer {
     configureBindings();
   }
 
+
+
   private void configureBindings() {
     		drive.setDefaultCommand(DriveCommands.joystickDrive(
 				drive,
@@ -103,6 +120,12 @@ public class RobotContainer {
 
 
 		Keybinds.resetGyroTrigger.onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
+
+    Keybinds.intakeFuel.whileTrue(IntakeCommands.intakeFuel(intake,5d));
+    Keybinds.intakeLiftUp.whileTrue(IntakeCommands.intakeLift(intake,0.1d));
+    Keybinds.intakeLiftDown.whileTrue(IntakeCommands.intakeLift(intake, -0.1d));
+    Keybinds.shootFuel.whileTrue(new ParallelCommandGroup(ShooterCommands.shootFuel(shooter,0.7d), HopperCommands.runHopper(hopper, -0.1d)));
+    Keybinds.runHopper.whileTrue(HopperCommands.runHopper(hopper, -0.1d));
   }
 
   public Command getAutonomousCommand() {

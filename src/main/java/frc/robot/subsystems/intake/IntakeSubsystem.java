@@ -21,8 +21,11 @@ public class IntakeSubsystem extends SubsystemBase {
   public IntakeSubsystem(IntakeIO io) {
     this.io = io;
   }
-    public void setvelocity(double speed){
-      io.setAngularSpeed(speed);
+    public void intakeFuel(double speed){
+      io.setIntakeSpeed(speed);
+  }
+    public void intakeLift(double speed){
+      io.setIntakeLiftSpeed(speed);
   }
 
 

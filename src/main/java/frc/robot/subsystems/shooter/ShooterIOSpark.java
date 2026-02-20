@@ -11,15 +11,15 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 public class ShooterIOSpark implements ShooterIO {
     private final SparkFlex shooterMotor;
-    private final SparkFlex shooterIntakeMotor;
+    private final SparkFlex shooterKickbackMotor;
     private final SparkClosedLoopController shooterPID;
-    private final SparkClosedLoopController shooterIntakePID;
+    private final SparkClosedLoopController shooterKickbackPID;
 
     public ShooterIOSpark() {
         shooterMotor = new SparkFlex(ShooterConstants.shooterMotorID, MotorType.kBrushless);
-        shooterIntakeMotor = new SparkFlex(ShooterConstants.shooterMotorIntakeID, MotorType.kBrushless);
+        shooterKickbackMotor = new SparkFlex(ShooterConstants.shooterMotorKickbackID, MotorType.kBrushless);
         shooterPID = shooterMotor.getClosedLoopController();
-        shooterIntakePID = shooterIntakeMotor.getClosedLoopController();
+        shooterKickbackPID = shooterKickbackMotor.getClosedLoopController();
         SparkFlexConfig shooterConfig = new SparkFlexConfig();
         shooterConfig.idleMode(IdleMode.kBrake);
     }
@@ -27,19 +27,19 @@ public class ShooterIOSpark implements ShooterIO {
     @Override
     public void updateInputs(ShooterIOInputs inputs) {
         inputs.shooterAppliedVolts = shooterMotor.getAppliedOutput();
-        inputs.shooterAppliedVolts = shooterIntakeMotor.getAppliedOutput();
+        inputs.shooterAppliedVolts = shooterKickbackMotor.getAppliedOutput();
         inputs.shooterConnected = true;
         inputs.shooterCurrentAmps = shooterMotor.getOutputCurrent();
-        inputs.shooterCurrentAmps = shooterIntakeMotor.getOutputCurrent();
+        inputs.shooterCurrentAmps = shooterKickbackMotor.getOutputCurrent();
         inputs.shooterPosition = Degrees.of(shooterMotor.getEncoder().getPosition());
-        inputs.shooterPosition = Degrees.of(shooterIntakeMotor.getEncoder().getPosition());
+        inputs.shooterPosition = Degrees.of(shooterKickbackMotor.getEncoder().getPosition());
         inputs.shooterVelocity = DegreesPerSecond.of(shooterMotor.getEncoder().getVelocity());
-        inputs.shooterVelocity = DegreesPerSecond.of(shooterIntakeMotor.getEncoder().getVelocity());
+        inputs.shooterVelocity = DegreesPerSecond.of(shooterKickbackMotor.getEncoder().getVelocity());
     }
 
     @Override
-    public void setAngularSpeed(double speed) {
+    public void setShooterSpeed(double speed) {
         shooterPID.setSetpoint(speed, ControlType.kVoltage);
-        shooterIntakePID.setSetpoint(speed, ControlType.kVoltage);
+        shooterKickbackPID.setSetpoint(speed, ControlType.kVoltage);
     }
 }

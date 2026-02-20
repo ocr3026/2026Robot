@@ -21,8 +21,8 @@ public class ShooterSubsystem extends SubsystemBase {
   public ShooterSubsystem(ShooterIO io) {
     this.io = io;
   }
-    public void setvelocity(double speed){
-      io.setAngularSpeed(speed);
+    public void runShooter(double speed){
+      io.setShooterSpeed(speed);
   }
 
 

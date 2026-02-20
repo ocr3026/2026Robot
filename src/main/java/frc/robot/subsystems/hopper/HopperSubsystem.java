@@ -21,8 +21,8 @@ public class HopperSubsystem extends SubsystemBase {
   public HopperSubsystem(HopperIO io) {
     this.io = io;
   }
-    public void setvelocity(double speed){
-      io.setAngularSpeed(speed);
+    public void runHopper(double speed){
+      io.setHopperSpeed(speed);
   }
 
 
