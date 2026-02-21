@@ -60,6 +60,18 @@ public final class Util {
             super(talonFX);
             this.remoteCancoderSimState = cancoder.getSimState();
         }
+
+        @Override
+        public Voltage updateControlSignal(
+                Angle mechanismAngle,
+                AngularVelocity mechanismVelocity,
+                Angle encoderAngle,
+                AngularVelocity encoderVelocity) {
+            remoteCancoderSimState.setRawPosition(mechanismAngle);
+            remoteCancoderSimState.setVelocity(mechanismVelocity);
+
+            return super.updateControlSignal(mechanismAngle, mechanismVelocity, encoderAngle, encoderVelocity);
+        }
     }
 
     public static double[] getSimulationOdometryTimeStamps() {
