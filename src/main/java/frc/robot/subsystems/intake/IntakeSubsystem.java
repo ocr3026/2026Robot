@@ -28,6 +28,14 @@ public class IntakeSubsystem extends SubsystemBase {
       io.setIntakeLiftSpeed(speed);
   }
 
+  public double getIntakeLiftPos() {
+    return io.getIntakePosition();
+  }
+
+  public void intakeLiftPos(double pos) {
+    io.setIntakeLiftPos(pos);
+  }
+
 
   @Override
   public void periodic() {

@@ -22,6 +22,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
+import frc.robot.generated.TunerConstants;
 
 public final class Util {
     public static void tryUntilOk(int maxAttempts, Supplier<StatusCode> command) {
@@ -87,18 +88,11 @@ public final class Util {
                 // Disable CanCoder inversion
                 .withEncoderInverted(false)
                 // Adjust steer motor PID gains for simulation
-                .withSteerMotorGains(new Slot0Configs()
-                        .withKP(70)
-                        .withKI(0)
-                        .withKD(4.5)
-                        .withKS(0)
-                        .withKV(1.91)
-                        .withKA(0)
-                        .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign))
-                .withSteerMotorGearRatio(16.0)
+                .withSteerMotorGains(TunerConstants.steerGains)
+                .withSteerMotorGearRatio(moduleConstants.SteerMotorGearRatio)
                 // Adjust friction voltages
-                .withDriveFrictionVoltage(Volts.of(0.1))
-                .withSteerFrictionVoltage(Volts.of(0.05))
+                .withDriveFrictionVoltage(Volts.of(0.2))
+                .withSteerFrictionVoltage(Volts.of(0.2))
                 // Adjust steer inertia
                 .withSteerInertia(KilogramSquareMeters.of(0.05));
     }

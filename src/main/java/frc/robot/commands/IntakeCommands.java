@@ -23,4 +23,10 @@ public class IntakeCommands{
       intakeSubsystem.intakeLift(0.0);
     });
   }
+
+  public static Command intakeLiftPos(IntakeSubsystem intake, double pos) {
+    return Commands.run(() -> {
+      intake.intakeLiftPos(pos);
+    });
+  }
 }

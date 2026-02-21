@@ -288,6 +288,7 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
 
 	public void runVelocity(ChassisSpeeds speeds) {
 		speeds = ChassisSpeeds.discretize(speeds, 0.02);
+        
         SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(speeds);
         SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, TunerConstants.kSpeedAt12Volts);
 

@@ -31,6 +31,6 @@ public class HopperIOSpark implements HopperIO {
 
     @Override
     public void setHopperSpeed(double speed) {
-        hopperPID.setSetpoint(speed, ControlType.kVoltage);
+        hopperPID.setSetpoint(speed, ControlType.kDutyCycle);
     }
 }

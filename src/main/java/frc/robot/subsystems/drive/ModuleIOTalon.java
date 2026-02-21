@@ -106,9 +106,9 @@ public class ModuleIOTalon implements ModuleIO {
 
         turnConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
         turnConfig.Slot0 = constants.SteerMotorGains;
-        if (Constants.currentMode == Constants.Mode.SIM) {
-            turnConfig.Slot0.withKD(0.5).withKS(0);
-        }
+        // if (Constants.currentMode == Constants.Mode.SIM) {
+        //     turnConfig.Slot0.withKD(0.5).withKS(0);
+        // }
 
         turnConfig.Feedback.FeedbackRemoteSensorID = constants.EncoderId;
         turnConfig.Feedback.FeedbackSensorSource = switch (constants.FeedbackSource) {

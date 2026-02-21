@@ -7,9 +7,13 @@ package frc.robot;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
+import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -17,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.autonomous.DriveBackAndShoot;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.HopperCommands;
 import frc.robot.commands.IntakeCommands;
@@ -55,6 +60,10 @@ public class RobotContainer {
   private final IntakeSubsystem intake;
 
   private SwerveDriveSimulation driveSimulation = null;
+
+  
+	public final LoggedDashboardChooser<Command> autoChooser;
+	public static Command currentSelectedCommand = null;
 
   public RobotContainer() {
         shooter = new ShooterSubsystem(new ShooterIOSpark());
@@ -96,6 +105,11 @@ public class RobotContainer {
 
                 break;
     }
+    SmartDashboard.putNumber("delayStartTime", 0);
+    autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+    
+    autoChooser.addOption("Drive Back and Shoot", new DriveBackAndShoot(hopper, shooter, intake));
+
 
     configureBindings();
   }
@@ -121,15 +135,15 @@ public class RobotContainer {
 
 		Keybinds.resetGyroTrigger.onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
 
-    Keybinds.intakeFuel.whileTrue(IntakeCommands.intakeFuel(intake,5d));
+    Keybinds.intakeFuel.whileTrue(IntakeCommands.intakeFuel(intake,-0.5d));
     Keybinds.intakeLiftUp.whileTrue(IntakeCommands.intakeLift(intake,0.1d));
     Keybinds.intakeLiftDown.whileTrue(IntakeCommands.intakeLift(intake, -0.1d));
-    Keybinds.shootFuel.whileTrue(new ParallelCommandGroup(ShooterCommands.shootFuel(shooter,0.7d), HopperCommands.runHopper(hopper, -0.1d)));
-    Keybinds.runHopper.whileTrue(HopperCommands.runHopper(hopper, -0.1d));
+    Keybinds.shootFuel.whileTrue(new ParallelCommandGroup(ShooterCommands.shootFuel(shooter,0.7d), HopperCommands.runHopper(hopper, -0.05d)));
+    Keybinds.runHopper.whileTrue(HopperCommands.runHopper(hopper, -0.05d));
   }
 
   public Command getAutonomousCommand() {
-    return Commands.print("No autonomous command configured");
+    return autoChooser.get();
   }
 
   public void resetSimulationField() {

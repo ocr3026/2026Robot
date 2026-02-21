@@ -21,7 +21,7 @@ import frc.robot.generated.TunerConstants;
 public class DriveConstants {
         public static final Frequency odometryFrequency = Hertz.of(100);
         // Robot Mass
-        public static final double ROBOT_MASS_KG = 74.088;
+        public static final double ROBOT_MASS_KG = 40;
         // Moment of Inertia
         public static final double ROBOT_MOI = 6.883;
         // Wheel Coefficient of Friction
@@ -68,11 +68,11 @@ public class DriveConstants {
         // Drivetrain for Simulation
 	 public static final DriveTrainSimulationConfig mapleSimConfig = DriveTrainSimulationConfig.Default()
             .withRobotMass(Kilograms.of(ROBOT_MASS_KG))
-            .withCustomModuleTranslations(moduleTranslations)
-            .withGyro(COTS.ofPigeon2())
+            .withTrackLengthTrackWidth(wheelBase, trackWidth)
+            .withGyro(COTS.ofNav2X())
             .withSwerveModule(new SwerveModuleSimulationConfig(
                     DCMotor.getKrakenX60(1),
-                    DCMotor.getFalcon500(1),
+                    DCMotor.getKrakenX60(1),
                     TunerConstants.FrontLeft.DriveMotorGearRatio,
                     TunerConstants.FrontLeft.SteerMotorGearRatio,
                     Volts.of(TunerConstants.FrontLeft.DriveFrictionVoltage),
@@ -80,7 +80,7 @@ public class DriveConstants {
                     Meters.of(TunerConstants.FrontLeft.WheelRadius),
                     KilogramSquareMeters.of(TunerConstants.FrontLeft.SteerInertia),
                     WHEEL_COF));
-                   public static Orchestra m_orchestra = new Orchestra();
+        public static Orchestra m_orchestra = new Orchestra();
 
     //TODO: GET THESE THINGS FINALIZED WHEN POSSIBLE 
     // public static final LinearVelocity maxSpeed = MetersPerSecond.of(5.3);
