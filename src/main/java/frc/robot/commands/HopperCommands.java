@@ -15,4 +15,12 @@ public class HopperCommands{
       hopperSubsystem.runHopper(0.0);
     });
   }
+
+  public static Command reverseHopper(HopperSubsystem hopperSubsystem, double speed) {
+    return Commands.runEnd(() -> {
+      hopperSubsystem.reverseHopper(speed);
+    }, () -> {
+      hopperSubsystem.reverseHopper(0.0);
+    });
+  }
 }

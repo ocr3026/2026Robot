@@ -41,6 +41,7 @@ public class IntakeSubsystem extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Intake", inputs);
+    Logger.recordOutput("Intake Lift Pos Raw", io.getIntakePosition());
   }
 
   @Override

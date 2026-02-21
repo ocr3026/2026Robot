@@ -11,7 +11,7 @@ public class Keybinds {
 		public static final Trigger intakeLiftUp = RobotContainer.m_driverController.rightBumper();
 		public static final Trigger intakeLiftDown = RobotContainer.m_driverController.leftBumper();
 		public static final Trigger runHopper = RobotContainer.m_driverController.x();
-
+		public static final Trigger reverseHopper = RobotContainer.m_driverController.y();
 
 
 }

@@ -89,9 +89,9 @@ public class AutoBase extends ParallelCommandGroup{
 
     public static final Command lowerIntake(IntakeSubsystem intake) {
         //placeholder pos value, we need to measure real (in rotations)
-        return IntakeCommands.intakeLiftPos(intake, -1000);
+        return IntakeCommands.intakeLiftPos(intake, -23);
     }
- 
+
     public static final class Paths {
         public static final PathPlannerPath driveBackSimple = getPathFromFile("Simple Drive Back");
     }

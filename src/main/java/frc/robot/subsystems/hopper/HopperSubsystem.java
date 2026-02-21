@@ -24,6 +24,9 @@ public class HopperSubsystem extends SubsystemBase {
     public void runHopper(double speed){
       io.setHopperSpeed(speed);
   }
+    public void reverseHopper(double speed){
+      io.setHopperSpeed(speed);
+  }
 
 
   @Override

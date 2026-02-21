@@ -140,6 +140,7 @@ public class RobotContainer {
     Keybinds.intakeLiftDown.whileTrue(IntakeCommands.intakeLift(intake, -0.1d));
     Keybinds.shootFuel.whileTrue(new ParallelCommandGroup(ShooterCommands.shootFuel(shooter,0.7d), HopperCommands.runHopper(hopper, -0.05d)));
     Keybinds.runHopper.whileTrue(HopperCommands.runHopper(hopper, -0.05d));
+    Keybinds.reverseHopper.whileTrue(HopperCommands.reverseHopper(hopper, 0.05d));
   }
 
   public Command getAutonomousCommand() {

@@ -27,19 +27,21 @@ public class IntakeIOSpark implements IntakeIO {
         SparkMaxConfig intakeLiftConfig = new SparkMaxConfig();
         intakeConfig.idleMode(IdleMode.kBrake);
         intakeLiftConfig.idleMode(IdleMode.kBrake);
+        zeroIntakeLift();
     }
 
     @Override
     public void updateInputs(IntakeIOInputs inputs) {
         inputs.intakeAppliedVolts = intakeMotor.getAppliedOutput();
-        inputs.intakeAppliedVolts = intakeLift.getAppliedOutput();
+        inputs.intakeLiftAppliedVolts = intakeLift.getAppliedOutput();
         inputs.intakeConnected = true;
+        inputs.intakeLiftConnected = true;
         inputs.intakeCurrentAmps = intakeMotor.getOutputCurrent();
-        inputs.intakeCurrentAmps = intakeLift.getOutputCurrent();
+        inputs.intakeLiftCurrentAmps = intakeLift.getOutputCurrent();
         inputs.intakePosition = Degrees.of(intakeMotor.getEncoder().getPosition());
-        inputs.intakePosition = Degrees.of(intakeLift.getEncoder().getPosition());
+        inputs.intakeLiftPosition = Degrees.of(intakeLift.getEncoder().getPosition());
         inputs.intakeVelocity = DegreesPerSecond.of(intakeMotor.getEncoder().getVelocity());
-        inputs.intakeVelocity = DegreesPerSecond.of(intakeLift.getEncoder().getVelocity());  
+        inputs.intakeLiftVelocity = DegreesPerSecond.of(intakeLift.getEncoder().getVelocity());  
     }
 
     @Override
@@ -57,7 +59,10 @@ public class IntakeIOSpark implements IntakeIO {
         intakeLiftPID.setSetpoint(pos, ControlType.kPosition);
     }
 
-
+    @Override
+    public void zeroIntakeLift() {
+        intakeLift.getEncoder().setPosition(0.0);
+    }
 
     @Override
     public double getIntakePosition() {
