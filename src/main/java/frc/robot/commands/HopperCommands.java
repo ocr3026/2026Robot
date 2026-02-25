@@ -1,5 +1,6 @@
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -11,6 +12,7 @@ public class HopperCommands{
   public static Command runHopper(HopperSubsystem hopperSubsystem, double speed) {
     return Commands.runEnd(() -> {
       hopperSubsystem.runHopper(speed);
+      SmartDashboard.putNumber("CurrentRanspeed", speed);
     }, () -> {
       hopperSubsystem.runHopper(0.0);
     });

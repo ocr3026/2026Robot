@@ -36,6 +36,7 @@ import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalon;
+import frc.robot.subsystems.hopper.HopperConstants;
 import frc.robot.subsystems.hopper.HopperIOSpark;
 import frc.robot.subsystems.hopper.HopperSubsystem;
 import frc.robot.subsystems.shooter.ShooterIOSpark;
@@ -49,6 +50,8 @@ import frc.robot.subsystems.vision.VisionIOPhotonvision;
 import frc.robot.subsystems.vision.VisionIOPhotonvisionSim;
 
 public class RobotContainer {
+    public static double hopperSpeed = -200;
+
 
   public static final CommandJoystick translationJoystick = new CommandJoystick(0);
 	public static final CommandJoystick rotationJoystick = new CommandJoystick(1);
@@ -67,6 +70,8 @@ public class RobotContainer {
 	public static Command currentSelectedCommand = null;
 
   public RobotContainer() {
+        SmartDashboard.putNumber("HopperSpeed", hopperSpeed);
+
         shooter = new ShooterSubsystem(new ShooterIOSpark());
         hopper = new HopperSubsystem(new HopperIOSpark());
         intake = new IntakeSubsystem(new IntakeIOSpark());
@@ -115,7 +120,6 @@ public class RobotContainer {
     configureBindings();
   }
 
-  public static final double hopperSpeed = -90;
 
   private void configureBindings() {
     		drive.setDefaultCommand(DriveCommands.joystickDrive(
@@ -143,6 +147,8 @@ public class RobotContainer {
     //Keybinds.shootFuel.whileTrue(AutoBase.shootFuel(hopper, shooter));
     Keybinds.runHopper.whileTrue(HopperCommands.runHopper(hopper, hopperSpeed));
     Keybinds.reverseHopper.whileTrue(HopperCommands.reverseHopper(hopper, -hopperSpeed));
+    Keybinds.reverseIntake.whileTrue(IntakeCommands.intakeFuel(intake, 0.5d));
+
   }
 
 
@@ -167,4 +173,10 @@ public class RobotContainer {
 		Logger.recordOutput(
 				"FieldSimulation/Algae", SimulatedArena.getInstance().getGamePiecesArrayByType("Algae"));
 	}
+
+  public void updateHopperSpeed() {
+  
+    hopperSpeed = SmartDashboard.getNumber("HopperSpeed", 0);
+    SmartDashboard.putString("Updated", "Updated!" + hopperSpeed);
+  }
 }

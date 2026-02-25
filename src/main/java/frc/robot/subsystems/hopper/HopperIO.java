@@ -18,6 +18,7 @@ public interface HopperIO {
 		public AngularVelocity hopperVelocity = DegreesPerSecond.of(0);
 		public double hopperAppliedVolts = 0;
 		public double hopperCurrentAmps = 0;
+		
 	}
 
 	public default void updateInputs(HopperIOInputs inputs) {}
@@ -27,4 +28,6 @@ public interface HopperIO {
 	public default void runMotors(double voltage) {}
 
 	public default void stopMotors() {}
+
+	public default double getSetpoint() {return 0;}
 }

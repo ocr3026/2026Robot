@@ -75,6 +75,7 @@ public class Robot extends LoggedRobot {
     Threads.setCurrentThreadPriority(true, 99);
 
     CommandScheduler.getInstance().run();
+    //robotContainer.updateHopperSpeed();
 
     //returns to a low priority
     Threads.setCurrentThreadPriority(false, 10);
@@ -87,7 +88,9 @@ public class Robot extends LoggedRobot {
   }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    //robotContainer.updateHopperSpeed();
+  }
 
   @Override
   public void disabledExit() {}
