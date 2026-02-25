@@ -2,10 +2,13 @@ package frc.robot.subsystems.hopper;
 
 import static edu.wpi.first.units.Units.*;
 
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.FeedForwardConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
@@ -16,8 +19,19 @@ public class HopperIOSpark implements HopperIO {
     public HopperIOSpark() {
         hopperMotor = new SparkFlex(HopperConstants.hopperMotorID, MotorType.kBrushless);
         hopperPID = hopperMotor.getClosedLoopController();
+        //0.008;
+        FeedForwardConfig ffConf = new FeedForwardConfig();
+        ffConf.kV(0.008);
+
+
+
+
         SparkFlexConfig hopperConfig = new SparkFlexConfig();
         hopperConfig.idleMode(IdleMode.kBrake);
+        hopperConfig.closedLoop.p(0).i(0).d(0);
+        hopperConfig.closedLoop.apply(ffConf);
+
+        hopperMotor.configure(hopperConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     @Override
@@ -31,6 +45,6 @@ public class HopperIOSpark implements HopperIO {
 
     @Override
     public void setHopperSpeed(double speed) {
-        hopperPID.setSetpoint(speed, ControlType.kDutyCycle);
+        hopperPID.setSetpoint(speed, ControlType.kVelocity);
     }
 }

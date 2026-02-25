@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.autonomous.AutoBase;
 import frc.robot.autonomous.DriveBackAndShoot;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.HopperCommands;
@@ -114,7 +115,7 @@ public class RobotContainer {
     configureBindings();
   }
 
-
+  public static final double hopperSpeed = -90;
 
   private void configureBindings() {
     		drive.setDefaultCommand(DriveCommands.joystickDrive(
@@ -138,10 +139,12 @@ public class RobotContainer {
     Keybinds.intakeFuel.whileTrue(IntakeCommands.intakeFuel(intake,-0.5d));
     Keybinds.intakeLiftUp.whileTrue(IntakeCommands.intakeLift(intake,0.1d));
     Keybinds.intakeLiftDown.whileTrue(IntakeCommands.intakeLift(intake, -0.1d));
-    Keybinds.shootFuel.whileTrue(new ParallelCommandGroup(ShooterCommands.shootFuel(shooter,0.7d), HopperCommands.runHopper(hopper, -0.05d)));
-    Keybinds.runHopper.whileTrue(HopperCommands.runHopper(hopper, -0.05d));
-    Keybinds.reverseHopper.whileTrue(HopperCommands.reverseHopper(hopper, 0.05d));
+    Keybinds.shootFuel.whileTrue(new ParallelCommandGroup(ShooterCommands.shootFuel(shooter,0.65d), HopperCommands.runHopper(hopper, hopperSpeed)));
+    //Keybinds.shootFuel.whileTrue(AutoBase.shootFuel(hopper, shooter));
+    Keybinds.runHopper.whileTrue(HopperCommands.runHopper(hopper, hopperSpeed));
+    Keybinds.reverseHopper.whileTrue(HopperCommands.reverseHopper(hopper, -hopperSpeed));
   }
+
 
   public Command getAutonomousCommand() {
     return autoChooser.get();

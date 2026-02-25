@@ -17,6 +17,12 @@ public interface ShooterIO {
 		public AngularVelocity shooterVelocity = DegreesPerSecond.of(0);
 		public double shooterAppliedVolts = 0;
 		public double shooterCurrentAmps = 0;
+
+		public boolean shooterKickupConnected = false;
+		public Angle shooterKickupPosition = Degrees.of(0);
+		public AngularVelocity shooterKickupVelocity = DegreesPerSecond.of(0);
+		public double shooterKickupAppliedVolts = 0;
+		public double shooterKickupCurrentAmps = 0;
 	}
 
 	public default void updateInputs(ShooterIOInputs inputs) {}

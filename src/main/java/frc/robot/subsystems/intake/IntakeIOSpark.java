@@ -2,6 +2,8 @@ package frc.robot.subsystems.intake;
 
 import static edu.wpi.first.units.Units.*;
 
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkMax;
@@ -27,6 +29,9 @@ public class IntakeIOSpark implements IntakeIO {
         SparkMaxConfig intakeLiftConfig = new SparkMaxConfig();
         intakeConfig.idleMode(IdleMode.kBrake);
         intakeLiftConfig.idleMode(IdleMode.kBrake);
+
+        intakeMotor.configure(intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        intakeLift.configure(intakeLiftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         zeroIntakeLift();
     }
 

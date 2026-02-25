@@ -1,6 +1,8 @@
 package frc.robot.autonomous;
 
 
+import org.littletonrobotics.junction.Logger;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 
@@ -89,6 +91,7 @@ public class AutoBase extends ParallelCommandGroup{
 
     public static final Command lowerIntake(IntakeSubsystem intake) {
         //placeholder pos value, we need to measure real (in rotations)
+        Logger.recordOutput("IntakeLowerStatus", "Lowering intake!");
         return IntakeCommands.intakeLiftPos(intake, -23);
     }
 
