@@ -47,6 +47,10 @@ public class ShooterIOSpark implements ShooterIO {
     @Override
     public void setShooterSpeed(double speed) {
         shooterPID.setSetpoint(speed, ControlType.kDutyCycle);
+    }
+
+    @Override
+    public void setKickupSpeed(double speed) {
         shooterKickbackPID.setSetpoint(speed, ControlType.kDutyCycle);
     }
 }

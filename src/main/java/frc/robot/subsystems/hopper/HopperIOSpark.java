@@ -29,7 +29,7 @@ public class HopperIOSpark implements HopperIO {
 
         SparkFlexConfig hopperConfig = new SparkFlexConfig();
         hopperConfig.idleMode(IdleMode.kBrake);
-        hopperConfig.closedLoop.p(0.0006).i(0).d(0.00192);
+        hopperConfig.closedLoop.p(0.0006).i(0).d(0.01536);
         hopperConfig.closedLoop.apply(ffConf);
 
         hopperMotor.configure(hopperConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

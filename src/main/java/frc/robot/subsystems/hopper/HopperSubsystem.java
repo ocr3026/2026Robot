@@ -21,7 +21,7 @@ import frc.robot.subsystems.hopper.HopperIO.HopperIOInputs;
 
 public class HopperSubsystem extends SubsystemBase {
   private final HopperIO io;
-  private final HopperIOInputsAutoLogged inputs = new HopperIOInputsAutoLogged();
+ //private final HopperIOInputsAutoLogged inputs = new HopperIOInputsAutoLogged();
 
 
 
@@ -38,11 +38,11 @@ public class HopperSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    io.updateInputs(inputs);
-    Logger.processInputs("Hopper", inputs);
-    RobotContainer.hopperSpeed = SmartDashboard.getNumber("HopperSpeed", 0.123);
-    SmartDashboard.putNumber("HopperSetpoint", io.getSetpoint());
-    SmartDashboard.putNumber("HopperError", (io.getSetpoint() - (60 * inputs.hopperVelocity.in(RotationsPerSecond))));
+    //io.updateInputs(inputs);
+    //Logger.processInputs("Hopper", inputs);
+    // RobotContainer.hopperSpeed = SmartDashboard.getNumber("HopperSpeed", 0.123);
+    // SmartDashboard.putNumber("HopperSetpoint", io.getSetpoint());
+    // SmartDashboard.putNumber("HopperError", (io.getSetpoint() - (60 * inputs.hopperVelocity.in(RotationsPerSecond))));
   }
 
   @Override

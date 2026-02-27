@@ -1,26 +1,26 @@
-package frc.robot.subsystems.drive;
+// package frc.robot.subsystems.drive;
 
-import static edu.wpi.first.units.Units.RadiansPerSecond;
+// import static edu.wpi.first.units.Units.RadiansPerSecond;
 
-import org.ironmaple.simulation.drivesims.GyroSimulation;
+// import org.ironmaple.simulation.drivesims.GyroSimulation;
 
-import edu.wpi.first.math.util.Units;
-import frc.robot.Util.Util;
+// import edu.wpi.first.math.util.Units;
+// import frc.robot.Util.Util;
 
-public class GyroIOSim implements GyroIO {
-    private final GyroSimulation gyroSimulation;
+// public class GyroIOSim implements GyroIO {
+//     private final GyroSimulation gyroSimulation;
 
-    public GyroIOSim(GyroSimulation gyroSimulation) {
-        this.gyroSimulation = gyroSimulation;
-    }
+//     public GyroIOSim(GyroSimulation gyroSimulation) {
+//         this.gyroSimulation = gyroSimulation;
+//     }
 
-    @Override
-    public void updateInputs(GyroIOInputs inputs) {
-        inputs.connected = true;
-        inputs.yawPosition = gyroSimulation.getGyroReading();
-        inputs.yawVelocityRadPerSec = Units.degreesToRadians(gyroSimulation.getMeasuredAngularVelocity().in(RadiansPerSecond));
+//     @Override
+//     public void updateInputs(GyroIOInputs inputs) {
+//         inputs.connected = true;
+//         inputs.yawPosition = gyroSimulation.getGyroReading();
+//         inputs.yawVelocityRadPerSec = Units.degreesToRadians(gyroSimulation.getMeasuredAngularVelocity().in(RadiansPerSecond));
 
-        inputs.odometryYawTimestamps = Util.getSimulationOdometryTimeStamps();
-        inputs.odometryYawPositions = gyroSimulation.getCachedGyroReadings();
-    }
-}
+//         inputs.odometryYawTimestamps = Util.getSimulationOdometryTimeStamps();
+//         inputs.odometryYawPositions = gyroSimulation.getCachedGyroReadings();
+//     }
+// }
