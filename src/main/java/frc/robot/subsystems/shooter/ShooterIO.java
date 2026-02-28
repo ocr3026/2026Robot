@@ -29,7 +29,8 @@ public interface ShooterIO {
 
 	public default void setShooterSpeed(double speed) {}
 
-	public default void runMotors(double voltage) {}
+	public default void setKickupSpeed(double speed) {}
 
 	public default void stopMotors() {}
+	public default double getSetpoint() {return 0.0d;}
 }

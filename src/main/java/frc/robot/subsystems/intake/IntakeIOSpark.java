@@ -51,12 +51,12 @@ public class IntakeIOSpark implements IntakeIO {
 
     @Override
     public void setIntakeSpeed(double speed) {
-        intakePID.setSetpoint(speed, ControlType.kDutyCycle);
+        intakePID.setSetpoint(speed, ControlType.kVelocity);
     }
 
      @Override
     public void setIntakeLiftSpeed(double speed) {
-        intakeLiftPID.setSetpoint(speed, ControlType.kDutyCycle);
+        intakeLiftPID.setSetpoint(speed, ControlType.kVelocity);
     }
 
     @Override

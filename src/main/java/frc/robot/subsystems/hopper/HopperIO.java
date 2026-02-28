@@ -29,5 +29,5 @@ public interface HopperIO {
 
 	public default void stopMotors() {}
 
-	public default double getSetpoint() {return 0;}
+	public default double getSetpoint() {return 0.0d;}
 }

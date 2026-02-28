@@ -51,6 +51,10 @@ import frc.robot.subsystems.vision.VisionIOPhotonvisionSim;
 
 public class RobotContainer {
     public static double hopperSpeed = -200;
+    public static double intakeSpeed = 3392;
+    public static double intakeLiftSpeed = 0.1;
+    public static double shooterSpeed = 4750;
+    public static double shooterKickupSpeed = 4750;
 
 
   public static final CommandJoystick translationJoystick = new CommandJoystick(0);
@@ -140,14 +144,18 @@ public class RobotContainer {
 
 		Keybinds.resetGyroTrigger.onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
 
-    Keybinds.intakeFuel.whileTrue(IntakeCommands.intakeFuel(intake,-0.5d));
-    Keybinds.intakeLiftUp.whileTrue(IntakeCommands.intakeLift(intake,0.1d));
-    Keybinds.intakeLiftDown.whileTrue(IntakeCommands.intakeLift(intake, -0.1d));
-    Keybinds.shootFuel.whileTrue(new ParallelCommandGroup(ShooterCommands.shootFuel(shooter,0.65d), HopperCommands.runHopper(hopper, hopperSpeed)));
+    Keybinds.intakeFuel.whileTrue(IntakeCommands.intakeFuel(intake,intakeSpeed));
+    Keybinds.intakeLiftUp.whileTrue(IntakeCommands.intakeLift(intake,intakeLiftSpeed));
+    Keybinds.intakeLiftDown.whileTrue(IntakeCommands.intakeLift(intake, -intakeLiftSpeed));
+    Keybinds.reverseIntake.whileTrue(IntakeCommands.intakeFuel(intake, -intakeSpeed));
+
+    Keybinds.shootFuel.whileTrue(new ParallelCommandGroup(ShooterCommands.shootFuel(shooter,shooterSpeed,shooterKickupSpeed), HopperCommands.runHopper(hopper, hopperSpeed)));
+    Keybinds.shooterFlywheel.whileTrue(ShooterCommands.runShooterKickup(shooter, shooterKickupSpeed));
+    
     //Keybinds.shootFuel.whileTrue(AutoBase.shootFuel(hopper, shooter));
+
     Keybinds.runHopper.whileTrue(HopperCommands.runHopper(hopper, hopperSpeed));
     Keybinds.reverseHopper.whileTrue(HopperCommands.reverseHopper(hopper, -hopperSpeed));
-    Keybinds.reverseIntake.whileTrue(IntakeCommands.intakeFuel(intake, 0.5d));
 
   }
 
