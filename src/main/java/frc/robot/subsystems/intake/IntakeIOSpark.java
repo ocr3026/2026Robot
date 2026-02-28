@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.FeedForwardConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
@@ -25,10 +26,22 @@ public class IntakeIOSpark implements IntakeIO {
         intakeLift = new SparkMax(IntakeConstants.intakeLiftID, MotorType.kBrushless);
         intakePID = intakeMotor.getClosedLoopController();
         intakeLiftPID = intakeLift.getClosedLoopController();
+
+        FeedForwardConfig intakeConf = new FeedForwardConfig();
+        intakeConf.kV(0.00245);
+
         SparkFlexConfig intakeConfig = new SparkFlexConfig();
-        SparkMaxConfig intakeLiftConfig = new SparkMaxConfig();
         intakeConfig.idleMode(IdleMode.kBrake);
+        intakeConfig.closedLoop.p(0.0006).i(0).d(0.00192);
+        intakeConfig.closedLoop.apply(intakeConf);
+
+        FeedForwardConfig intakeLiftConf = new FeedForwardConfig();
+        intakeLiftConf.kV(0.00245);
+        
+        SparkFlexConfig intakeLiftConfig = new SparkFlexConfig();
         intakeLiftConfig.idleMode(IdleMode.kBrake);
+        intakeLiftConfig.closedLoop.p(0.0006).i(0).d(0.00192);
+        intakeLiftConfig.closedLoop.apply(intakeLiftConf);
 
         intakeMotor.configure(intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         intakeLift.configure(intakeLiftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
