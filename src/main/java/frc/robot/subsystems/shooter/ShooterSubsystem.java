@@ -24,6 +24,9 @@ public class ShooterSubsystem extends SubsystemBase {
     public void runShooter(double speed){
       io.setShooterSpeed(speed);
   }
+    public void runShooter2(double speed){
+      io.setShooter2Speed(speed);
+  }
     public void runShooterKickup(double speed){
       io.setKickupSpeed(speed);
   }

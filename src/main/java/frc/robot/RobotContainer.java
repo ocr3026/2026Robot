@@ -54,6 +54,7 @@ public class RobotContainer {
     public static double intakeSpeed = 3392;
     public static double intakeLiftSpeed = 0.1;
     public static double shooterSpeed = 4750;
+    public static double shooter2Speed = 4750;
     public static double shooterKickupSpeed = 4750;
 
 
@@ -149,7 +150,7 @@ public class RobotContainer {
     Keybinds.intakeLiftDown.whileTrue(IntakeCommands.intakeLift(intake, -intakeLiftSpeed));
     Keybinds.reverseIntake.whileTrue(IntakeCommands.intakeFuel(intake, -intakeSpeed));
 
-    Keybinds.shootFuel.whileTrue(new ParallelCommandGroup(ShooterCommands.shootFuel(shooter,shooterSpeed,shooterKickupSpeed), HopperCommands.runHopper(hopper, hopperSpeed)));
+    Keybinds.shootFuel.whileTrue(new ParallelCommandGroup(ShooterCommands.shootFuel(shooter,shooterSpeed, shooter2Speed, shooterKickupSpeed), HopperCommands.runHopper(hopper, hopperSpeed)));
     Keybinds.shooterFlywheel.whileTrue(ShooterCommands.runShooterKickup(shooter, shooterKickupSpeed));
     
     //Keybinds.shootFuel.whileTrue(AutoBase.shootFuel(hopper, shooter));

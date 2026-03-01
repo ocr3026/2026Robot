@@ -32,6 +32,7 @@ public class HopperIOSpark implements HopperIO {
         hopperConfig.closedLoop.p(0.0006).i(0).d(0.00192);
         hopperConfig.closedLoop.apply(ffConf);
 
+        hopperConfig.smartCurrentLimit(70);
         hopperMotor.configure(hopperConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 

@@ -67,8 +67,8 @@ public class AutoBase extends ParallelCommandGroup{
 		return AutoBuilder.followPath(path);
 	}
 
-    public static final ParallelCommandGroup runHopperAndShooter(HopperSubsystem hopper, ShooterSubsystem shooter, double hopperSpeed, double shooterSpeed, double kickupSpeed) {
-        return new ParallelCommandGroup(HopperCommands.runHopper(hopper, hopperSpeed), ShooterCommands.shootFuel(shooter, shooterSpeed, kickupSpeed));
+    public static final ParallelCommandGroup runHopperAndShooter(HopperSubsystem hopper, ShooterSubsystem shooter, double hopperSpeed, double shooterSpeed, double shooter2Speed, double kickupSpeed) {
+        return new ParallelCommandGroup(HopperCommands.runHopper(hopper, hopperSpeed), ShooterCommands.shootFuel(shooter, shooterSpeed, shooter2Speed, kickupSpeed));
     }
 
     public static final FunctionalCommand shootFuel(HopperSubsystem hopper, ShooterSubsystem shooter) {
@@ -76,9 +76,9 @@ public class AutoBase extends ParallelCommandGroup{
             timer.reset();
             timer.start();
         }, () -> {
-            runHopperAndShooter(hopper, shooter, -0.05, 0.7, 0.7);
+            runHopperAndShooter(hopper, shooter, -0.05, 0.7, 0.7, 0.7);
         }, (interrupted) -> {
-            runHopperAndShooter(hopper, shooter, 0, 0, 0);
+            runHopperAndShooter(hopper, shooter, 0, 0, 0, 0);
         }, () -> {
             return timer.hasElapsed(5);
         });

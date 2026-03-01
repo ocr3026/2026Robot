@@ -8,7 +8,7 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 public class ShooterCommands{
  ShooterSubsystem shooterSubsystem;
 
-  public static Command shootFuel(ShooterSubsystem shooterSubsystem, double shooterSpeed, double kickupSpeed) {
+  public static Command shootFuel(ShooterSubsystem shooterSubsystem, double shooterSpeed, double shooter2Speed, double kickupSpeed) {
     return Commands.runEnd(() -> {
       shooterSubsystem.runShooter(shooterSpeed);
       shooterSubsystem.runShooterKickup(kickupSpeed);
