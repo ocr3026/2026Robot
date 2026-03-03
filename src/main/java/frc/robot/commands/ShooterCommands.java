@@ -11,6 +11,7 @@ public class ShooterCommands{
   public static Command shootFuel(ShooterSubsystem shooterSubsystem, double shooterSpeed, double shooter2Speed, double kickupSpeed) {
     return Commands.runEnd(() -> {
       shooterSubsystem.runShooter(shooterSpeed);
+      shooterSubsystem.runShooter2(shooter2Speed);
       shooterSubsystem.runShooterKickup(kickupSpeed);
     }, () -> {
       shooterSubsystem.runShooter(0.0);
