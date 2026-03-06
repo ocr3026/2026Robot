@@ -50,7 +50,7 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 // import frc.robot.subsystems.vision.VisionIOPhotonvisionSim;
 
 public class RobotContainer {
-    public static double hopperSpeed = -400;
+    public static double hopperSpeed = -200;
 
 
   public static final CommandJoystick translationJoystick = new CommandJoystick(0);
@@ -143,10 +143,11 @@ public class RobotContainer {
     //Keybinds.intakeFuel.whileTrue(IntakeCommands.intakeFuel(intake,-0.5d));
     //Keybinds.intakeLiftUp.whileTrue(IntakeCommands.intakeLift(intake,0.1d));
     //Keybinds.intakeLiftDown.whileTrue(IntakeCommands.intakeLift(intake, -0.1d));
-    Keybinds.shootFuel.whileTrue(new ParallelCommandGroup(ShooterCommands.shootFuel(shooter,0.5d, 0.5d), HopperCommands.runHopper(hopper, hopperSpeed)));
+    Keybinds.shootFuel.whileTrue(new ParallelCommandGroup(ShooterCommands.shootFuel(shooter,-0.5d, -0.5d), HopperCommands.runHopper(hopper, hopperSpeed)));
     //Keybinds.shootFuel.whileTrue(AutoBase.shootFuel(hopper, shooter));
     Keybinds.runHopper.whileTrue(HopperCommands.runHopper(hopper, hopperSpeed));
     Keybinds.reverseHopper.whileTrue(HopperCommands.reverseHopper(hopper, -hopperSpeed));
+    Keybinds.runHopperLight.whileTrue(new ParallelCommandGroup(HopperCommands.runHopperLight(hopper, -0.025), ShooterCommands.shootFuel(shooter, -0.4, -0.5)));
     //Keybinds.reverseIntake.whileTrue(IntakeCommands.intakeFuel(intake, 0.5d));
 
   }

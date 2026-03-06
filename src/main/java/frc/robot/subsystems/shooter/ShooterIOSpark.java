@@ -14,11 +14,15 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 public class ShooterIOSpark implements ShooterIO {
     private final SparkFlex shooterMotor;
     private final SparkFlex shooterKickbackMotor;
+    private final SparkFlex shooterMotor2;
     private final SparkClosedLoopController shooterPID;
+    private final SparkClosedLoopController shooter2PID;
     private final SparkClosedLoopController shooterKickbackPID;
 
     public ShooterIOSpark() {
         shooterMotor = new SparkFlex(ShooterConstants.shooterMotorID, MotorType.kBrushless);
+        shooterMotor2 = new SparkFlex(26, MotorType.kBrushless);
+        shooter2PID = shooterMotor2.getClosedLoopController();
         shooterKickbackMotor = new SparkFlex(ShooterConstants.shooterMotorKickbackID, MotorType.kBrushless);
         shooterPID = shooterMotor.getClosedLoopController();
         shooterKickbackPID = shooterKickbackMotor.getClosedLoopController();
@@ -47,6 +51,7 @@ public class ShooterIOSpark implements ShooterIO {
     @Override
     public void setShooterSpeed(double speed) {
         shooterPID.setSetpoint(speed, ControlType.kDutyCycle);
+        shooter2PID.setSetpoint(-speed, ControlType.kDutyCycle);
     }
 
     @Override

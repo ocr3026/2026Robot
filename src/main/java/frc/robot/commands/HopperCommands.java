@@ -14,7 +14,15 @@ public class HopperCommands{
       hopperSubsystem.runHopper(speed);
       SmartDashboard.putNumber("CurrentRanspeed", speed);
     }, () -> {
-      hopperSubsystem.runHopper(0.0);
+      hopperSubsystem.stopHopper();
+    });
+  }
+
+  public static Command runHopperLight(HopperSubsystem subsystem, double speed) {
+    return Commands.runEnd(() -> {
+      subsystem.setHopperDuty(speed);
+    }, () -> {
+      subsystem.setHopperDuty(0.0);
     });
   }
 
@@ -22,7 +30,7 @@ public class HopperCommands{
     return Commands.runEnd(() -> {
       hopperSubsystem.reverseHopper(speed);
     }, () -> {
-      hopperSubsystem.reverseHopper(0.0);
+      hopperSubsystem.stopHopper();
     });
   }
 }
