@@ -164,7 +164,8 @@ public class RobotContainer {
     Keybinds.runHopper.whileTrue(HopperCommands.runHopper(hopper, hopperSpeed));
     Keybinds.reverseHopper.whileTrue(HopperCommands.reverseHopper(hopper, -hopperSpeed));
 
-    Keybinds.climberUp.whileTrue(ClimberCommands.runClimber(climber, climberSpeed));
+    Keybinds.climberUp.whileTrue(ClimberCommands.climberUp(climber, climberSpeed));
+    Keybinds.climberDown.whileTrue(ClimberCommands.cimberDown(climber, -climberSpeed));
 
   }
 

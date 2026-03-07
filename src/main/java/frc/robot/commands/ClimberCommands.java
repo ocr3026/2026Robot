@@ -8,20 +8,20 @@ import frc.robot.subsystems.climber.ClimberSubsystem;
 public class ClimberCommands{
   ClimberSubsystem climberSubsystem;
 
-  public static Command runClimber(ClimberSubsystem climberSubsystem, double speed) {
+  public static Command climberUp(ClimberSubsystem climberSubsystem, double speed) {
     return Commands.runEnd(() -> {
-      climberSubsystem.climberUp(speed);
+      climberSubsystem.runClimber(speed);
       SmartDashboard.putNumber("CurrentRanspeed", speed);
     }, () -> {
-      climberSubsystem.climberUp(0.0);
+      climberSubsystem.runClimber(0.0);
     });
   }
 
-  public static Command reverseCLimber(ClimberSubsystem climberSubsystem, double speed) {
+  public static Command cimberDown(ClimberSubsystem climberSubsystem, double speed) {
     return Commands.runEnd(() -> {
-      climberSubsystem.climberDown(speed);
+      climberSubsystem.runClimber(-speed);
     }, () -> {
-      climberSubsystem.climberDown(0.0);
+      climberSubsystem.runClimber(-0.0);
     });
   }
 }

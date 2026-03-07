@@ -27,10 +27,7 @@ public class ClimberSubsystem extends SubsystemBase {
   public ClimberSubsystem(ClimberIO io) {
     this.io = io;
   }
-    public void climberUp(double speed){
-      io.setClimberSpeed(speed);
-  }
-    public void climberDown(double speed){
+    public void runClimber(double speed){
       io.setClimberSpeed(speed);
   }
 
