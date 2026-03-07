@@ -1,6 +1,6 @@
 package frc.robot.autonomous;
 
-import frc.robot.commands.HopperCommands;
+import frc.robot.commands.ClimberCommands;
 import frc.robot.subsystems.hopper.HopperSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;

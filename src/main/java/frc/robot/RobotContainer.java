@@ -25,9 +25,12 @@ import frc.robot.autonomous.AutoBase;
 import frc.robot.autonomous.DriveBackAndShoot;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.HopperCommands;
+import frc.robot.commands.ClimberCommands;
 import frc.robot.commands.IntakeCommands;
 import frc.robot.commands.ShooterCommands;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.climber.ClimberIOTalon;
+import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.GyroIO;
@@ -56,6 +59,7 @@ public class RobotContainer {
     public static double shooterSpeed = 4750;
     public static double shooter2Speed = 4750;
     public static double shooterKickupSpeed = 4750;
+    public static double climberSpeed = 200;
 
 
   public static final CommandJoystick translationJoystick = new CommandJoystick(0);
@@ -67,6 +71,7 @@ public class RobotContainer {
   private final ShooterSubsystem shooter;
   private final HopperSubsystem hopper;
   private final IntakeSubsystem intake;
+  private final ClimberSubsystem climber;
 
   private SwerveDriveSimulation driveSimulation = null;
 
@@ -80,6 +85,7 @@ public class RobotContainer {
         shooter = new ShooterSubsystem(new ShooterIOSpark());
         hopper = new HopperSubsystem(new HopperIOSpark());
         intake = new IntakeSubsystem(new IntakeIOSpark());
+        climber = new ClimberSubsystem(new ClimberIOTalon());
     switch(Constants.currentMode) {
       case REAL:
         drive = new DriveSubsystem(new GyroIONavX(), new ModuleIOTalon(TunerConstants.FrontLeft), new ModuleIOTalon(TunerConstants.FrontRight), new ModuleIOTalon(TunerConstants.BackLeft), new ModuleIOTalon(TunerConstants.BackRight), (pose) -> {});
@@ -157,6 +163,8 @@ public class RobotContainer {
 
     Keybinds.runHopper.whileTrue(HopperCommands.runHopper(hopper, hopperSpeed));
     Keybinds.reverseHopper.whileTrue(HopperCommands.reverseHopper(hopper, -hopperSpeed));
+
+    Keybinds.climberUp.whileTrue(ClimberCommands.runClimber(climber, climberSpeed));
 
   }
 
