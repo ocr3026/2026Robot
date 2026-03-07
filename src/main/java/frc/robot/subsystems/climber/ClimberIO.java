@@ -29,4 +29,10 @@ public interface ClimberIO {
 	public default void stopMotors() {}
 
 	public default double getSetpoint() {return 0.0d;}
+
+	public default double getClimberPosition() {return 0.0d;}
+
+	public default void setClimberPos(double pos) {}
+
+	public default void zeroClimber() {}
 }

@@ -19,6 +19,7 @@ public class ShooterIOSpark implements ShooterIO {
     private final SparkClosedLoopController shooterPID;
     private final SparkClosedLoopController shooter2PID;
     private final SparkClosedLoopController shooterKickupPID;
+    private double setpoint;
 
     public ShooterIOSpark() {
         shooterMotor = new SparkFlex(ShooterConstants.shooterMotorID, MotorType.kBrushless);
@@ -28,28 +29,30 @@ public class ShooterIOSpark implements ShooterIO {
         shooter2PID = shooterMotor2.getClosedLoopController();
         shooterKickupPID = shooterKickupMotor.getClosedLoopController();
 
-        FeedForwardConfig shooterConf = new FeedForwardConfig();
-        shooterConf.kV(0.00245);
+        setpoint = 0;
+
+      FeedForwardConfig shooterConf = new FeedForwardConfig();
+        shooterConf.kV(0.001775);
 
         SparkFlexConfig shooterConfig = new SparkFlexConfig();
         shooterConfig.idleMode(IdleMode.kBrake);
-        shooterConfig.closedLoop.p(0.0006).i(0).d(0.00192);
+        shooterConfig.closedLoop.p(0.00015).i(0).d(0.00559);
         shooterConfig.closedLoop.apply(shooterConf);
 
         FeedForwardConfig shooter2Conf = new FeedForwardConfig();
-        shooter2Conf.kV(0.00245);
+        shooter2Conf.kV(0.001829);
 
         SparkFlexConfig shooter2Config = new SparkFlexConfig();
         shooter2Config.idleMode(IdleMode.kBrake);
-        shooter2Config.closedLoop.p(0.0006).i(0).d(0.00192);
+        shooter2Config.closedLoop.p(0.00025).i(0).d(0.0065);
         shooter2Config.closedLoop.apply(shooter2Conf);
 
         FeedForwardConfig shooterKickupConf = new FeedForwardConfig();
-        shooterKickupConf.kV(0.00245);
+        shooterKickupConf.kV(0.001825);
 
         SparkFlexConfig shooterKickupConfig = new SparkFlexConfig();
         shooterKickupConfig.idleMode(IdleMode.kBrake);
-        shooterKickupConfig.closedLoop.p(0.0006).i(0).d(0.00192);
+        shooterKickupConfig.closedLoop.p(0.00025).i(0).d(0.001825);
         shooterKickupConfig.closedLoop.apply(shooterKickupConf);
 
         shooterConfig.smartCurrentLimit(70);
@@ -87,16 +90,19 @@ public class ShooterIOSpark implements ShooterIO {
 
     @Override
     public void setShooterSpeed(double speed) {
+        setpoint = speed;
         shooterPID.setSetpoint(speed, ControlType.kVelocity);
     }
     
     @Override
     public void setShooter2Speed(double speed) {
+        setpoint = speed;
         shooter2PID.setSetpoint(speed, ControlType.kVelocity);
     }
 
     @Override
     public void setKickupSpeed(double speed) {
+        setpoint = speed;
         shooterKickupPID.setSetpoint(speed, ControlType.kVelocity);
     }
 }

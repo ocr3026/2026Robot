@@ -27,9 +27,10 @@ public class HopperIOSpark implements HopperIO {
 
         setpoint = 0;
 
-        SparkFlexConfig hopperConfig = new SparkFlexConfig();
+         SparkFlexConfig hopperConfig = new SparkFlexConfig();
         hopperConfig.idleMode(IdleMode.kBrake);
-        hopperConfig.closedLoop.p(0.0006).i(0).d(0.00192);
+        hopperConfig.closedLoop.p(0.00065).i(0.0).d(0.01);
+        hopperConfig.closedLoop.maxMotion.maxAcceleration(2500);
         hopperConfig.closedLoop.apply(ffConf);
 
         hopperConfig.smartCurrentLimit(70);

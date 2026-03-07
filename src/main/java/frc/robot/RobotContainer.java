@@ -59,7 +59,7 @@ public class RobotContainer {
     public static double shooterSpeed = 4750;
     public static double shooter2Speed = 4750;
     public static double shooterKickupSpeed = 4750;
-    public static double climberSpeed = 200;
+    public static double climberSpeed = 5;
 
 
   public static final CommandJoystick translationJoystick = new CommandJoystick(0);

@@ -40,14 +40,15 @@ public class ClimberIOTalon implements ClimberIO {
 
         setpoint = 0;
 
-        TalonFXConfiguration ClimberConfig = new TalonFXConfiguration();
-        var Slot0Configs = new Slot0Configs();
-        Slot0Configs = ClimberConfig.Slot0;
-        Slot0Configs.kP = 0.0;
-        Slot0Configs.kI = 0.0;
-        Slot0Configs.kD = 0.0;
+        // TalonFXConfiguration ClimberConfig = new TalonFXConfiguration();
+        // var Slot0Configs = new Slot0Configs();
+        // Slot0Configs = ClimberConfig.Slot0;
+        // Slot0Configs.kP = 0.0;
+        // Slot0Configs.kI = 0.0;
+        // Slot0Configs.kD = 0.0;
 
-        climberMotor.getConfigurator().apply(ClimberConfig);
+        // climberMotor.getConfigurator().apply(ClimberConfig);
+        zeroClimber();
     }
 
     @Override
@@ -65,6 +66,12 @@ public class ClimberIOTalon implements ClimberIO {
         climberMotor.setControl(new PositionDutyCycle(setpoint));
         //climberMotor.setControl(new DutyCycleOut(setpoint));
         
+    }
+
+        @Override
+    public void setClimberPos(double pos) {
+        climberMotor.setControl(new PositionDutyCycle(0));
+        //Think rotation is 90?
     }
 
     @Override
