@@ -147,7 +147,8 @@ public class RobotContainer {
     //Keybinds.shootFuel.whileTrue(AutoBase.shootFuel(hopper, shooter));
     Keybinds.runHopper.whileTrue(HopperCommands.runHopper(hopper, hopperSpeed));
     Keybinds.reverseHopper.whileTrue(HopperCommands.reverseHopper(hopper, -hopperSpeed));
-    Keybinds.runHopperLight.whileTrue(new ParallelCommandGroup(HopperCommands.runHopperLight(hopper, -0.025), ShooterCommands.shootFuel(shooter, -0.4, -0.5)));
+    //Keybinds.runHopperLight.whileTrue(new ParallelCommandGroup(HopperCommands.runHopperLight(hopper, -0.025), ShooterCommands.shootFuel(shooter, -0.4, -0.5)));
+    Keybinds.runHopperLight.whileTrue((HopperCommands.runHopperLight(hopper, -0.025)));
     //Keybinds.reverseIntake.whileTrue(IntakeCommands.intakeFuel(intake, 0.5d));
 
   }
