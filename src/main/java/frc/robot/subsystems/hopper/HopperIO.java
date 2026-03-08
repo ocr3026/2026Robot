@@ -24,12 +24,12 @@ public interface HopperIO {
 	public default void updateInputs(HopperIOInputs inputs) {}
 
 	public default void setHopperSpeed(double speed) {}
-	
-	public default void setHopperDuty(double speed) {}
 
-	public default void runMotors(double voltage) {}
+	public default void hopperDutyCycle(double voltage) {}
+
+
 
 	public default void stopMotors() {}
 
-	public default double getSetpoint() {return 0;}
+	public default double getSetpoint() {return 0.0d;}
 }

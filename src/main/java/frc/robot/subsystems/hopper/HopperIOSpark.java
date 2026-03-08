@@ -12,14 +12,10 @@ import com.revrobotics.spark.config.FeedForwardConfig;
 import com.revrobotics.spark.config.SparkFlexConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
-import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.math.filter.Debouncer.DebounceType;
-
 public class HopperIOSpark implements HopperIO {
     private final SparkFlex hopperMotor;
     private final SparkClosedLoopController hopperPID;
     private double setpoint;
-
 
     public HopperIOSpark() {
         hopperMotor = new SparkFlex(HopperConstants.hopperMotorID, MotorType.kBrushless);
@@ -31,12 +27,13 @@ public class HopperIOSpark implements HopperIO {
 
         setpoint = 0;
 
-        SparkFlexConfig hopperConfig = new SparkFlexConfig();
+         SparkFlexConfig hopperConfig = new SparkFlexConfig();
         hopperConfig.idleMode(IdleMode.kBrake);
-        hopperConfig.closedLoop.p(0.0006).i(0.0000001).d(0.01536);
+        hopperConfig.closedLoop.p(0.00065).i(0.0).d(0.01);
         hopperConfig.closedLoop.maxMotion.maxAcceleration(2500);
         hopperConfig.closedLoop.apply(ffConf);
 
+        hopperConfig.smartCurrentLimit(70);
         hopperMotor.configure(hopperConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
@@ -55,10 +52,10 @@ public class HopperIOSpark implements HopperIO {
         hopperPID.setSetpoint(speed, ControlType.kVelocity);
         
     }
-
+    
     @Override
-    public void setHopperDuty(double speed) {
-        hopperPID.setSetpoint(speed, ControlType.kDutyCycle);
+    public void hopperDutyCycle(double voltage) {
+        hopperPID.setSetpoint(voltage, ControlType.kDutyCycle);
     }
 
     @Override

@@ -9,53 +9,100 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
+import com.revrobotics.spark.config.FeedForwardConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 public class ShooterIOSpark implements ShooterIO {
     private final SparkFlex shooterMotor;
-    private final SparkFlex shooterKickbackMotor;
     private final SparkFlex shooterMotor2;
+    private final SparkFlex shooterKickupMotor;
     private final SparkClosedLoopController shooterPID;
     private final SparkClosedLoopController shooter2PID;
-    private final SparkClosedLoopController shooterKickbackPID;
+    private final SparkClosedLoopController shooterKickupPID;
+    private double setpoint;
 
     public ShooterIOSpark() {
         shooterMotor = new SparkFlex(ShooterConstants.shooterMotorID, MotorType.kBrushless);
-        shooterMotor2 = new SparkFlex(26, MotorType.kBrushless);
-        shooter2PID = shooterMotor2.getClosedLoopController();
-        shooterKickbackMotor = new SparkFlex(ShooterConstants.shooterMotorKickbackID, MotorType.kBrushless);
+        shooterMotor2 = new SparkFlex(ShooterConstants.shooterMotorID2, MotorType.kBrushless);
+        shooterKickupMotor = new SparkFlex(ShooterConstants.shooterMotorKickupID, MotorType.kBrushless);
         shooterPID = shooterMotor.getClosedLoopController();
-        shooterKickbackPID = shooterKickbackMotor.getClosedLoopController();
+        shooter2PID = shooterMotor2.getClosedLoopController();
+        shooterKickupPID = shooterKickupMotor.getClosedLoopController();
+
+        setpoint = 0;
+
+      FeedForwardConfig shooterConf = new FeedForwardConfig();
+        shooterConf.kV(0.001775);
+
         SparkFlexConfig shooterConfig = new SparkFlexConfig();
         shooterConfig.idleMode(IdleMode.kBrake);
+        shooterConfig.closedLoop.p(0.00015).i(0).d(0.00559);
+        shooterConfig.closedLoop.apply(shooterConf);
 
+        FeedForwardConfig shooter2Conf = new FeedForwardConfig();
+        shooter2Conf.kV(0.001829);
+
+        SparkFlexConfig shooter2Config = new SparkFlexConfig();
+        shooter2Config.idleMode(IdleMode.kBrake);
+        shooter2Config.closedLoop.p(0.00025).i(0).d(0.0065);
+        shooter2Config.closedLoop.apply(shooter2Conf);
+
+        FeedForwardConfig shooterKickupConf = new FeedForwardConfig();
+        shooterKickupConf.kV(0.001825);
+
+        SparkFlexConfig shooterKickupConfig = new SparkFlexConfig();
+        shooterKickupConfig.idleMode(IdleMode.kBrake);
+        shooterKickupConfig.closedLoop.p(0.00025).i(0).d(0.001825);
+        shooterKickupConfig.closedLoop.apply(shooterKickupConf);
+
+        shooterConfig.smartCurrentLimit(70);
+        shooter2Config.smartCurrentLimit(70);
+        shooterKickupConfig.smartCurrentLimit(70);
         shooterMotor.configure(shooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        shooterMotor2.configure(shooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        shooterKickupMotor.configure(shooterKickupConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     }
 
     @Override
     public void updateInputs(ShooterIOInputs inputs) {
         inputs.shooterAppliedVolts = shooterMotor.getAppliedOutput();
-        inputs.shooterKickupAppliedVolts = shooterKickbackMotor.getAppliedOutput();
         inputs.shooterConnected = true;
+
+        inputs.shooter2AppliedVolts = shooterMotor2.getAppliedOutput();
+        inputs.shooter2Connected = true;
+        
+        inputs.shooterKickupAppliedVolts = shooterKickupMotor.getAppliedOutput();
         inputs.shooterKickupConnected = true;
 
         inputs.shooterCurrentAmps = shooterMotor.getOutputCurrent();
-        inputs.shooterKickupCurrentAmps = shooterKickbackMotor.getOutputCurrent();
         inputs.shooterPosition = Degrees.of(shooterMotor.getEncoder().getPosition());
-        inputs.shooterKickupPosition = Degrees.of(shooterKickbackMotor.getEncoder().getPosition());
         inputs.shooterVelocity = DegreesPerSecond.of(shooterMotor.getEncoder().getVelocity());
-        inputs.shooterKickupVelocity = DegreesPerSecond.of(shooterKickbackMotor.getEncoder().getVelocity());
+
+        inputs.shooter2CurrentAmps = shooterMotor2.getOutputCurrent();
+        inputs.shooter2Position = Degrees.of(shooterMotor2.getEncoder().getPosition());
+        inputs.shooter2Velocity = DegreesPerSecond.of(shooterMotor2.getEncoder().getVelocity());
+
+        inputs.shooterKickupPosition = Degrees.of(shooterKickupMotor.getEncoder().getPosition());
+        inputs.shooterKickupCurrentAmps = shooterKickupMotor.getOutputCurrent();
+        inputs.shooterKickupVelocity = DegreesPerSecond.of(shooterKickupMotor.getEncoder().getVelocity());
     }
 
     @Override
     public void setShooterSpeed(double speed) {
-        shooterPID.setSetpoint(speed, ControlType.kDutyCycle);
-        shooter2PID.setSetpoint(-speed, ControlType.kDutyCycle);
+        setpoint = speed;
+        shooterPID.setSetpoint(speed, ControlType.kVelocity);
+    }
+    
+    @Override
+    public void setShooter2Speed(double speed) {
+        setpoint = speed;
+        shooter2PID.setSetpoint(speed, ControlType.kVelocity);
     }
 
     @Override
     public void setKickupSpeed(double speed) {
-        shooterKickbackPID.setSetpoint(speed, ControlType.kDutyCycle);
+        setpoint = speed;
+        shooterKickupPID.setSetpoint(speed, ControlType.kVelocity);
     }
 }

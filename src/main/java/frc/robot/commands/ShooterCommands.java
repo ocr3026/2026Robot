@@ -8,13 +8,31 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 public class ShooterCommands{
  ShooterSubsystem shooterSubsystem;
 
-  public static Command shootFuel(ShooterSubsystem shooterSubsystem, double shooterspeed, double kickupspeed) {
+  public static Command shootFuel(ShooterSubsystem shooterSubsystem, double shooterSpeed, double shooter2Speed, double kickupSpeed) {
     return Commands.runEnd(() -> {
-      shooterSubsystem.runShooter(shooterspeed);
-      shooterSubsystem.runKickup(kickupspeed);
+      shooterSubsystem.runShooter(shooterSpeed);
+      shooterSubsystem.runShooter2(shooter2Speed);
+      shooterSubsystem.runShooterKickup(kickupSpeed);
     }, () -> {
       shooterSubsystem.runShooter(0.0);
-      shooterSubsystem.runKickup(0.0);
+      shooterSubsystem.runShooter2(0.0);
+      shooterSubsystem.runShooterKickup(0.0);
+    });
+  }
+
+  public static Command runShooterKickup(ShooterSubsystem shooterSubsystem, double speed) {
+    return Commands.runEnd(() -> {
+      shooterSubsystem.runShooterKickup(speed);
+    }, () -> {
+      shooterSubsystem.runShooterKickup(0.0);
+    });
+  }
+
+  public static Command runShooter(ShooterSubsystem shooterSubsystem, double speed) {
+    return Commands.runEnd(() -> {
+      shooterSubsystem.runShooter(speed);
+    }, () -> {
+      shooterSubsystem.runShooter(0.0);
     });
   }
 }
