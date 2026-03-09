@@ -15,7 +15,7 @@ public class ClimberIOTalon implements ClimberIO {
   private double setpoint;
 
   public ClimberIOTalon() {
-    climberMotor = new TalonFX(32);
+    climberMotor = new TalonFX(ClimberConstants.climberMotorID);
     // 0.008;
 
     setpoint = 0;

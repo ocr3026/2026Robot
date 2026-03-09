@@ -64,9 +64,9 @@ public class RobotContainer {
   public static double hopperSpeed = -200;
   public static double intakeSpeed = 3392;
   public static double intakeLiftSpeed = 0.1;
-  public static double shooterSpeed = 4750;
+  public static double shooterSpeed = -4750;
   public static double shooter2Speed = 4750;
-  public static double shooterKickupSpeed = 4750;
+  public static double shooterKickupSpeed = -4750;
   public static double climberSpeed = 5;
   public static double climberPos = 5;
 
@@ -158,20 +158,20 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    // drive.setDefaultCommand(DriveCommands.joystickDrive(
-    //     drive,
-    //     () -> -translationJoystick.getY(),
-    //     () -> -translationJoystick.getX(),
-    //     () -> -rotationJoystick.getX()));
+    drive.setDefaultCommand(DriveCommands.joystickDrive(
+        drive,
+        () -> -translationJoystick.getY(),
+        () -> -translationJoystick.getX(),
+        () -> -rotationJoystick.getX()));
     Logger.recordOutput(
         "THe pose we get rotation from",
         Paths.aimTurret.getStartingHolonomicPose().get());
 
-    drive.setDefaultCommand(DriveCommands.turretDrive(
-        drive,
-        () -> -translationJoystick.getY(),
-        () -> -translationJoystick.getX(),
-        () -> drive.getDeltaRotation(Paths.aimTurret.getStartingHolonomicPose().get())));
+    // drive.setDefaultCommand(DriveCommands.turretDrive(
+    //     drive,
+    //     () -> -translationJoystick.getY(),
+    //     () -> -translationJoystick.getX(),
+    //     () -> drive.getDeltaRotation(Paths.aimTurret.getStartingHolonomicPose().get())));
 
     final Runnable resetGyro = Constants.currentMode == Constants.Mode.SIM
         ? () -> drive.setPose(
