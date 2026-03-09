@@ -61,15 +61,14 @@ import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 
 public class RobotContainer {
-    public static double hopperSpeed = -200;
-    public static double intakeSpeed = 3392;
-    public static double intakeLiftSpeed = 0.1;
-    public static double shooterSpeed = 4750;
-    public static double shooter2Speed = 4750;
-    public static double shooterKickupSpeed = 4750;
-    public static double climberSpeed = 5;
-    public static double climberPos = 5;
-
+  public static double hopperSpeed = -200;
+  public static double intakeSpeed = 3392;
+  public static double intakeLiftSpeed = 0.1;
+  public static double shooterSpeed = 4750;
+  public static double shooter2Speed = 4750;
+  public static double shooterKickupSpeed = 4750;
+  public static double climberSpeed = 5;
+  public static double climberPos = 5;
 
   public static final CommandJoystick translationJoystick = new CommandJoystick(0);
   public static final CommandJoystick rotationJoystick = new CommandJoystick(1);

@@ -35,14 +35,14 @@ public class HopperIOSpark implements HopperIO {
     hopperConfig.smartCurrentLimit(70);
     hopperMotor.configure(
         hopperConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-  
 
-         hopperConfig = new SparkFlexConfig();
-        hopperConfig.idleMode(IdleMode.kBrake);
-        hopperConfig.closedLoop.p(0.00065).i(0.0).d(0.01);
-        hopperConfig.closedLoop.maxMotion.maxAcceleration(2500);
-        hopperConfig.closedLoop.apply(ffConf);
+    hopperConfig = new SparkFlexConfig();
+    hopperConfig.idleMode(IdleMode.kBrake);
+    hopperConfig.closedLoop.p(0.00065).i(0.0).d(0.01);
+    hopperConfig.closedLoop.maxMotion.maxAcceleration(2500);
+    hopperConfig.closedLoop.apply(ffConf);
   }
+
   @Override
   public void updateInputs(HopperIOInputs inputs) {
     inputs.hopperAppliedVolts = hopperMotor.getAppliedOutput();

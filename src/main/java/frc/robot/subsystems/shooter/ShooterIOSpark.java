@@ -33,31 +33,31 @@ public class ShooterIOSpark implements ShooterIO {
     shooter2PID = shooterMotor2.getClosedLoopController();
     shooterKickupPID = shooterKickupMotor.getClosedLoopController();
 
-        setpoint = 0;
+    setpoint = 0;
 
-      FeedForwardConfig shooterConf = new FeedForwardConfig();
-        shooterConf.kV(0.001775);
+    FeedForwardConfig shooterConf = new FeedForwardConfig();
+    shooterConf.kV(0.001775);
 
-        shooterConfig = new SparkFlexConfig();
-        shooterConfig.idleMode(IdleMode.kBrake);
-        shooterConfig.closedLoop.p(0.00015).i(0).d(0.00559);
-        shooterConfig.closedLoop.apply(shooterConf);
+    shooterConfig = new SparkFlexConfig();
+    shooterConfig.idleMode(IdleMode.kBrake);
+    shooterConfig.closedLoop.p(0.00015).i(0).d(0.00559);
+    shooterConfig.closedLoop.apply(shooterConf);
 
-        FeedForwardConfig shooter2Conf = new FeedForwardConfig();
-        shooter2Conf.kV(0.001829);
+    FeedForwardConfig shooter2Conf = new FeedForwardConfig();
+    shooter2Conf.kV(0.001829);
 
-         shooter2Config = new SparkFlexConfig();
-        shooter2Config.idleMode(IdleMode.kBrake);
-        shooter2Config.closedLoop.p(0.00025).i(0).d(0.0065);
-        shooter2Config.closedLoop.apply(shooter2Conf);
+    shooter2Config = new SparkFlexConfig();
+    shooter2Config.idleMode(IdleMode.kBrake);
+    shooter2Config.closedLoop.p(0.00025).i(0).d(0.0065);
+    shooter2Config.closedLoop.apply(shooter2Conf);
 
-        FeedForwardConfig shooterKickupConf = new FeedForwardConfig();
-        shooterKickupConf.kV(0.001825);
+    FeedForwardConfig shooterKickupConf = new FeedForwardConfig();
+    shooterKickupConf.kV(0.001825);
 
-         shooterKickupConfig = new SparkFlexConfig();
-        shooterKickupConfig.idleMode(IdleMode.kBrake);
-        shooterKickupConfig.closedLoop.p(0.00025).i(0).d(0.001825);
-        shooterKickupConfig.closedLoop.apply(shooterKickupConf);
+    shooterKickupConfig = new SparkFlexConfig();
+    shooterKickupConfig.idleMode(IdleMode.kBrake);
+    shooterKickupConfig.closedLoop.p(0.00025).i(0).d(0.001825);
+    shooterKickupConfig.closedLoop.apply(shooterKickupConf);
 
     shooterKickupConfig.idleMode(IdleMode.kBrake);
     shooterKickupConfig.closedLoop.p(0.0006).i(0).d(0.00192);

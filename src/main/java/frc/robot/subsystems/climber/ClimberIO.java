@@ -26,11 +26,15 @@ public interface ClimberIO {
 
   public default void updatePID(double p, double i, double d, double v) {}
 
-	public default double getSetpoint() {return 0.0d;}
+  public default double getSetpoint() {
+    return 0.0d;
+  }
 
-	public default double getClimberPosition() {return 0.0d;}
+  public default double getClimberPosition() {
+    return 0.0d;
+  }
 
-	public default void setClimberPos(double pos) {}
+  public default void setClimberPos(double pos) {}
 
-	public default void zeroClimber() {}
+  public default void zeroClimber() {}
 }
