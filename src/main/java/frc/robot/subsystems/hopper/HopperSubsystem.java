@@ -26,7 +26,6 @@ public class HopperSubsystem extends SubsystemBase {
   HopperJson json = new HopperJson();
 
   public HopperSubsystem(HopperIO io) {
-    json.init();
     this.io = io;
   }
 

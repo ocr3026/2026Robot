@@ -1,6 +1,7 @@
 /* Generated and Formatted by yours truly <3*/
 package frc.robot;
 
+import com.orangefrc.annotation.GSON;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -87,10 +88,18 @@ public class RobotContainer {
   public static Command currentSelectedCommand = null;
 
   public RobotContainer() {
+
+    GSON.createDir();
+
     SmartDashboard.putNumber("HopperSpeed", hopperSpeed);
 
     switch (Constants.currentMode) {
       case REAL:
+        hopper = new HopperSubsystem(new HopperIOSpark());
+        shooter = new ShooterSubsystem(new ShooterIOSpark());
+        intake = new IntakeSubsystem(new IntakeIOSpark());
+        climber = new ClimberSubsystem(new ClimberIOTalon());
+
         drive = new DriveSubsystem(
             new GyroIONavX(),
             new ModuleIOTalon(TunerConstants.FrontLeft),
@@ -101,12 +110,6 @@ public class RobotContainer {
         this.vision = new Vision(
             drive,
             new VisionIOPhotonvision(VisionConstants.camera0Name, VisionConstants.robotToCamera0));
-
-        hopper = new HopperSubsystem(new HopperIOSpark());
-        shooter = new ShooterSubsystem(new ShooterIOSpark());
-        intake = new IntakeSubsystem(new IntakeIOSpark());
-        climber = new ClimberSubsystem(new ClimberIOTalon());
-
         break;
       case SIM:
         driveSimulation = new SwerveDriveSimulation(

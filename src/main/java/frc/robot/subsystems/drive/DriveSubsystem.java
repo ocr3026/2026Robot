@@ -124,6 +124,7 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
 
     try (Reader reader = new FileReader(TunerConstants.filePath)) {
       PIDJson pidJson = TunerConstants.gson.fromJson(reader, PIDJson.class);
+
       updateSteerP = pidJson.getSP();
       updateSteerI = pidJson.getSI();
       updateSteerD = pidJson.getSD();
@@ -273,6 +274,7 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
         getDeltaRotation(Paths.aimTurret.getStartingHolonomicPose().get()));
     // boolean isWriteable = file.setWritable(true);
     Logger.recordOutput("PIDJson/fileWriteable", file.canWrite());
+
     if (SmartDashboard.getNumber("changeSP", 0.0) != updateSteerP
         || SmartDashboard.getNumber("changeSI", 0.0) != updateSteerI
         || SmartDashboard.getNumber("changeSD", 0.0) != updateSteerD

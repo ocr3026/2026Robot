@@ -33,7 +33,6 @@ public class ShooterSubsystem extends SubsystemBase {
   ShooterJson json = new ShooterJson();
 
   public ShooterSubsystem(ShooterIO io) {
-    json.init();
     this.io = io;
   }
 

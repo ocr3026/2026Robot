@@ -24,7 +24,6 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public ClimberSubsystem(ClimberIO io) {
-    json.init();
     this.io = io;
   }
 

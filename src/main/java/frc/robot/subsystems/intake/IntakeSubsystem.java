@@ -27,7 +27,6 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public IntakeSubsystem(IntakeIO io) {
     this.io = io;
-    json.init();
   }
 
   public void intakeFuel(double speed) {
