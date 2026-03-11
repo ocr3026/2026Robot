@@ -59,10 +59,6 @@ public class ShooterIOSpark implements ShooterIO {
     shooterKickupConfig.closedLoop.p(0.00025).i(0).d(0.001825);
     shooterKickupConfig.closedLoop.apply(shooterKickupConf);
 
-    shooterKickupConfig.idleMode(IdleMode.kBrake);
-    shooterKickupConfig.closedLoop.p(0.0006).i(0).d(0.00192);
-    shooterKickupConfig.closedLoop.apply(shooterKickupConf);
-
     shooterConfig.smartCurrentLimit(70);
     shooter2Config.smartCurrentLimit(70);
     shooterKickupConfig.smartCurrentLimit(70);

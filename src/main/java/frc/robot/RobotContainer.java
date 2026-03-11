@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -64,12 +65,12 @@ import org.reflections.util.ConfigurationBuilder;
 public class RobotContainer {
   public static double hopperSpeed = -200;
   public static double intakeSpeed = 3392;
-  public static double intakeLiftSpeed = 0.1;
+  public static double intakeLiftSpeed = -50;
   public static double shooterSpeed = -4750;
   public static double shooter2Speed = 4750;
-  public static double shooterKickupSpeed = -4750;
+  public static double shooterKickupSpeed = -3000;
   public static double climberSpeed = 5;
-  public static double climberPos = 5;
+  public static double climberPos = -200;
 
   public static final CommandJoystick translationJoystick = new CommandJoystick(0);
   public static final CommandJoystick rotationJoystick = new CommandJoystick(1);
@@ -165,7 +166,7 @@ public class RobotContainer {
         drive,
         () -> -translationJoystick.getY(),
         () -> -translationJoystick.getX(),
-        () -> -rotationJoystick.getX()));
+        () -> rotationJoystick.getX() * 0.8));
     Logger.recordOutput(
         "THe pose we get rotation from",
         Paths.aimTurret.getStartingHolonomicPose().get());
@@ -203,8 +204,12 @@ public class RobotContainer {
 
     Keybinds.runHopper.whileTrue(HopperCommands.runHopper(hopper, hopperSpeed));
     Keybinds.reverseHopper.whileTrue(HopperCommands.reverseHopper(hopper, -hopperSpeed));
-    Keybinds.climberUp.whileTrue(ClimberCommands.setClimberPos(climber, climberPos));
-    Keybinds.climberDown.whileTrue(ClimberCommands.setClimberPos(climber, 0.0));
+    // Keybinds.climberUp.whileTrue(ClimberCommands.setClimberPos(climber, climberPos));
+    Keybinds.climberUp.whileTrue(ClimberCommands.runClimber(climber, -0.1));
+    Keybinds.climberDown.whileTrue(ClimberCommands.runClimber(climber, 0.1));
+    Keybinds.zeroClimber.onTrue(new InstantCommand(() -> {
+      climber.zeroClimber();
+    }));
   }
 
   public Command getAutonomousCommand() {

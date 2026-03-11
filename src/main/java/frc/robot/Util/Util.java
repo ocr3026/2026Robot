@@ -9,6 +9,8 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
+import com.revrobotics.REVLibError;
+import com.revrobotics.spark.SparkBase;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
@@ -25,6 +27,19 @@ public final class Util {
     for (int i = 0; i < maxAttempts; i++) {
       var error = command.get();
       if (error.isOK()) break;
+    }
+  }
+
+  public static boolean sparkStickyFault = false;
+
+  public static void tryUntilOk(SparkBase spark, int maxAttempts, Supplier<REVLibError> command) {
+    for (int i = 0; i < maxAttempts; i++) {
+      var error = command.get();
+      if (error == REVLibError.kOk) {
+        break;
+      } else {
+        sparkStickyFault = true;
+      }
     }
   }
 

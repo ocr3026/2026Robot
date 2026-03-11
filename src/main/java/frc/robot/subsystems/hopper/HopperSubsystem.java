@@ -23,7 +23,7 @@ public class HopperSubsystem extends SubsystemBase {
     double maxAccel;
   }
 
-  HopperJson json = new HopperJson();
+  // HopperJson json = new HopperJson();
 
   public HopperSubsystem(HopperIO io) {
     this.io = io;
@@ -41,10 +41,10 @@ public class HopperSubsystem extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Hopper", inputs);
-    json.updateVals();
-    if (json.hasUpdated()) {
-      io.updatePID(json.getP(), json.getI(), json.getD(), json.getkV(), json.getmaxAccel());
-    }
+    // json.updateVals();
+    // if (json.hasUpdated()) {
+    //   io.updatePID(json.getP(), json.getI(), json.getD(), json.getkV(), json.getmaxAccel());
+    // }
     RobotContainer.hopperSpeed = SmartDashboard.getNumber("HopperSpeed", 0.123);
     SmartDashboard.putNumber("HopperSetpoint", io.getSetpoint());
     SmartDashboard.putNumber(

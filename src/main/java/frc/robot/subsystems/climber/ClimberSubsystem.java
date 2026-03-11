@@ -35,6 +35,10 @@ public class ClimberSubsystem extends SubsystemBase {
     io.setClimberSpeed(speed);
   }
 
+  public void zeroClimber() {
+    io.zeroClimber();
+  }
+
   @Override
   public void periodic() {
     json.updateVals();

@@ -19,4 +19,6 @@ public class Keybinds {
   public static final Trigger runHopper = RobotContainer.m_driverController.x();
   public static final Trigger reverseHopper = RobotContainer.m_driverController.y();
   public static final Trigger reverseIntake = RobotContainer.m_driverController.a();
+
+  public static final Trigger zeroClimber = RobotContainer.m_driverController.back();
 }
