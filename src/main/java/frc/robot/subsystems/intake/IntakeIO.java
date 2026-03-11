@@ -27,6 +27,8 @@ public interface IntakeIO {
 
   public default void setIntakeLiftSpeed(double speed) {}
 
+  public default void runWhileGreater(double speed, double pos) {}
+
   public default void setIntakeSpeed(double speed) {}
 
   public default void stopMotors() {}

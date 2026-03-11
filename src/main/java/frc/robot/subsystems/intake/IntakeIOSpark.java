@@ -13,6 +13,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.FeedForwardConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
+import org.littletonrobotics.junction.Logger;
 
 public class IntakeIOSpark implements IntakeIO {
   private final SparkFlex intakeMotor;
@@ -33,15 +34,15 @@ public class IntakeIOSpark implements IntakeIO {
 
     intakeConfig = new SparkFlexConfig();
     intakeConfig.idleMode(IdleMode.kBrake);
-    intakeConfig.closedLoop.p(0.0006).i(0).d(0.00192);
+    intakeConfig.closedLoop.p(0.00015).i(0).d(0.0);
     intakeConfig.closedLoop.apply(intakeConf);
 
     FeedForwardConfig intakeLiftConf = new FeedForwardConfig();
-    intakeLiftConf.kV(0.00245).kG(2);
+    intakeLiftConf.kV(0.05);
 
     intakeLiftConfig = new SparkFlexConfig();
     intakeLiftConfig.idleMode(IdleMode.kBrake);
-    intakeLiftConfig.closedLoop.p(0.001).i(0).d(0);
+    intakeLiftConfig.closedLoop.p(0.000005).i(0).d(0);
     intakeLiftConfig.closedLoop.apply(intakeLiftConf);
 
     intakeConfig.smartCurrentLimit(70);
@@ -60,10 +61,10 @@ public class IntakeIOSpark implements IntakeIO {
     inputs.intakeLiftConnected = true;
     inputs.intakeCurrentAmps = intakeMotor.getOutputCurrent();
     inputs.intakeLiftCurrentAmps = intakeLift.getOutputCurrent();
-    inputs.intakePosition = Degrees.of(intakeMotor.getEncoder().getPosition());
-    inputs.intakeLiftPosition = Degrees.of(intakeLift.getEncoder().getPosition());
-    inputs.intakeVelocity = DegreesPerSecond.of(intakeMotor.getEncoder().getVelocity());
-    inputs.intakeLiftVelocity = DegreesPerSecond.of(intakeLift.getEncoder().getVelocity());
+    inputs.intakePosition = Rotations.of(intakeMotor.getEncoder().getPosition());
+    inputs.intakeLiftPosition = Rotations.of(intakeLift.getEncoder().getPosition());
+    inputs.intakeVelocity = RotationsPerSecond.of(intakeMotor.getEncoder().getVelocity());
+    inputs.intakeLiftVelocity = RotationsPerSecond.of(intakeLift.getEncoder().getVelocity());
   }
 
   @Override
@@ -79,6 +80,12 @@ public class IntakeIOSpark implements IntakeIO {
   @Override
   public void setIntakeLiftPos(double pos) {
     intakeLiftPID.setSetpoint(pos, ControlType.kPosition);
+  }
+
+  @Override
+  public void runWhileGreater(double speed, double pos) {
+    intakeLiftPID.setSetpoint(speed, ControlType.kDutyCycle);
+    Logger.recordOutput("Typedihh", pos);
   }
 
   @Override
@@ -108,7 +115,6 @@ public class IntakeIOSpark implements IntakeIO {
 
     intakeConfig.closedLoop.p(iP).i(iI).d(iD).apply(ffI).maxMotion.maxAcceleration(iA);
     intakeLiftConfig.closedLoop.p(lP).i(lI).d(lD).apply(ffL).maxMotion.maxAcceleration(lA);
-
     intakeMotor.configure(
         intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     intakeLift.configure(

@@ -2,6 +2,7 @@
 package frc.robot.subsystems.intake;
 
 import com.orangefrc.annotation.GenerateJson;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
@@ -45,23 +46,34 @@ public class IntakeSubsystem extends SubsystemBase {
     io.setIntakeLiftPos(pos);
   }
 
+  public void runIntakeLiftUntil(double pos, double speed) {
+    SmartDashboard.putNumber("intake lift shit.", getIntakeLiftPos());
+
+    if (io.getIntakePosition() >= pos) {
+      io.runWhileGreater(speed, pos);
+    } else {
+      io.runWhileGreater(0.0, pos);
+    }
+  }
+
   @Override
   public void periodic() {
-    json.updateVals();
-    if (json.hasUpdated()) {
-      io.updatePID(
-          json.getiP(),
-          json.getiI(),
-          json.getiD(),
-          json.getiV(),
-          json.getiA(),
-          json.getlP(),
-          json.getlI(),
-          json.getlD(),
-          json.getlV(),
-          json.getlA());
-    }
+    // json.updateVals();
+    // if (json.hasUpdated()) {
+    //   io.updatePID(
+    //       json.getiP(),
+    //       json.getiI(),
+    //       json.getiD(),
+    //       json.getiV(),
+    //       json.getiA(),
+    //       json.getlP(),
+    //       json.getlI(),
+    //       json.getlD(),
+    //       json.getlV(),
+    //       json.getlA());
+    // }
     io.updateInputs(inputs);
+    io.getIntakePosition();
     Logger.processInputs("Intake", inputs);
     Logger.recordOutput("Intake Input Lift Pos", inputs.intakeLiftPosition);
     Logger.recordOutput("Intake Lift Pos Raw", io.getIntakePosition());

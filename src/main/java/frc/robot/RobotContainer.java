@@ -64,13 +64,15 @@ import org.reflections.util.ConfigurationBuilder;
 
 public class RobotContainer {
   public static double hopperSpeed = -200;
-  public static double intakeSpeed = 3392;
-  public static double intakeLiftSpeed = -50;
+  public static double intakeSpeed = 2800;
+  public static double intakeLiftSpeed = 25;
   public static double shooterSpeed = -4750;
   public static double shooter2Speed = 4750;
   public static double shooterKickupSpeed = -3000;
   public static double climberSpeed = 5;
-  public static double climberPos = -200;
+  public static double climberPos = 50;
+
+  public static double intakeLiftPos = -24;
 
   public static final CommandJoystick translationJoystick = new CommandJoystick(0);
   public static final CommandJoystick rotationJoystick = new CommandJoystick(1);
@@ -100,6 +102,7 @@ public class RobotContainer {
         shooter = new ShooterSubsystem(new ShooterIOSpark());
         intake = new IntakeSubsystem(new IntakeIOSpark());
         climber = new ClimberSubsystem(new ClimberIOTalon());
+        GSON.createDir();
 
         drive = new DriveSubsystem(
             new GyroIONavX(),
@@ -191,7 +194,9 @@ public class RobotContainer {
 
     Keybinds.intakeFuel.whileTrue(IntakeCommands.intakeFuel(intake, intakeSpeed));
     Keybinds.intakeLiftUp.whileTrue(IntakeCommands.intakeLift(intake, intakeLiftSpeed));
-    Keybinds.intakeLiftDown.whileTrue(IntakeCommands.intakeLift(intake, -intakeLiftSpeed));
+    // Keybinds.intakeLiftDown.whileTrue(IntakeCommands.intakeLift(intake, -intakeLiftSpeed));
+    Keybinds.intakeLiftDown.whileTrue(IntakeCommands.intakeRunGreater(intake, intakeLiftPos, -0.1));
+    Keybinds.intakeLiftUp.whileTrue(IntakeCommands.intakeRunGreater(intake, -5, 0.1));
     Keybinds.reverseIntake.whileTrue(IntakeCommands.intakeFuel(intake, -intakeSpeed));
 
     Keybinds.shootFuel.whileTrue(new ParallelCommandGroup(
@@ -205,6 +210,9 @@ public class RobotContainer {
     Keybinds.runHopper.whileTrue(HopperCommands.runHopper(hopper, hopperSpeed));
     Keybinds.reverseHopper.whileTrue(HopperCommands.reverseHopper(hopper, -hopperSpeed));
     // Keybinds.climberUp.whileTrue(ClimberCommands.setClimberPos(climber, climberPos));
+
+    Keybinds.climberPosDown.whileTrue(ClimberCommands.setClimberPos(climber, climberPos));
+    Keybinds.climberPosUp.whileTrue(ClimberCommands.setClimberPos(climber, 0.0));
     Keybinds.climberUp.whileTrue(ClimberCommands.runClimber(climber, -0.1));
     Keybinds.climberDown.whileTrue(ClimberCommands.runClimber(climber, 0.1));
     Keybinds.zeroClimber.onTrue(new InstantCommand(() -> {

@@ -12,6 +12,7 @@ import org.littletonrobotics.junction.Logger;
 public class HopperSubsystem extends SubsystemBase {
   private final HopperIO io;
   private final HopperIOInputsAutoLogged inputs = new HopperIOInputsAutoLogged();
+  static double updatetimes = 0;
 
   @GenerateJson
   public class Hopper {
@@ -23,7 +24,7 @@ public class HopperSubsystem extends SubsystemBase {
     double maxAccel;
   }
 
-  // HopperJson json = new HopperJson();
+  HopperJson json = new HopperJson();
 
   public HopperSubsystem(HopperIO io) {
     this.io = io;
@@ -42,6 +43,10 @@ public class HopperSubsystem extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Hopper", inputs);
     // json.updateVals();
+    // if (json.hasUpdated()) {
+    //   updatetimes++;
+    //   Logger.recordOutput("jsonUpdates/Hopper", "Hopper Updated: " + updatetimes);
+    // }
     // if (json.hasUpdated()) {
     //   io.updatePID(json.getP(), json.getI(), json.getD(), json.getkV(), json.getmaxAccel());
     // }

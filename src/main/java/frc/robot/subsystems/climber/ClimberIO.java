@@ -1,10 +1,8 @@
 /* Generated and Formatted by yours truly <3*/
 package frc.robot.subsystems.climber;
 
-import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
 
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import org.littletonrobotics.junction.AutoLog;
 
@@ -12,7 +10,7 @@ public interface ClimberIO {
   @AutoLog
   public static class ClimberIOInputs {
     public boolean climberConnected = false;
-    public Angle climberPosition = Degrees.of(0);
+    public double climberPosition = (0);
     public AngularVelocity climberVelocity = DegreesPerSecond.of(0);
     public double climberAppliedVolts = 0;
     public double climberCurrentAmps = 0;

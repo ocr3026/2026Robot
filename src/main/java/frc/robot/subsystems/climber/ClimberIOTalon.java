@@ -22,10 +22,10 @@ public class ClimberIOTalon implements ClimberIO {
 
     TalonFXConfiguration ClimberConfig = new TalonFXConfiguration();
     var Slot0Configs = new Slot0Configs();
-    Slot0Configs.kP = 0.3;
+    Slot0Configs.kP = 0.0003;
     Slot0Configs.kI = 0.0;
     Slot0Configs.kD = 0.0;
-    Slot0Configs.kV = 2.0;
+    Slot0Configs.kV = 0.0005;
     ClimberConfig.Slot0 = Slot0Configs;
 
     // TalonFXConfiguration ClimberConfig = new TalonFXConfiguration();
@@ -45,10 +45,8 @@ public class ClimberIOTalon implements ClimberIO {
     inputs.climberAppliedVolts = climberMotor.getMotorVoltage().getValueAsDouble();
     inputs.climberConnected = true;
     inputs.climberCurrentAmps = climberMotor.getSupplyCurrent().getValueAsDouble();
-    inputs.climberPosition =
-        Rotations.of(climberMotor.getPosition().getValueAsDouble() / (2 * Math.PI));
-    inputs.climberVelocity =
-        RotationsPerSecond.of(climberMotor.getVelocity().getValueAsDouble() / 60);
+    inputs.climberPosition = (climberMotor.getPosition().getValueAsDouble());
+    inputs.climberVelocity = RotationsPerSecond.of(climberMotor.getVelocity().getValueAsDouble());
   }
 
   @Override
@@ -66,7 +64,7 @@ public class ClimberIOTalon implements ClimberIO {
 
   @Override
   public void setClimberPos(double pos) {
-    climberMotor.setControl(new PositionDutyCycle(0));
+    climberMotor.setControl(new PositionDutyCycle(pos));
     // Think rotation is 90?
   }
 

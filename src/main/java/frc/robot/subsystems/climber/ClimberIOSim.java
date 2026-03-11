@@ -30,7 +30,6 @@ public class ClimberIOSim extends ClimberIOTalon {
     climbMotor.setRawRotorPosition(motorSim.getAngularPosition());
     climbMotor.setRotorVelocity(motorSim.getAngularVelocity());
 
-    inputs.climberPosition =
-        Rotations.of(motorSim.getAngularPosition().in(Rotations) / (2 * Math.PI));
+    inputs.climberPosition = (motorSim.getAngularPosition().in(Rotations) / (2 * Math.PI));
   }
 }

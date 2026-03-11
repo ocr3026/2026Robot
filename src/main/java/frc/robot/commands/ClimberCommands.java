@@ -22,7 +22,7 @@ public class ClimberCommands {
 
   public static Command setClimberPos(ClimberSubsystem subsystem, double pos) {
     return Commands.runOnce(() -> {
-      subsystem.climberUp(pos);
+      subsystem.setClimberPos(pos);
     });
   }
 

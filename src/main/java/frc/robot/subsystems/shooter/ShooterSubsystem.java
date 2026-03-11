@@ -52,25 +52,25 @@ public class ShooterSubsystem extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Shooter", inputs);
-    json.updateVals();
-    if (json.hasUpdated()) {
-      io.updatePID(
-          json.getsP(),
-          json.getsI(),
-          json.getsD(),
-          json.getsV(),
-          json.getsMaxAccel(),
-          json.gets2P(),
-          json.gets2I(),
-          json.gets2D(),
-          json.gets2V(),
-          json.gets2MaxAccel(),
-          json.getkickP(),
-          json.getkickI(),
-          json.getkickD(),
-          json.getkickV(),
-          json.getkickMaxAccel());
-    }
+    // json.updateVals();
+    // if (json.hasUpdated()) {
+    //   io.updatePID(
+    //       json.getsP(),
+    //       json.getsI(),
+    //       json.getsD(),
+    //       json.getsV(),
+    //       json.getsMaxAccel(),
+    //       json.gets2P(),
+    //       json.gets2I(),
+    //       json.gets2D(),
+    //       json.gets2V(),
+    //       json.gets2MaxAccel(),
+    //       json.getkickP(),
+    //       json.getkickI(),ee
+    //       json.getkickD(),
+    //       json.getkickV(),
+    //       json.getkickMaxAccel());
+    // }
   }
 
   @Override

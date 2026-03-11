@@ -4,7 +4,6 @@ package frc.robot.subsystems.climber;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.orangefrc.annotation.GenerateJson;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
@@ -35,22 +34,26 @@ public class ClimberSubsystem extends SubsystemBase {
     io.setClimberSpeed(speed);
   }
 
+  public void setClimberPos(double pos) {
+    io.setClimberPos(pos);
+  }
+
   public void zeroClimber() {
     io.zeroClimber();
   }
 
   @Override
   public void periodic() {
-    json.updateVals();
-    if (json.hasUpdated()) {
-      timesupdated++;
-      io.updatePID(json.getp(), json.geti(), json.getd(), json.getv());
-      NetworkTableInstance.getDefault()
-          .getTable("Tuning")
-          .getStringTopic("ClimberJson/Hasupdated")
-          .publish()
-          .set("Has updated the pid" + timesupdated);
-    }
+    // json.updateVals();
+    // if (json.hasUpdated()) {
+    //   timesupdated++;
+    //   io.updatePID(json.getp(), json.geti(), json.getd(), json.getv());
+    //   NetworkTableInstance.getDefault()
+    //       .getTable("Tuning")
+    //       .getStringTopic("ClimberJson/Hasupdated")
+    //       .publish()
+    //       .set("Has updated the pid" + timesupdated);
+    // }
     io.updateInputs(inputs);
     Logger.processInputs("Climber", inputs);
     SmartDashboard.putNumber("ClimberSetpoint", io.getSetpoint());

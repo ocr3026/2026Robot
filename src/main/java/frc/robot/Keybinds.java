@@ -21,4 +21,7 @@ public class Keybinds {
   public static final Trigger reverseIntake = RobotContainer.m_driverController.a();
 
   public static final Trigger zeroClimber = RobotContainer.m_driverController.back();
+
+  public static final Trigger climberPosUp = RobotContainer.m_driverController.povLeft();
+  public static final Trigger climberPosDown = RobotContainer.m_driverController.povRight();
 }
