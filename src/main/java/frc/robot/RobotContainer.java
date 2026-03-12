@@ -64,10 +64,10 @@ import org.reflections.util.ConfigurationBuilder;
 
 public class RobotContainer {
   public static double hopperSpeed = -200;
-  public static double intakeSpeed = 2800;
+  public static double intakeSpeed = -3300;
   public static double intakeLiftSpeed = 25;
-  public static double shooterSpeed = -4750;
-  public static double shooter2Speed = 4750;
+  public static double shooterSpeed = -4000;
+  public static double shooter2Speed = 4000;
   public static double shooterKickupSpeed = -3000;
   public static double climberSpeed = 5;
   public static double climberPos = 50;
@@ -161,7 +161,7 @@ public class RobotContainer {
 
     // Try deleting this, maybe only call in disabled init? Calling twice may bog down start
     // times...
-    // compileAutos();
+    compileAutos();
 
     configureBindings();
   }
@@ -175,7 +175,18 @@ public class RobotContainer {
     Logger.recordOutput(
         "THe pose we get rotation from",
         Paths.aimTurret.getStartingHolonomicPose().get());
-
+    Keybinds.lockOnHubDrive
+        .whileTrue(DriveCommands.turretDrive(
+            drive,
+            () -> -translationJoystick.getY(),
+            () -> -translationJoystick.getX(),
+            () -> drive.getDeltaRotation(
+                Paths.aimTurret.getStartingHolonomicPose().get(), drive.getPose())))
+        .whileFalse(DriveCommands.joystickDrive(
+            drive,
+            () -> -translationJoystick.getY(),
+            () -> -translationJoystick.getX(),
+            () -> rotationJoystick.getX() * 0.8));
     // drive.setDefaultCommand(DriveCommands.turretDrive(
     //     drive,
     //     () -> -translationJoystick.getY(),
@@ -198,7 +209,7 @@ public class RobotContainer {
     Keybinds.intakeLiftUp.whileTrue(IntakeCommands.intakeLift(intake, intakeLiftSpeed));
     // Keybinds.intakeLiftDown.whileTrue(IntakeCommands.intakeLift(intake, -intakeLiftSpeed));
     Keybinds.intakeLiftDown.whileTrue(IntakeCommands.intakeRunGreater(intake, intakeLiftPos, -0.1));
-    Keybinds.intakeLiftUp.whileTrue(IntakeCommands.intakeRunGreater(intake, -5, 0.1));
+    // Keybinds.intakeLiftUp.whileTrue(IntakeCommands.intakeRunGreater(intake, -5, 0.1));
     Keybinds.reverseIntake.whileTrue(IntakeCommands.intakeFuel(intake, -intakeSpeed));
 
     Keybinds.shootFuel.whileTrue(new ParallelCommandGroup(
@@ -213,10 +224,10 @@ public class RobotContainer {
     Keybinds.reverseHopper.whileTrue(HopperCommands.reverseHopper(hopper, -hopperSpeed));
     // Keybinds.climberUp.whileTrue(ClimberCommands.setClimberPos(climber, climberPos));
 
-    Keybinds.climberPosDown.whileTrue(ClimberCommands.setClimberPos(climber, climberPos));
-    Keybinds.climberPosUp.whileTrue(ClimberCommands.setClimberPos(climber, 0.0));
-    Keybinds.climberUp.whileTrue(ClimberCommands.runClimber(climber, -0.1));
-    Keybinds.climberDown.whileTrue(ClimberCommands.runClimber(climber, 0.1));
+    // Keybinds.climberPosDown.whileTrue(ClimberCommands.setClimberPos(climber, climberPos));
+    // Keybinds.climberPosUp.whileTrue(ClimberCommands.setClimberPos(climber, 0.0));
+    Keybinds.climberUp.whileTrue(ClimberCommands.runClimber(climber, -0.3));
+    Keybinds.climberDown.whileTrue(ClimberCommands.runClimber(climber, 0.3));
     Keybinds.zeroClimber.onTrue(new InstantCommand(() -> {
       climber.zeroClimber();
     }));

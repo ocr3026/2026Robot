@@ -14,7 +14,8 @@ public class Test extends AutoBase {
       IntakeSubsystem intake,
       DriveSubsystem drive) {
     super(hopper, shooter, intake, drive);
-    addCommands(setStartPose(Paths.driveBackSimple));
+    // addCommands(setStartPose(Paths.driveBackSimple));
     addCommands(pathFindToPoseLocked(drive, Paths.aimTurret, Paths.rightShoot));
+    addCommands(runHopperAndShooter(hopper, shooter));
   }
 }

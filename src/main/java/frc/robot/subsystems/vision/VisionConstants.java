@@ -16,7 +16,7 @@ public final class VisionConstants {
   public static AprilTagFieldLayout aprilTagLayout =
       AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
 
-  public static String camera0Name = "Arducam_OV9281_USB_Camera";
+  public static String camera0Name = "AprilTagWebcam";
   // TODO: UPDAET THESE
   public static Transform3d robotToCamera0 = new Transform3d(
       Inches.of(12.5).in(Meters),

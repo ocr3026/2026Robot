@@ -234,8 +234,8 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
     return robotToPoseTheta;
   }
 
-  public double getDeltaRotation(Pose2d pose) {
-    Pose2d robotP = getPose();
+  public double getDeltaRotation(Pose2d pose, Pose2d robotPose) {
+    Pose2d robotP = robotPose;
 
     pose = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue
         ? pose
@@ -271,7 +271,7 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
   public void periodic() {
     Logger.recordOutput(
         "TypeScript/Dtheta",
-        getDeltaRotation(Paths.aimTurret.getStartingHolonomicPose().get()));
+        getDeltaRotation(Paths.aimTurret.getStartingHolonomicPose().get(), getPose()));
     // boolean isWriteable = file.setWritable(true);
     Logger.recordOutput("PIDJson/fileWriteable", file.canWrite());
 

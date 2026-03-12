@@ -15,9 +15,10 @@ public class DriveBackAndShoot extends AutoBase {
       DriveSubsystem drive) {
     super(hopper, shooter, intake, drive);
     addCommands(delayStartTime());
-    addCommands(setStartPose(Paths.driveBackSimple));
-    addCommands(lowerIntake(intake));
-    addCommands(followPath(Paths.driveBackSimple));
+    // addCommands(setStartPose(Paths.driveBackSimple));
+    // addCommands(lowerIntake(intake));
+    // addCommands(followPath(Paths.driveBackSimple));
+
     // addCommands(shootFuel(hopper, shooter));
     // addCommands(HopperCommands.runHopper(hopper, -200));
     addCommands(runHopperAndShooter(hopper, shooter));

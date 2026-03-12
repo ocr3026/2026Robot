@@ -167,7 +167,8 @@ public class AutoBase extends SequentialCommandGroup {
     return AutoBuilder.followPath(path)
         .beforeStarting(() -> {
           PPHolonomicDriveController.overrideRotationFeedback(() -> angleController.calculate(
-              0, drive.getDeltaRotation(posePath.getStartingHolonomicPose().get())));
+              0,
+              drive.getDeltaRotation(posePath.getStartingHolonomicPose().get(), drive.getPose())));
         })
         .finallyDo(() -> {
           PPHolonomicDriveController.clearRotationFeedbackOverride();
@@ -191,7 +192,8 @@ public class AutoBase extends SequentialCommandGroup {
             DriveConstants.PATH_CONSTRAINTS)
         .beforeStarting(() -> {
           PPHolonomicDriveController.overrideRotationFeedback(() -> angleController.calculate(
-              0, drive.getDeltaRotation(posePath.getStartingHolonomicPose().get())));
+              0,
+              drive.getDeltaRotation(posePath.getStartingHolonomicPose().get(), drive.getPose())));
         })
         .finallyDo(() -> {
           PPHolonomicDriveController.clearRotationFeedbackOverride();
