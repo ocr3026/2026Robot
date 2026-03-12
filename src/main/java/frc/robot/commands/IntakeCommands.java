@@ -49,7 +49,8 @@ public class IntakeCommands {
           intake.runIntakeLiftUntil(pos, 0.0);
         });
   }
-    public static Command intakeRunLess(IntakeSubsystem intake, double pos, double speed) {
+
+  public static Command intakeRunLess(IntakeSubsystem intake, double pos, double speed) {
     Logger.recordOutput("wow", pos);
     return Commands.runEnd(
         () -> {

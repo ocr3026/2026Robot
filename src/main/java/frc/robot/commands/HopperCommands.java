@@ -16,7 +16,7 @@ public class HopperCommands {
           SmartDashboard.putNumber("CurrentRanspeed", speed);
         },
         () -> {
-          hopperSubsystem.runHopper(0.0);
+          hopperSubsystem.runDutyCycle(0.0);
         });
   }
 
@@ -26,7 +26,7 @@ public class HopperCommands {
           hopperSubsystem.reverseHopper(speed);
         },
         () -> {
-          hopperSubsystem.reverseHopper(0.0);
+          hopperSubsystem.runDutyCycle(0.0);
         });
   }
 }

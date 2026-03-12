@@ -24,7 +24,7 @@ public class HopperIOSpark implements HopperIO {
     hopperPID = hopperMotor.getClosedLoopController();
     // 0.008;
     FeedForwardConfig ffConf = new FeedForwardConfig();
-    ffConf.kV(0.00245);
+    ffConf.kV(0.0245);
 
     setpoint = 0;
     hopperConfig = new SparkFlexConfig();
@@ -32,7 +32,7 @@ public class HopperIOSpark implements HopperIO {
     hopperConfig.smartCurrentLimit(70);
 
     hopperConfig.idleMode(IdleMode.kBrake);
-    hopperConfig.closedLoop.p(0.0005).i(0.000001).d(0.01);
+    hopperConfig.closedLoop.p(0.0002).i(0.000001).d(0.01);
     hopperConfig.closedLoop.maxMotion.maxAcceleration(2500);
     hopperConfig.closedLoop.apply(ffConf);
 
@@ -63,6 +63,11 @@ public class HopperIOSpark implements HopperIO {
     hopperConfig.closedLoop.apply(ff);
     hopperMotor.configure(
         hopperConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+  }
+
+  @Override
+  public void runDutyCycle(double speed) {
+    hopperPID.setSetpoint(speed, ControlType.kDutyCycle);
   }
 
   @Override

@@ -159,7 +159,9 @@ public class RobotContainer {
     SmartDashboard.putNumber("delayStartTime", 0);
     autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
-    compileAutos();
+    // Try deleting this, maybe only call in disabled init? Calling twice may bog down start
+    // times...
+    // compileAutos();
 
     configureBindings();
   }

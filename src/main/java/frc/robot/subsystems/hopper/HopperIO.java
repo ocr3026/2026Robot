@@ -28,6 +28,8 @@ public interface HopperIO {
 
   public default void updatePID(double P, double I, double D, double kV, double maxAccel) {}
 
+  public default void runDutyCycle(double speed) {}
+
   public default double getSetpoint() {
     return 0.0d;
   }

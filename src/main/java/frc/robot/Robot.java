@@ -78,7 +78,7 @@ public class Robot extends LoggedRobot {
   public void disabledInit() {
     robotContainer.resetSimulationField();
     // CommandScheduler.getInstance().cancelAll();
-    robotContainer.compileAutos();
+    // robotContainer.compileAutos();
   }
 
   @Override

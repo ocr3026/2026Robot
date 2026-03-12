@@ -38,6 +38,10 @@ public class HopperSubsystem extends SubsystemBase {
     io.setHopperSpeed(speed);
   }
 
+  public void runDutyCycle(double speed) {
+    io.runDutyCycle(speed);
+  }
+
   @Override
   public void periodic() {
     io.updateInputs(inputs);
