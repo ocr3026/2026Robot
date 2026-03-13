@@ -240,7 +240,7 @@ public class RobotContainer {
 
     // Keybinds.climberPosDown.whileTrue(ClimberCommands.setClimberPos(climber, climberPos));
     // Keybinds.climberPosUp.whileTrue(ClimberCommands.setClimberPos(climber, 0.0));
-    Keybinds.climberUp.whileTrue(ClimberCommands.runClimber(climber, -0.6));
+    Keybinds.climberUp.whileTrue(ClimberCommands.runClimber(climber, -1.0));
     Keybinds.climberDown.whileTrue(ClimberCommands.runClimber(climber, 0.6));
     // Keybinds.zeroClimber.onTrue(new InstantCommand(() -> {
     //   climber.zeroClimber();
