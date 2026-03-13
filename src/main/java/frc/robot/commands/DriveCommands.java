@@ -149,20 +149,21 @@ public class DriveCommands {
         .beforeStarting(() -> angleController.reset(drive.getRotation().getRadians()));
   }
 
-  /** This command snaps onto a given pose, useful for 2026 because we really only need to snap onto the hub ever... (turret for real) */
+  /** This command snaps onto a given static pose (like a pose from pathplanner easy way to make pose), useful for 2026 because we really only need to snap onto the hub ever... (turret for real) */
   public static Command turretDrive(
       DriveSubsystem drive,
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier thetaSupplier) {
     ProfiledPIDController angleController = new ProfiledPIDController(
-        ANGLE_KP,
+        3,
         0.0,
         ANGLE_KD,
         new TrapezoidProfile.Constraints(
             ANGLE_MAX_VELOCITY.in(RadiansPerSecond),
             ANGLE_MAX_ACCELERATION.in(RadiansPerSecondPerSecond)));
     angleController.enableContinuousInput(-Math.PI, Math.PI);
+    angleController.setTolerance(0.017);
 
     return Commands.run(
             () -> {

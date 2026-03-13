@@ -36,13 +36,15 @@ public class ShooterCommands {
         });
   }
 
-  public static Command runShooter(ShooterSubsystem shooterSubsystem, double speed) {
+  public static Command runShooter(ShooterSubsystem shooterSubsystem, double speed, double speed2) {
     return Commands.runEnd(
         () -> {
           shooterSubsystem.runShooter(speed);
+          shooterSubsystem.runShooter2(speed2);
         },
         () -> {
           shooterSubsystem.runShooter(0.0);
+          shooterSubsystem.runShooter2(0.0);
         });
   }
 }

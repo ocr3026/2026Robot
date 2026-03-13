@@ -31,7 +31,6 @@ import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.hopper.HopperSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
-import org.littletonrobotics.junction.Logger;
 
 public class AutoBase extends SequentialCommandGroup {
   static Timer timer = new Timer();
@@ -114,6 +113,38 @@ public class AutoBase extends SequentialCommandGroup {
             RobotContainer.shooterKickupSpeed));
   }
 
+  public static final ParallelCommandGroup stopHopperAndShooter(
+      HopperSubsystem hopper, ShooterSubsystem shooter) {
+    return new ParallelCommandGroup(
+        HopperCommands.runHopper(hopper, 0.0), ShooterCommands.shootFuel(shooter, 0.0, 0.0, 0.0));
+  }
+
+  public static final FunctionalCommand lowerIntake(IntakeSubsystem intake) {
+    return new FunctionalCommand(
+        () -> {},
+        () -> {
+          intake.runIntakeLiftUntil(RobotContainer.intakeLiftPos, -0.1);
+        },
+        (interrupted) -> {
+          intake.intakeLift(0.0);
+        },
+        () -> {
+          return (intake.getIntakeLiftPos() >= RobotContainer.intakeLiftPos);
+        });
+  }
+
+  // public static final Command raiseIntake(IntakeSubsystem intake) {
+  //   return new FunctionalCommand(() -> {}, () -> {
+  //     intake.runIntake
+  //   }, null, null, null);
+  // }
+
+  public static final ParallelCommandGroup shootAndIntakeUp(
+      ShooterSubsystem shooter, IntakeSubsystem intake, HopperSubsystem hopper) {
+    return new ParallelCommandGroup(
+        IntakeCommands.intakeRunLess(intake, -5, 0.1), runHopperAndShooter(hopper, shooter));
+  }
+
   public static final ParallelRaceGroup followPathAndIntake(
       PathPlannerPath path, IntakeSubsystem intake) {
     return new ParallelRaceGroup(
@@ -152,12 +183,6 @@ public class AutoBase extends SequentialCommandGroup {
   public static final Command setStartPose(PathPlannerPath path) {
     Pose2d holoPose = path.getStartingHolonomicPose().get();
     return AutoBuilder.resetOdom(holoPose);
-  }
-
-  public static final Command lowerIntake(IntakeSubsystem intake) {
-    // placeholder pos value, we need to measure real (in rotations)
-    Logger.recordOutput("IntakeLowerStatus", "Lowering intake!");
-    return IntakeCommands.intakeLiftPos(intake, -23);
   }
 
   public static final Command followPathLocked(

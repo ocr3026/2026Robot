@@ -5,10 +5,11 @@ import com.orangefrc.annotation.GSON;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -169,23 +170,29 @@ public class RobotContainer {
   private void configureBindings() {
     drive.setDefaultCommand(DriveCommands.joystickDrive(
         drive,
-        () -> -translationJoystick.getY(),
-        () -> -translationJoystick.getX(),
+        () -> translationJoystick.getY(),
+        () -> translationJoystick.getX(),
         () -> rotationJoystick.getX() * 0.8));
+
     Logger.recordOutput(
         "THe pose we get rotation from",
         Paths.aimTurret.getStartingHolonomicPose().get());
+
+    // 3.3meters
     Keybinds.lockOnHubDrive
         .whileTrue(DriveCommands.turretDrive(
             drive,
-            () -> -translationJoystick.getY(),
-            () -> -translationJoystick.getX(),
-            () -> drive.getDeltaRotation(
-                Paths.aimTurret.getStartingHolonomicPose().get(), drive.getPose())))
+            () -> translationJoystick.getY(),
+            () -> translationJoystick.getX(),
+            () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red
+                ? -drive.getDeltaRotation(
+                    Paths.aimTurret.getStartingHolonomicPose().get(), drive.getPose())
+                : drive.getDeltaRotation(
+                    Paths.aimTurret.getStartingHolonomicPose().get(), drive.getPose())))
         .whileFalse(DriveCommands.joystickDrive(
             drive,
-            () -> -translationJoystick.getY(),
-            () -> -translationJoystick.getX(),
+            () -> translationJoystick.getY(),
+            () -> translationJoystick.getX(),
             () -> rotationJoystick.getX() * 0.8));
     // drive.setDefaultCommand(DriveCommands.turretDrive(
     //     drive,
@@ -216,9 +223,16 @@ public class RobotContainer {
         ShooterCommands.shootFuel(shooter, shooterSpeed, shooter2Speed, shooterKickupSpeed),
         HopperCommands.runHopper(hopper, hopperSpeed)));
     Keybinds.shooterFlywheel.whileTrue(
-        ShooterCommands.runShooterKickup(shooter, shooterKickupSpeed));
+        ShooterCommands.runShooter(shooter, shooterSpeed, shooter2Speed));
 
-    // Keybinds.shootFuel.whileTrue(AutoBase.shootFuel(hopper, shooter));
+    // TODO: See if this command works .?
+    // Keybinds.shootFuel
+    //     .whileTrue(new ParallelCommandGroup(
+    //         IntakeCommands.intakeRunLess(intake, -5, 0.1),
+    //         AutoBase.runHopperAndShooter(hopper, shooter)))
+    //     .onFalse(new ParallelCommandGroup(
+    //         IntakeCommands.intakeRunLess(intake, -5, 0.0),
+    //         AutoBase.stopHopperAndShooter(hopper, shooter)));
 
     Keybinds.runHopper.whileTrue(HopperCommands.runHopper(hopper, hopperSpeed));
     Keybinds.reverseHopper.whileTrue(HopperCommands.reverseHopper(hopper, -hopperSpeed));
@@ -226,11 +240,11 @@ public class RobotContainer {
 
     // Keybinds.climberPosDown.whileTrue(ClimberCommands.setClimberPos(climber, climberPos));
     // Keybinds.climberPosUp.whileTrue(ClimberCommands.setClimberPos(climber, 0.0));
-    Keybinds.climberUp.whileTrue(ClimberCommands.runClimber(climber, -0.3));
-    Keybinds.climberDown.whileTrue(ClimberCommands.runClimber(climber, 0.3));
-    Keybinds.zeroClimber.onTrue(new InstantCommand(() -> {
-      climber.zeroClimber();
-    }));
+    Keybinds.climberUp.whileTrue(ClimberCommands.runClimber(climber, -0.6));
+    Keybinds.climberDown.whileTrue(ClimberCommands.runClimber(climber, 0.6));
+    // Keybinds.zeroClimber.onTrue(new InstantCommand(() -> {
+    //   climber.zeroClimber();
+    // }));
   }
 
   public Command getAutonomousCommand() {

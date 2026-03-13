@@ -42,6 +42,10 @@ public class IntakeSubsystem extends SubsystemBase {
     return io.getIntakePosition();
   }
 
+  public void intakeLiftDuty(double speed) {
+    io.runWhileGreater(speed, speed);
+  }
+
   public void intakeLiftPos(double pos) {
     io.setIntakeLiftPos(pos);
   }

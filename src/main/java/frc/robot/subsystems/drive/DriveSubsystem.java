@@ -267,6 +267,25 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
     return dTheta;
   }
 
+  public double getDistanceFromHub(Pose2d pose, Pose2d robotPose) {
+    Pose2d robotP = robotPose;
+
+    pose = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue
+        ? pose
+        : FlippingUtil.flipFieldPose(pose);
+
+    double poseX = pose.getX();
+    double poseY = pose.getY();
+
+    double robotX = robotP.getX();
+    double robotY = robotP.getY();
+
+    double insideSquareRoot = Math.pow(robotX - poseX, 2) + Math.pow(robotY - poseY, 2);
+
+    double sqrt = Math.sqrt(insideSquareRoot);
+    return sqrt;
+  }
+
   @Override
   public void periodic() {
     Logger.recordOutput(
@@ -274,6 +293,10 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
         getDeltaRotation(Paths.aimTurret.getStartingHolonomicPose().get(), getPose()));
     // boolean isWriteable = file.setWritable(true);
     Logger.recordOutput("PIDJson/fileWriteable", file.canWrite());
+
+    Logger.recordOutput(
+        "currentDistFromHub",
+        getDistanceFromHub(Paths.aimTurret.getStartingHolonomicPose().get(), getPose()));
 
     if (SmartDashboard.getNumber("changeSP", 0.0) != updateSteerP
         || SmartDashboard.getNumber("changeSI", 0.0) != updateSteerI
