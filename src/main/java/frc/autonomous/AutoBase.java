@@ -200,25 +200,26 @@ public class AutoBase extends SequentialCommandGroup {
         });
   }
 
+
+  /** @param drive DriveSubsystem 
+   * @param poseToLockOnTo The starting pose of the path that you want the robot to lock on to 
+   * @param poseToPathfindTo The starting pose of the path that you want to end up at */
   public static final Command pathFindToPoseLocked(
-      DriveSubsystem drive, PathPlannerPath posePath, PathPlannerPath path) {
+      DriveSubsystem drive, PathPlannerPath poseToLockOnTo, PathPlannerPath poseToPathfindTo) {
     angleController.enableContinuousInput(-Math.PI, Math.PI);
-    Pose2d pose = new Pose2d(
-        path.getStartingHolonomicPose().get().getX(),
-        path.getStartingHolonomicPose().get().getY(),
-        drive.getPose().getRotation());
+
     return AutoBuilder.pathfindToPoseFlipped(
             new Pose2d(
-                path.getStartingHolonomicPose().get().getX(),
-                path.getStartingHolonomicPose().get().getY(),
+                poseToPathfindTo.getStartingHolonomicPose().get().getX(),
+                poseToPathfindTo.getStartingHolonomicPose().get().getY(),
                 new Rotation2d(drive.getTargetRotation(
-                    posePath.getStartingHolonomicPose().get(),
-                    path.getStartingHolonomicPose().get()))),
+                    poseToLockOnTo.getStartingHolonomicPose().get(),
+                    poseToPathfindTo.getStartingHolonomicPose().get()))),
             DriveConstants.PATH_CONSTRAINTS)
         .beforeStarting(() -> {
           PPHolonomicDriveController.overrideRotationFeedback(() -> angleController.calculate(
               0,
-              drive.getDeltaRotation(posePath.getStartingHolonomicPose().get(), drive.getPose())));
+              drive.getDeltaRotation(poseToLockOnTo.getStartingHolonomicPose().get(), drive.getPose())));
         })
         .finallyDo(() -> {
           PPHolonomicDriveController.clearRotationFeedbackOverride();
@@ -247,5 +248,6 @@ public class AutoBase extends SequentialCommandGroup {
     public static final PathPlannerPath rightShoot = getPathFromFile("RightShoot");
     public static final PathPlannerPath midRightPickup = getPathFromFile("RightMidPickup");
     public static final PathPlannerPath aimTurret = getPathFromFile("Turret Aim Point");
+    public static final PathPlannerPath leftShoot = getPathFromFile("LeftShoot");
   }
 }
