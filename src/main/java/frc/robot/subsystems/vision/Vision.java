@@ -108,9 +108,12 @@ public class Vision extends SubsystemBase {
           linearStdDev *= VisionConstants.cameraStdDevFactors[cameraIndex];
           angularStdDev *= VisionConstants.cameraStdDevFactors[cameraIndex];
         }
-
+        Pose2d poseObs = new Pose2d(
+            observation.pose().toPose2d().getX(),
+            observation.pose().toPose2d().getY(),
+            observation.pose().toPose2d().getRotation().plus(new Rotation2d(Math.PI)));
         consumer.accept(
-            observation.pose().toPose2d(),
+            poseObs,
             observation.timestamp(),
             VecBuilder.fill(linearStdDev, linearStdDev, angularStdDev));
       }

@@ -1,3 +1,4 @@
+/* Generated and Formatted by yours truly <3*/
 package frc.autonomous;
 
 import frc.robot.subsystems.drive.DriveSubsystem;
@@ -5,8 +6,9 @@ import frc.robot.subsystems.hopper.HopperSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 
-public class LeftBackAndShoot extends AutoBase{
-    public LeftBackAndShoot(
+public class DriveBackAndShoot extends AutoBase {
+
+  public DriveBackAndShoot(
       HopperSubsystem hopper,
       ShooterSubsystem shooter,
       IntakeSubsystem intake,

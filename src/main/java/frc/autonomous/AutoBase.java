@@ -22,7 +22,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.RobotContainer;
+import frc.robot.ZRobotContainerAbstract.RobotContainerAbstract;
 import frc.robot.commands.HopperCommands;
 import frc.robot.commands.IntakeCommands;
 import frc.robot.commands.ShooterCommands;
@@ -105,12 +105,12 @@ public class AutoBase extends SequentialCommandGroup {
   public static final ParallelCommandGroup runHopperAndShooter(
       HopperSubsystem hopper, ShooterSubsystem shooter) {
     return new ParallelCommandGroup(
-        HopperCommands.runHopper(hopper, RobotContainer.hopperSpeed),
+        HopperCommands.runHopper(hopper, RobotContainerAbstract.hopperSpeed),
         ShooterCommands.shootFuel(
             shooter,
-            RobotContainer.shooterSpeed,
-            RobotContainer.shooter2Speed,
-            RobotContainer.shooterKickupSpeed));
+            RobotContainerAbstract.shooterSpeed,
+            RobotContainerAbstract.shooter2Speed,
+            RobotContainerAbstract.shooterKickupSpeed));
   }
 
   public static final ParallelCommandGroup stopHopperAndShooter(
@@ -123,13 +123,13 @@ public class AutoBase extends SequentialCommandGroup {
     return new FunctionalCommand(
         () -> {},
         () -> {
-          intake.runIntakeLiftUntil(RobotContainer.intakeLiftPos, -0.1);
+          intake.runIntakeLiftUntil(RobotContainerAbstract.intakeLiftPos, -0.1);
         },
         (interrupted) -> {
           intake.intakeLift(0.0);
         },
         () -> {
-          return (intake.getIntakeLiftPos() >= RobotContainer.intakeLiftPos);
+          return (intake.getIntakeLiftPos() >= RobotContainerAbstract.intakeLiftPos);
         });
   }
 
@@ -148,7 +148,7 @@ public class AutoBase extends SequentialCommandGroup {
   public static final ParallelRaceGroup followPathAndIntake(
       PathPlannerPath path, IntakeSubsystem intake) {
     return new ParallelRaceGroup(
-        followPath(path), IntakeCommands.intakeFuel(intake, RobotContainer.intakeSpeed));
+        followPath(path), IntakeCommands.intakeFuel(intake, RobotContainerAbstract.intakeSpeed));
   }
 
   public static final FunctionalCommand shootFuel(
@@ -200,9 +200,8 @@ public class AutoBase extends SequentialCommandGroup {
         });
   }
 
-
-  /** @param drive DriveSubsystem 
-   * @param poseToLockOnTo The starting pose of the path that you want the robot to lock on to 
+  /** @param drive DriveSubsystem
+   * @param poseToLockOnTo The starting pose of the path that you want the robot to lock on to
    * @param poseToPathfindTo The starting pose of the path that you want to end up at */
   public static final Command pathFindToPoseLocked(
       DriveSubsystem drive, PathPlannerPath poseToLockOnTo, PathPlannerPath poseToPathfindTo) {
@@ -219,7 +218,8 @@ public class AutoBase extends SequentialCommandGroup {
         .beforeStarting(() -> {
           PPHolonomicDriveController.overrideRotationFeedback(() -> angleController.calculate(
               0,
-              drive.getDeltaRotation(poseToLockOnTo.getStartingHolonomicPose().get(), drive.getPose())));
+              drive.getDeltaRotation(
+                  poseToLockOnTo.getStartingHolonomicPose().get(), drive.getPose())));
         })
         .finallyDo(() -> {
           PPHolonomicDriveController.clearRotationFeedbackOverride();

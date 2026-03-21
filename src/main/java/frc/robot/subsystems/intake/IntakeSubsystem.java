@@ -79,8 +79,8 @@ public class IntakeSubsystem extends SubsystemBase {
     io.updateInputs(inputs);
     io.getIntakePosition();
     Logger.processInputs("Intake", inputs);
-    Logger.recordOutput("Intake Input Lift Pos", inputs.intakeLiftPosition);
-    Logger.recordOutput("Intake Lift Pos Raw", io.getIntakePosition());
+    // Logger.recordOutput("Intake Input Lift Pos", inputs.intakeLiftPosition);
+    // Logger.recordOutput("Intake Lift Pos Raw", io.getIntakePosition());
   }
 
   @Override

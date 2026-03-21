@@ -18,4 +18,6 @@ public class Constants {
   }
 
   public static final Frequency logFrequency = Hertz.of(50);
+
+  public static boolean hasConfiguredAutobuilder = false;
 }

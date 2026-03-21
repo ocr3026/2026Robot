@@ -4,12 +4,20 @@ package frc.robot;
 import edu.wpi.first.wpilibj.Threads;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.ZRobotContainerAbstract.RobotContainer;
+import frc.robot.ZRobotContainerAbstract.RobotContainerAbstract;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Set;
 import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.LoggedRobot;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
+import org.reflections.Reflections;
+import org.reflections.scanners.Scanners;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
 
 public class Robot extends LoggedRobot {
   private Command autonomousCommand;
@@ -59,7 +67,7 @@ public class Robot extends LoggedRobot {
 
     Logger.start();
 
-    robotContainer = new RobotContainer();
+    robotContainer = new RobotContainer(findAllSubClasses());
   }
 
   @Override
@@ -134,5 +142,33 @@ public class Robot extends LoggedRobot {
   @Override
   public void simulationPeriodic() {
     robotContainer.updateSimulation();
+  }
+
+  private RobotContainerAbstract[] findAllSubClasses() {
+    RobotContainerAbstract[] arr;
+    Reflections reflection = new Reflections(new ConfigurationBuilder()
+        .setUrls(ClasspathHelper.forPackage("frc.robot.ZRobotContainerAbstract"))
+        .setScanners(Scanners.SubTypes));
+    Set<Class<?>> subClasses =
+        reflection.get(Scanners.SubTypes.of(RobotContainerAbstract.class).asClass());
+    arr = new RobotContainerAbstract[subClasses.size()];
+    int index = 0;
+    for (Class<?> subClass : subClasses) {
+      System.out.println(subClass.getSimpleName());
+      try {
+        arr[index] = (RobotContainerAbstract) (subClass.getDeclaredConstructor().newInstance());
+        index++;
+      } catch (InstantiationException
+          | IllegalAccessException
+          | IllegalArgumentException
+          | InvocationTargetException
+          | NoSuchMethodException
+          | SecurityException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+      }
+    }
+
+    return arr;
   }
 }

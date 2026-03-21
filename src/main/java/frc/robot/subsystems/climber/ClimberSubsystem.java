@@ -1,10 +1,7 @@
 /* Generated and Formatted by yours truly <3*/
 package frc.robot.subsystems.climber;
 
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-
 import com.orangefrc.annotation.GenerateJson;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import org.littletonrobotics.junction.Logger;
 
@@ -56,9 +53,10 @@ public class ClimberSubsystem extends SubsystemBase {
     // }
     io.updateInputs(inputs);
     Logger.processInputs("Climber", inputs);
-    SmartDashboard.putNumber("ClimberSetpoint", io.getSetpoint());
-    SmartDashboard.putNumber(
-        "ClimberError", (io.getSetpoint() - (60 * inputs.climberVelocity.in(RotationsPerSecond))));
+    // SmartDashboard.putNumber("ClimberSetpoint", io.getSetpoint());
+    // SmartDashboard.putNumber(
+    //     "ClimberError", (io.getSetpoint() - (60 *
+    // inputs.climberVelocity.in(RotationsPerSecond))));
   }
 
   @Override

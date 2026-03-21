@@ -9,6 +9,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.sim.CANcoderSimState;
 import com.ctre.phoenix6.sim.TalonFXSimState;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.revrobotics.REVLibError;
 import com.revrobotics.spark.SparkBase;
 import edu.wpi.first.units.measure.Angle;
@@ -16,11 +17,13 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.generated.TunerConstants;
 import java.util.function.Supplier;
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.motorsims.SimulatedBattery;
 import org.ironmaple.simulation.motorsims.SimulatedMotorController;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 public final class Util {
   public static void tryUntilOk(int maxAttempts, Supplier<StatusCode> command) {
@@ -39,6 +42,20 @@ public final class Util {
         break;
       } else {
         sparkStickyFault = true;
+      }
+    }
+  }
+
+  public static void tryUntilOk(LoggedDashboardChooser<Command> autoChooser) {
+    boolean hasSucceeded = false;
+    while (hasSucceeded) {
+      try {
+        autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
+        hasSucceeded = true;
+        break;
+      } catch (RuntimeException e) {
+        System.out.println(e.getStackTrace());
+        hasSucceeded = false;
       }
     }
   }

@@ -43,10 +43,8 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.vision.*;
 import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Reader;
-import java.io.Writer;
 import java.util.Arrays;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -85,14 +83,14 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
 
   private final Field2d field = new Field2d();
 
-  public static double updateSteerP = 0.0f;
-  public static double updateSteerI = 0.0f;
-  public static double updateSteerD = 0.0f;
+  public double updateSteerP = 0.0f;
+  public double updateSteerI = 0.0f;
+  public double updateSteerD = 0.0f;
 
-  public static double updateDriveP = 0.0f;
-  public static double updateDriveI = 0.0f;
-  public static double updateDriveD = 0.0f;
-  public static double updateDriveV = 0.0f;
+  public double updateDriveP = 0.0f;
+  public double updateDriveI = 0.0f;
+  public double updateDriveD = 0.0f;
+  public double updateDriveV = 0.0f;
 
   PIDJson updateJson = new PIDJson(
       updateDriveP,
@@ -116,6 +114,8 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
     modules[1] = new Module(frModuleIO, 1, TunerConstants.FrontRight);
     modules[2] = new Module(rlModuleIO, 2, TunerConstants.BackLeft);
     modules[3] = new Module(rrModuleIO, 3, TunerConstants.BackRight);
+
+    Constants.hasConfiguredAutobuilder = false;
     // var status = DriveConstants.m_orchestra.loadMusic("YaketySax.chrp");
     // if (!status.isOK()) {
     //     // log error
@@ -196,6 +196,8 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
         this);
 
+    Constants.hasConfiguredAutobuilder = true;
+
     Pathfinding.setPathfinder(new LocalADStarAK());
     PathPlannerLogging.setLogActivePathCallback((activePath) -> {
       Logger.recordOutput("Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
@@ -231,7 +233,7 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
 
     double robotToPoseTheta = Math.atan2(dY, dX);
 
-    return robotToPoseTheta;
+    return (robotToPoseTheta);
   }
 
   public double getDeltaRotation(Pose2d pose, Pose2d robotPose) {
@@ -250,7 +252,7 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
     Logger.recordOutput("TypeScript/dX", dX);
     Logger.recordOutput("TypeScript/dY", dY);
 
-    double rTheta = robotP.getRotation().getRadians();
+    double rTheta = robotP.getRotation().minus(new Rotation2d(Math.PI)).getRadians();
 
     double robotToPoseTheta = Math.atan2(dY, dX);
 
@@ -259,7 +261,7 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
     int base = (int) (rTheta / (Math.PI * 2));
     double subtract = (base * Math.PI * 2);
 
-    rTheta = rTheta - subtract;
+    // rTheta = rTheta - subtract;
     Logger.recordOutput("TypeScript/NormalizedTheta", rTheta);
 
     double dTheta = -rTheta + robotToPoseTheta;
@@ -291,75 +293,81 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
     Logger.recordOutput(
         "TypeScript/Dtheta",
         getDeltaRotation(Paths.aimTurret.getStartingHolonomicPose().get(), getPose()));
-    // boolean isWriteable = file.setWritable(true);
-    Logger.recordOutput("PIDJson/fileWriteable", file.canWrite());
+    // // boolean isWriteable = file.setWritable(true);
+    // Logger.recordOutput("PIDJson/fileWriteable", file.canWrite());
 
+    // Logger.recordOutput(
+    //     "currentDistFromHub",
+    //     getDistanceFromHub(Paths.aimTurret.getStartingHolonomicPose().get(), getPose()));
+
+    // if (SmartDashboard.getNumber("changeSP", 0.0) != updateSteerP
+    //     || SmartDashboard.getNumber("changeSI", 0.0) != updateSteerI
+    //     || SmartDashboard.getNumber("changeSD", 0.0) != updateSteerD
+    //     || SmartDashboard.getNumber("changeDP", 0.0) != updateDriveP
+    //     || SmartDashboard.getNumber("changeDI", 0.0) != updateDriveI
+    //     || SmartDashboard.getNumber("changeDD", 0.0) != updateDriveD
+    //     || SmartDashboard.getNumber("changeDV", 0.0) != updateDriveV) {
+    //   updateSteerP = SmartDashboard.getNumber("changeSP", 0.0);
+    //   updateSteerI = SmartDashboard.getNumber("changeSI", 0.0);
+    //   updateSteerD = SmartDashboard.getNumber("changeSD", 0.0);
+
+    //   updateDriveP = SmartDashboard.getNumber("changeDP", 0.0);
+    //   updateDriveI = SmartDashboard.getNumber("changeDI", 0.0);
+    //   updateDriveD = SmartDashboard.getNumber("changeDD", 0.0);
+    //   updateDriveV = SmartDashboard.getNumber("changeDV", 0.0);
+    //   updateJson = new PIDJson(
+    //       updateDriveP,
+    //       updateDriveI,
+    //       updateDriveD,
+    //       updateDriveV,
+    //       updateSteerP,
+    //       updateSteerI,
+    //       updateSteerD);
+
+    //   // write to file
+    //   try (Writer writer = new FileWriter(TunerConstants.filePath)) {
+    //     TunerConstants.gson.toJson(updateJson, writer);
+    //     writer.close();
+    //   } catch (IOException e) {
+    //     Logger.recordOutput(
+    //         "PIDJson/Error",
+    //         Arrays.stream(e.getStackTrace())
+    //             .map(StackTraceElement::toString)
+    //             .collect(Collectors.joining(System.lineSeparator() + "\tat")));
+    //   }
+    //   Logger.recordOutput("PIDJson/fileP", updateSteerP);
+
+    //   TunerConstants.steerGains = new Slot0Configs()
+    //       .withKP(updateSteerP)
+    //       .withKI(updateSteerI)
+    //       .withKD(updateSteerD)
+    //       .withKS(TunerConstants.skS)
+    //       .withKV(TunerConstants.skV)
+    //       .withKA(TunerConstants.skA)
+    //       .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
+
+    //   TunerConstants.driveGains = new Slot0Configs()
+    //       .withKP(updateDriveP)
+    //       .withKI(updateDriveI)
+    //       .withKD(updateDriveD)
+    //       .withKS(TunerConstants.dkS)
+    //       .withKV(updateDriveV);
+
+    //   int x = 0;
+    //   for (Module m : modules) {
+    //     x++;
+    //     m.constants.withSteerMotorGains(TunerConstants.steerGains);
+    //     m.constants.withDriveMotorGains(TunerConstants.driveGains);
+    //     m.updatePID();
+    //     Logger.recordOutput("PIDJson/SteerGains" + x, m.constants.SteerMotorGains.kP);
+    //   }
+    // }
+    Logger.recordOutput("Odometry for somereason not wokring", getPose());
     Logger.recordOutput(
-        "currentDistFromHub",
-        getDistanceFromHub(Paths.aimTurret.getStartingHolonomicPose().get(), getPose()));
-
-    if (SmartDashboard.getNumber("changeSP", 0.0) != updateSteerP
-        || SmartDashboard.getNumber("changeSI", 0.0) != updateSteerI
-        || SmartDashboard.getNumber("changeSD", 0.0) != updateSteerD
-        || SmartDashboard.getNumber("changeDP", 0.0) != updateDriveP
-        || SmartDashboard.getNumber("changeDI", 0.0) != updateDriveI
-        || SmartDashboard.getNumber("changeDD", 0.0) != updateDriveD
-        || SmartDashboard.getNumber("changeDV", 0.0) != updateDriveV) {
-      updateSteerP = SmartDashboard.getNumber("changeSP", 0.0);
-      updateSteerI = SmartDashboard.getNumber("changeSI", 0.0);
-      updateSteerD = SmartDashboard.getNumber("changeSD", 0.0);
-
-      updateDriveP = SmartDashboard.getNumber("changeDP", 0.0);
-      updateDriveI = SmartDashboard.getNumber("changeDI", 0.0);
-      updateDriveD = SmartDashboard.getNumber("changeDD", 0.0);
-      updateDriveV = SmartDashboard.getNumber("changeDV", 0.0);
-      updateJson = new PIDJson(
-          updateDriveP,
-          updateDriveI,
-          updateDriveD,
-          updateDriveV,
-          updateSteerP,
-          updateSteerI,
-          updateSteerD);
-
-      // write to file
-      try (Writer writer = new FileWriter(TunerConstants.filePath)) {
-        TunerConstants.gson.toJson(updateJson, writer);
-        writer.close();
-      } catch (IOException e) {
-        Logger.recordOutput(
-            "PIDJson/Error",
-            Arrays.stream(e.getStackTrace())
-                .map(StackTraceElement::toString)
-                .collect(Collectors.joining(System.lineSeparator() + "\tat")));
-      }
-      Logger.recordOutput("PIDJson/fileP", updateSteerP);
-
-      TunerConstants.steerGains = new Slot0Configs()
-          .withKP(updateSteerP)
-          .withKI(updateSteerI)
-          .withKD(updateSteerD)
-          .withKS(TunerConstants.skS)
-          .withKV(TunerConstants.skV)
-          .withKA(TunerConstants.skA)
-          .withStaticFeedforwardSign(StaticFeedforwardSignValue.UseClosedLoopSign);
-
-      TunerConstants.driveGains = new Slot0Configs()
-          .withKP(updateDriveP)
-          .withKI(updateDriveI)
-          .withKD(updateDriveD)
-          .withKS(TunerConstants.dkS)
-          .withKV(updateDriveV);
-
-      int x = 0;
-      for (Module m : modules) {
-        x++;
-        m.constants.withSteerMotorGains(TunerConstants.steerGains);
-        m.constants.withDriveMotorGains(TunerConstants.driveGains);
-        m.updatePID();
-        Logger.recordOutput("PIDJson/SteerGains" + x, m.constants.SteerMotorGains.kP);
-      }
-    }
+        "InRangeHub",
+        (3.1 < getDistanceFromHub(Paths.aimTurret.getStartingHolonomicPose().get(), getPose())
+            && getDistanceFromHub(Paths.aimTurret.getStartingHolonomicPose().get(), getPose())
+                < 3.5));
     odometryLock.lock();
     gyroIO.updateInputs(gyroInputs);
     Logger.processInputs("Drive/Gyro", gyroInputs);
@@ -368,7 +376,7 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
     }
     odometryLock.unlock();
 
-    Logger.recordOutput("PIDJson/realP", TunerConstants.steerGains.kP);
+    // Logger.recordOutput("PIDJson/realP", TunerConstants.steerGains.kP);
 
     // stops all modules if driver station is disabled
     if (DriverStation.isDisabled()) {
@@ -544,7 +552,7 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
   }
 
   /** Returns an array of module translations. */
-  public static Translation2d[] getModuleTranslations() {
+  public Translation2d[] getModuleTranslations() {
     return new Translation2d[] {
       new Translation2d(TunerConstants.FrontLeft.LocationX, TunerConstants.FrontLeft.LocationY),
       new Translation2d(TunerConstants.FrontRight.LocationX, TunerConstants.FrontRight.LocationY),

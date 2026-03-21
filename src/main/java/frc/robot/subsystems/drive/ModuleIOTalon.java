@@ -142,7 +142,7 @@ public class ModuleIOTalon implements ModuleIO {
     BaseStatusSignal.setUpdateFrequencyForAll(
         DriveConstants.odometryFrequency, turnAbsolutePosition, drivePosition);
     BaseStatusSignal.setUpdateFrequencyForAll(
-        50.0,
+        10.0,
         driveVelocity,
         driveAppliedVolts,
         driveCurrent,

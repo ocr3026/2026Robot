@@ -4,6 +4,7 @@ package frc.robot.commands;
 import static edu.wpi.first.units.Units.*;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -155,40 +156,66 @@ public class DriveCommands {
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier thetaSupplier) {
-    ProfiledPIDController angleController = new ProfiledPIDController(
-        3,
-        0.0,
-        ANGLE_KD,
-        new TrapezoidProfile.Constraints(
-            ANGLE_MAX_VELOCITY.in(RadiansPerSecond),
-            ANGLE_MAX_ACCELERATION.in(RadiansPerSecondPerSecond)));
+    // ProfiledPIDController angleController = new ProfiledPIDController(
+    //     0.4,
+    //     0.0,
+    //     0.0,
+    //     new TrapezoidProfile.Constraints(
+    //         ANGLE_MAX_VELOCITY.in(RadiansPerSecond) * 0.1,
+    //         ANGLE_MAX_ACCELERATION.in(RadiansPerSecondPerSecond) * 0.25));
+    PIDController angleController = new PIDController(ANGLE_KP, 0, ANGLE_KD);
     angleController.enableContinuousInput(-Math.PI, Math.PI);
-    angleController.setTolerance(0.017);
+    // angleController.disableContinuousInput();
+    angleController.setTolerance(0.025);
+    // angleController.reset(
+    //     drive.getPose().getRotation().minus(new Rotation2d(Math.PI)).getRadians());
 
     return Commands.run(
             () -> {
               Translation2d linearVelocity =
                   getLinearVelocityFromJoysticks(xSupplier.getAsDouble(), ySupplier.getAsDouble());
+              boolean isFlipped = DriverStation.getAlliance().isPresent()
+                  && DriverStation.getAlliance().get() == Alliance.Red;
 
-              double omega = angleController.calculate(-thetaSupplier.getAsDouble(), 0);
+              // double omega = angleController.calculate(
+              //     isFlipped ? -thetaSupplier.getAsDouble() : thetaSupplier.getAsDouble(), 0);
+              double omega = -angleController.calculate(
+                  drive.getPose().getRotation().minus(new Rotation2d(Math.PI)).getRadians(),
+                  thetaSupplier.getAsDouble());
 
               ChassisSpeeds speeds = new ChassisSpeeds(
                   linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
                   linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
                   omega);
-
-              boolean isFlipped = DriverStation.getAlliance().isPresent()
-                  && DriverStation.getAlliance().get() == Alliance.Red;
-              drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(
-                  speeds,
-                  isFlipped
-                      ? drive.getRotation().plus(new Rotation2d(Math.PI))
-                      : drive.getRotation()));
+              System.out.println(" \nRobotAngle: "
+                  + drive.getPose().getRotation().minus(new Rotation2d(Math.PI)).getRadians()
+                  + " \nSetpoint angle: " + angleController.getSetpoint()
+                  + " \nError: " + angleController.getPositionError());
+              if (!angleController.atSetpoint()) {
+                drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(
+                    speeds,
+                    isFlipped
+                        ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                        : drive.getRotation()));
+              } else {
+                speeds = new ChassisSpeeds(
+                    linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
+                    linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
+                    0);
+                drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(
+                    speeds,
+                    isFlipped
+                        ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                        : drive.getRotation()));
+              }
             },
             drive)
+        .finallyDo(() -> {
+          angleController.close();
+        });
 
-        // Reset PID controller when command starts
-        .beforeStarting(() -> angleController.reset(drive.getRotation().getRadians()));
+    // Reset PID controller when command starts
+    // .beforeStarting(() -> angleController.reset(drive.getRotation().getRadians()));
   }
 
   public static Command feedforwardCharacterization(DriveSubsystem drive) {
