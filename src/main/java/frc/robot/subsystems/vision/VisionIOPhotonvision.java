@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.MultiTargetPNPResult;
 import org.photonvision.targeting.PhotonPipelineResult;
@@ -44,6 +45,7 @@ public class VisionIOPhotonvision implements VisionIO {
         MultiTargetPNPResult multitagResult = result.multitagResult.get();
 
         Transform3d fieldToCamera = multitagResult.estimatedPose.best;
+        Logger.recordOutput("fieldToCamera aaa", fieldToCamera);
         Transform3d fieldToRobot = fieldToCamera.plus(robotToCamera.inverse());
         Pose3d robotPose = new Pose3d(fieldToRobot.getTranslation(), fieldToRobot.getRotation());
 
@@ -61,13 +63,16 @@ public class VisionIOPhotonvision implements VisionIO {
             multitagResult.fiducialIDsUsed.size(),
             totalTagDistance / result.targets.size(),
             PoseObservationType.PHOTONVISION));
+
       } else if (!result.targets.isEmpty()) {
         PhotonTrackedTarget target = result.targets.get(0);
 
         Optional<Pose3d> tagPose = VisionConstants.aprilTagLayout.getTagPose(target.fiducialId);
+
         if (tagPose.isPresent()) {
           Transform3d fieldToTarget =
               new Transform3d(tagPose.get().getTranslation(), tagPose.get().getRotation());
+
           Transform3d cameraToTarget = target.bestCameraToTarget;
           Transform3d fieldToCamera = fieldToTarget.plus(cameraToTarget.inverse());
           Transform3d fieldToRobot = fieldToCamera.plus(robotToCamera.inverse());

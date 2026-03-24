@@ -7,6 +7,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 
@@ -18,12 +19,9 @@ public final class VisionConstants {
 
   public static String camera0Name = "AprilTagWebcam";
 
-  // TODO: UPDAET THESE
   public static Transform3d robotToCamera0 = new Transform3d(
-      Inches.of(12.5).in(Meters),
-      Inches.of(-4.5).in(Meters),
-      Inches.of(12.5).in(Meters),
-      new Rotation3d(0, 0, 0));
+          new Translation3d(0.322175, -0.046373, 0.222987),
+          new Rotation3d(0.009869, 0.022058, -0.011891));
 
   public static double maxAmbiguity = 0.3;
   public static double maxZError = 0.75;
@@ -33,6 +31,6 @@ public final class VisionConstants {
 
   public static double[] cameraStdDevFactors = new double[] {1.0, 1.0};
 
-  public static double linearStdDevMegatag2Factor = 0.5;
-  public static double angularStdDevMegatag2Factor = Double.POSITIVE_INFINITY;
+  // public static double linearStdDevMegatag2Factor = 0.5;
+  // public static double angularStdDevMegatag2Factor = Double.POSITIVE_INFINITY;
 }

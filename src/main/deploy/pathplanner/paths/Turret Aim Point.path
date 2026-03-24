@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.587858229086433,
-        "y": 4.0602350756148216
+        "x": 4.626,
+        "y": 4.035
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.587858229086434,
-        "y": 4.0602350756148216
+        "x": 5.626000000000001,
+        "y": 4.035
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "HubPose"
     },
     {
       "anchor": {

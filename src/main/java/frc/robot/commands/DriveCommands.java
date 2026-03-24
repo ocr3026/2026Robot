@@ -166,7 +166,7 @@ public class DriveCommands {
     PIDController angleController = new PIDController(ANGLE_KP, 0, ANGLE_KD);
     angleController.enableContinuousInput(-Math.PI, Math.PI);
     // angleController.disableContinuousInput();
-    angleController.setTolerance(0.025);
+    angleController.setTolerance(0.0);
     // angleController.reset(
     //     drive.getPose().getRotation().minus(new Rotation2d(Math.PI)).getRadians());
 
@@ -190,7 +190,7 @@ public class DriveCommands {
               System.out.println(" \nRobotAngle: "
                   + drive.getPose().getRotation().minus(new Rotation2d(Math.PI)).getRadians()
                   + " \nSetpoint angle: " + angleController.getSetpoint()
-                  + " \nError: " + angleController.getPositionError());
+                  + " \nError: " + angleController.getError());
               if (!angleController.atSetpoint()) {
                 drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(
                     speeds,

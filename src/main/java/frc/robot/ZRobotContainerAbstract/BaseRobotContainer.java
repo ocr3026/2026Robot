@@ -7,7 +7,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Commands;
-import frc.autonomous.AutoBase.Paths;
 import frc.robot.Constants;
 import frc.robot.Keybinds;
 import frc.robot.commands.DriveCommands;
@@ -111,9 +110,7 @@ public class BaseRobotContainer extends RobotContainerAbstract {
         () -> -translationJoystick.getX(),
         () -> rotationJoystick.getX() * 0.8));
 
-    Logger.recordOutput(
-        "THe pose we get rotation from",
-        Paths.aimTurret.getStartingHolonomicPose().get());
+    Logger.recordOutput("THe pose we get rotation from", DriveConstants.hubPose);
 
     // 3.3meters
     Keybinds.lockOnHubDrive
@@ -122,10 +119,8 @@ public class BaseRobotContainer extends RobotContainerAbstract {
             () -> -translationJoystick.getY(),
             () -> -translationJoystick.getX(),
             () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red
-                ? drive.getTargetRotation(
-                    Paths.aimTurret.getStartingHolonomicPose().get(), drive.getPose())
-                : drive.getTargetRotation(
-                    Paths.aimTurret.getStartingHolonomicPose().get(), drive.getPose())))
+                ? drive.getTargetRotation(DriveConstants.hubPose, drive.getPose())
+                : drive.getTargetRotation(DriveConstants.hubPose, drive.getPose())))
         .whileFalse(DriveCommands.joystickDrive(
             drive,
             () -> -translationJoystick.getY(),

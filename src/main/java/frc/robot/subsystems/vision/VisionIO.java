@@ -18,6 +18,13 @@ public interface VisionIO {
 
   record TargetObservation(Rotation2d tx, Rotation2d ty, Transform3d t3d) {}
 
+  /** @param timestamp The timestamp from the pose
+   * @param pose The pose that was observed
+   * @param ambiguity The ambiguity recorded from the pose
+   * @param tagCount how many tags were record for this pose observation
+   * @param averageTagDistance The average distance from the tags
+   * @param type from where the tag came from (Photonvision, Megatag (Limelight))
+   */
   record PoseObservation(
       double timestamp,
       Pose3d pose,

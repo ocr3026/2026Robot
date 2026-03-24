@@ -6,6 +6,8 @@ import static edu.wpi.first.units.Units.*;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.path.PathConstraints;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.units.measure.Distance;
@@ -40,6 +42,7 @@ public class DriveConstants {
         trackWidth.div(2).unaryMinus().in(Meters), wheelBase.div(2).unaryMinus().in(Meters))
   };
 
+  public static final Pose2d hubPose = new Pose2d(4.626, 4.035, new Rotation2d());
   // Radius of Drive Base
   public static final Distance DRIVE_BASE_RADIUS = Meters.of(Math.max(
       Math.max(
