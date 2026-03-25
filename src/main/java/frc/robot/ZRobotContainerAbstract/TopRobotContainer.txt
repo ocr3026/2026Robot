@@ -1,4 +1,4 @@
-package frc.robot.RobotContainerAbstract;
+package frc.robot.ZRobotContainerAbstract;
 
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
@@ -43,59 +43,6 @@ import frc.robot.subsystems.vision.VisionIOPhotonvisionSim;
 
 public class TopRobotContainer extends RobotContainerAbstract{
     
-    @Override
-    public void initTop() {
-        switch (Constants.currentMode) {
-      case REAL:
-        hopper = new HopperSubsystem(new HopperIOSpark());
-        shooter = new ShooterSubsystem(new ShooterIOSpark());
-        intake = new IntakeSubsystem(new IntakeIOSpark());
-        climber = new ClimberSubsystem(new ClimberIOTalon());
-        GSON.createDir();
-        break;
-      case SIM:
-        driveSimulation = new SwerveDriveSimulation(
-            DriveConstants.mapleSimConfig, new Pose2d(3, 3, new Rotation2d()));
-        SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
-        drive = new DriveSubsystem(
-            new GyroIOSim(driveSimulation.getGyroSimulation()),
-            new ModuleIOSim(TunerConstants.FrontLeft, driveSimulation.getModules()[0]),
-            new ModuleIOSim(TunerConstants.FrontRight, driveSimulation.getModules()[1]),
-            new ModuleIOSim(TunerConstants.BackLeft, driveSimulation.getModules()[2]),
-            new ModuleIOSim(TunerConstants.BackRight, driveSimulation.getModules()[3]),
-            driveSimulation::setSimulationWorldPose);
-
-        hopper = new HopperSubsystem(new HopperIOSim());
-        shooter = new ShooterSubsystem(new ShooterIOSim());
-        intake = new IntakeSubsystem(new IntakeIOSim());
-        climber = new ClimberSubsystem(new ClimberIOSim());
-
-        vision = new Vision(
-            drive,
-            new VisionIOPhotonvisionSim(
-                VisionConstants.camera0Name,
-                VisionConstants.robotToCamera0,
-                driveSimulation::getSimulatedDriveTrainPose));
-
-        break;
-      default:
-        drive = new DriveSubsystem(
-            new GyroIO() {},
-            new ModuleIO() {},
-            new ModuleIO() {},
-            new ModuleIO() {},
-            new ModuleIO() {},
-            (pose) -> {});
-        vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
-        hopper = new HopperSubsystem(new HopperIO() {});
-        shooter = new ShooterSubsystem(new ShooterIO() {});
-        intake = new IntakeSubsystem(new IntakeIO() {});
-        climber = new ClimberSubsystem(new ClimberIOSim() {});
-
-        break;
-        }
-        compileAutos();
-    }
 
     @Override
     public void configureBindings() {
@@ -171,9 +118,12 @@ switch (Constants.currentMode) {
 
         break;
         }
-        compileAutos();
-
         
+    }
+
+    @Override
+    public void initAutos() {
+        compileAutos();
     }
 
 }

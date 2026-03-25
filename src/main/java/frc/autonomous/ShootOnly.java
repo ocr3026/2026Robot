@@ -12,7 +12,6 @@ public class ShootOnly extends AutoBase {
       ShooterSubsystem shooter,
       IntakeSubsystem intake,
       DriveSubsystem drive) {
-    super(hopper, shooter, intake, drive);
     addCommands(delayStartTime());
     addCommands(runHopperAndShooter(hopper, shooter));
   }

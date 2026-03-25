@@ -6,6 +6,7 @@ import static edu.wpi.first.units.Units.*;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathPlannerPath;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -49,11 +50,8 @@ public class AutoBase extends SequentialCommandGroup {
           ANGLE_MAX_VELOCITY.in(RadiansPerSecond),
           ANGLE_MAX_ACCELERATION.in(RadiansPerSecondPerSecond)));
 
-  public AutoBase(
-      HopperSubsystem hopper,
-      ShooterSubsystem shooter,
-      IntakeSubsystem intake,
-      DriveSubsystem drive) {}
+  static PIDController turretController = new PIDController(5.8, 0.0, ANGLE_KD);
+
   /**
    * @param name
    * @return PathPlannerPath
@@ -204,25 +202,21 @@ public class AutoBase extends SequentialCommandGroup {
    * @param poseToLockOnTo The starting pose of the path that you want the robot to lock on to
    * @param poseToPathfindTo The starting pose of the path that you want to end up at */
   public static final Command pathFindToPoseLocked(
-      DriveSubsystem drive, PathPlannerPath poseToLockOnTo, PathPlannerPath poseToPathfindTo) {
-    angleController.enableContinuousInput(-Math.PI, Math.PI);
+      DriveSubsystem drive, Pose2d poseToLockOnTo, PathPlannerPath poseToPathfindTo) {
+    turretController.enableContinuousInput(-Math.PI, Math.PI);
+    turretController.setTolerance(0.007);
 
     return AutoBuilder.pathfindToPoseFlipped(
-            new Pose2d(
-                poseToPathfindTo.getStartingHolonomicPose().get().getX(),
-                poseToPathfindTo.getStartingHolonomicPose().get().getY(),
-                new Rotation2d(drive.getTargetRotation(
-                    poseToLockOnTo.getStartingHolonomicPose().get(),
-                    poseToPathfindTo.getStartingHolonomicPose().get()))),
-            DriveConstants.PATH_CONSTRAINTS)
+            poseToPathfindTo.getStartingHolonomicPose().get(), DriveConstants.PATH_CONSTRAINTS)
+        .alongWith(Commands.waitUntil(() -> turretController.atSetpoint()))
         .beforeStarting(() -> {
-          PPHolonomicDriveController.overrideRotationFeedback(() -> angleController.calculate(
-              0,
-              drive.getDeltaRotation(
-                  poseToLockOnTo.getStartingHolonomicPose().get(), drive.getPose())));
+          PPHolonomicDriveController.overrideRotationFeedback(() -> -turretController.calculate(
+              drive.getPose().getRotation().minus(new Rotation2d(Math.PI)).getRadians(),
+              drive.getTargetRotation(poseToLockOnTo, drive.getPose())));
         })
         .finallyDo(() -> {
-          PPHolonomicDriveController.clearRotationFeedbackOverride();
+          // PPHolonomicDriveController.clearRotationFeedbackOverride();
+          turretController.close();
         });
   }
 

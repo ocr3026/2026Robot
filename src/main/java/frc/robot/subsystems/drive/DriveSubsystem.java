@@ -215,18 +215,23 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
 
   File file = new File(TunerConstants.filePath);
 
-  public double getTargetRotation(Pose2d pose, Pose2d currentPose) {
+  /**A function that returns the target rotation in order for the robot to be facing/heading towards the target pose
+   * @param targetPose The target pose you want to find the rotation for the robot to be facing
+   * @param currentPose The current robot pose
+   * @return Returns the target angle that the robot should be at in order to be facing the target pose
+   */
+  public double getTargetRotation(Pose2d targetPose, Pose2d currentPose) {
     Pose2d robotP = currentPose;
 
-    pose = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue
-        ? pose
-        : FlippingUtil.flipFieldPose(pose);
+    targetPose = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue
+        ? targetPose
+        : FlippingUtil.flipFieldPose(targetPose);
 
-    Logger.recordOutput("TypeScript/TargetPose", pose);
+    Logger.recordOutput("TypeScript/TargetPose", targetPose);
     Logger.recordOutput("TypeScript/RobotPose", robotP);
 
-    double dX = pose.getX() - robotP.getX();
-    double dY = pose.getY() - robotP.getY();
+    double dX = targetPose.getX() - robotP.getX();
+    double dY = targetPose.getY() - robotP.getY();
 
     Logger.recordOutput("TypeScript/dX", dX);
     Logger.recordOutput("TypeScript/dY", dY);
@@ -236,18 +241,23 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
     return (robotToPoseTheta);
   }
 
-  public double getDeltaRotation(Pose2d pose, Pose2d robotPose) {
+  /**A function that returns a double of the difference in rotation between current robot heading and where the robot would be pointing at a pose
+   * @param targetPose The target pose you want the robot to be pointing at
+   * @param robotPose The current robot pose
+   * @return Returns the difference between the current heading of the robot and the heading of the robot if it was pointing at the given pose
+   */
+  public double getDeltaRotation(Pose2d targetPose, Pose2d robotPose) {
     Pose2d robotP = robotPose;
 
-    pose = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue
-        ? pose
-        : FlippingUtil.flipFieldPose(pose);
+    targetPose = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue
+        ? targetPose
+        : FlippingUtil.flipFieldPose(targetPose);
 
-    Logger.recordOutput("TypeScript/TargetPose", pose);
+    Logger.recordOutput("TypeScript/TargetPose", targetPose);
     Logger.recordOutput("TypeScript/RobotPose", robotP);
 
-    double dX = pose.getX() - robotP.getX();
-    double dY = pose.getY() - robotP.getY();
+    double dX = targetPose.getX() - robotP.getX();
+    double dY = targetPose.getY() - robotP.getY();
 
     Logger.recordOutput("TypeScript/dX", dX);
     Logger.recordOutput("TypeScript/dY", dY);
@@ -269,15 +279,19 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
     return dTheta;
   }
 
-  public double getDistanceFromHub(Pose2d pose, Pose2d robotPose) {
+  /**A helpful command to get current distance from a target pose
+   * @param targetPose The target pose that you want to find distance away from
+   * @param robotPose The current robotPose through your odometry
+   */
+  public double getDistanceFromPose(Pose2d targetPose, Pose2d robotPose) {
     Pose2d robotP = robotPose;
 
-    pose = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue
-        ? pose
-        : FlippingUtil.flipFieldPose(pose);
+    targetPose = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue
+        ? targetPose
+        : FlippingUtil.flipFieldPose(targetPose);
 
-    double poseX = pose.getX();
-    double poseY = pose.getY();
+    double poseX = targetPose.getX();
+    double poseY = targetPose.getY();
 
     double robotX = robotP.getX();
     double robotY = robotP.getY();
@@ -365,8 +379,8 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
     Logger.recordOutput("Odometry for somereason not wokring", getPose());
     Logger.recordOutput(
         "InRangeHub",
-        (3.1 < getDistanceFromHub(Paths.aimTurret.getStartingHolonomicPose().get(), getPose())
-            && getDistanceFromHub(Paths.aimTurret.getStartingHolonomicPose().get(), getPose())
+        (3.1 < getDistanceFromPose(Paths.aimTurret.getStartingHolonomicPose().get(), getPose())
+            && getDistanceFromPose(Paths.aimTurret.getStartingHolonomicPose().get(), getPose())
                 < 3.5));
     odometryLock.lock();
     gyroIO.updateInputs(gyroInputs);

@@ -31,6 +31,10 @@ public class RobotContainer {
     if (Constants.hasConfiguredAutobuilder) {
       autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     }
+
+    for (RobotContainerAbstract abstract1 : abstracts) {
+      abstract1.initAutos();
+    }
   }
 
   private void configureBindings(RobotContainerAbstract... abstracts) {

@@ -70,7 +70,7 @@ public class DriveConstants {
       / DriveConstants.DRIVE_BASE_RADIUS.in(Meters);
 
   public static final PathConstraints PATH_CONSTRAINTS =
-      new PathConstraints(achievedMaxSpeed, maxAccel, maxAngularVelo, 720);
+      new PathConstraints(achievedMaxSpeed, maxAccel, maxAngularVelo, 12.5663706);
   // Drivetrain for Simulation
   public static final DriveTrainSimulationConfig mapleSimConfig =
       DriveTrainSimulationConfig.Default()

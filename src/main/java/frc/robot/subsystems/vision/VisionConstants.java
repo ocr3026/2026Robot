@@ -20,8 +20,8 @@ public final class VisionConstants {
   public static String camera0Name = "AprilTagWebcam";
 
   public static Transform3d robotToCamera0 = new Transform3d(
-          new Translation3d(0.322175, -0.046373, 0.222987),
-          new Rotation3d(0.009869, 0.022058, -0.011891));
+      new Translation3d(0.322175, -0.046373, 0.222987),
+      new Rotation3d(0.009869, 0.022058, -0.011891));
 
   public static double maxAmbiguity = 0.3;
   public static double maxZError = 0.75;

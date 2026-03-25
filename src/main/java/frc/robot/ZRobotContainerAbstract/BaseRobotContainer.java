@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Commands;
+import frc.autonomous.Test;
 import frc.robot.Constants;
 import frc.robot.Keybinds;
 import frc.robot.commands.DriveCommands;
@@ -138,5 +139,10 @@ public class BaseRobotContainer extends RobotContainerAbstract {
     // Keybinds.playSong.onFalse(new InstantCommand(() -> DriveConstants.m_orchestra.stop()));
 
     Keybinds.resetGyroTrigger.onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
+  }
+
+  @Override
+  public void initAutos() {
+    RobotContainer.autoChooser.addOption("Test", new Test(drive));
   }
 }

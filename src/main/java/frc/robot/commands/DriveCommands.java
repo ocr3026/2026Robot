@@ -156,19 +156,9 @@ public class DriveCommands {
       DoubleSupplier xSupplier,
       DoubleSupplier ySupplier,
       DoubleSupplier thetaSupplier) {
-    // ProfiledPIDController angleController = new ProfiledPIDController(
-    //     0.4,
-    //     0.0,
-    //     0.0,
-    //     new TrapezoidProfile.Constraints(
-    //         ANGLE_MAX_VELOCITY.in(RadiansPerSecond) * 0.1,
-    //         ANGLE_MAX_ACCELERATION.in(RadiansPerSecondPerSecond) * 0.25));
-    PIDController angleController = new PIDController(ANGLE_KP, 0, ANGLE_KD);
+    PIDController angleController = new PIDController(6.0, 0, 0.3);
     angleController.enableContinuousInput(-Math.PI, Math.PI);
-    // angleController.disableContinuousInput();
     angleController.setTolerance(0.0);
-    // angleController.reset(
-    //     drive.getPose().getRotation().minus(new Rotation2d(Math.PI)).getRadians());
 
     return Commands.run(
             () -> {

@@ -116,4 +116,6 @@ public abstract class RobotContainerAbstract {
   public void configureTopBindings() {}
 
   public void configureBaseBindings() {}
+
+  public abstract void initAutos();
 }

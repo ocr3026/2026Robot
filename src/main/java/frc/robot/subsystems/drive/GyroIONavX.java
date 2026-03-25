@@ -11,7 +11,7 @@ import java.util.Queue;
 
 public class GyroIONavX implements GyroIO {
   private final AHRS navX =
-      new AHRS(NavXComType.kMXP_SPI, (byte) DriveConstants.odometryFrequency.in(Hertz));
+      new AHRS(NavXComType.kUSB1, (byte) DriveConstants.odometryFrequency.in(Hertz));
   private final Queue<Double> yawPositionQueue;
   private final Queue<Double> yawTimestampQueue;
 
