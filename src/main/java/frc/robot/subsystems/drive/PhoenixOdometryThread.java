@@ -4,10 +4,12 @@ package frc.robot.subsystems.drive;
 import static edu.wpi.first.units.Units.Hertz;
 
 import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
+import frc.robot.generated.TunerConstants;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
@@ -24,8 +26,7 @@ public class PhoenixOdometryThread extends Thread {
   private final List<Queue<Double>> genericQueues = new ArrayList<>();
   private final List<Queue<Double>> timestampQueues = new ArrayList<>();
 
-  // private static boolean isCANFD = new
-  // CANBus(TunerConstants.DrivetrainConstants.CANBusName).isNetworkFD();
+  private static boolean isCANFD = new CANBus(TunerConstants.kCANBus.getName()).isNetworkFD();
   private static PhoenixOdometryThread instance = null;
 
   public static PhoenixOdometryThread getInstance() {
@@ -100,8 +101,13 @@ public class PhoenixOdometryThread extends Thread {
       signalsLock.lock();
 
       try {
-        Thread.sleep((long) (1000.0 / DriveConstants.odometryFrequency.in(Hertz)));
-        if (phoenixSignals.length > 0) BaseStatusSignal.refreshAll(phoenixSignals);
+        if (isCANFD && phoenixSignals.length > 0) {
+          BaseStatusSignal.waitForAll(
+              2.0 / DriveConstants.odometryFrequency.in(Hertz), phoenixSignals);
+        } else {
+          Thread.sleep((long) (1000.0 / DriveConstants.odometryFrequency.in(Hertz)));
+          if (phoenixSignals.length > 0) BaseStatusSignal.refreshAll(phoenixSignals);
+        }
 
       } catch (InterruptedException e) {
         e.printStackTrace();

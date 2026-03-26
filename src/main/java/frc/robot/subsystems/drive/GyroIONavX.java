@@ -12,10 +12,12 @@ import java.util.Queue;
 public class GyroIONavX implements GyroIO {
   private final AHRS navX =
       new AHRS(NavXComType.kUSB1, (byte) DriveConstants.odometryFrequency.in(Hertz));
+
   private final Queue<Double> yawPositionQueue;
   private final Queue<Double> yawTimestampQueue;
 
   public GyroIONavX() {
+    navX.enableLogging(true);
     yawTimestampQueue = PhoenixOdometryThread.getInstance().makeTimestampQueue();
     yawPositionQueue = PhoenixOdometryThread.getInstance().registerSignal(navX::getYaw);
   }

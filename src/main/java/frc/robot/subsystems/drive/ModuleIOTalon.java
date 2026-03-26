@@ -23,6 +23,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.*;
 import frc.robot.Constants.*;
+import frc.robot.generated.TunerConstants;
 import java.util.Queue;
 import org.littletonrobotics.junction.Logger;
 
@@ -70,9 +71,9 @@ public class ModuleIOTalon implements ModuleIO {
       SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>
           constants) {
     this.constants = constants;
-    driveTalon = new TalonFX(constants.DriveMotorId);
-    turnTalon = new TalonFX(constants.SteerMotorId);
-    encoder = new CANcoder(constants.EncoderId);
+    driveTalon = new TalonFX(constants.DriveMotorId, TunerConstants.kCANBus);
+    turnTalon = new TalonFX(constants.SteerMotorId, TunerConstants.kCANBus);
+    encoder = new CANcoder(constants.EncoderId, TunerConstants.kCANBus);
     driveConfig = constants.DriveMotorInitialConfigs;
     // var statusD = DriveConstants.m_orchestra.addInstrument(driveTalon);
     // var statusT = DriveConstants.m_orchestra.addInstrument(turnTalon);
