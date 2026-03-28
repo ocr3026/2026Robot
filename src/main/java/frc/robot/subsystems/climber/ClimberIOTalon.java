@@ -15,11 +15,15 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.units.measure.Voltage;
-import org.littletonrobotics.junction.Logger;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 public class ClimberIOTalon implements ClimberIO {
   protected final TalonFX climberMotor;
+  protected final DigitalInput limitSwitch;
+
   private double setpoint;
+  private boolean hasZeored;
+  private boolean updateDirection;
 
   protected final StatusSignal<Angle> climbPosition;
   protected final StatusSignal<AngularVelocity> climbVelocity;
@@ -27,6 +31,8 @@ public class ClimberIOTalon implements ClimberIO {
   protected final StatusSignal<Voltage> climbAppliedVolts;
 
   public ClimberIOTalon() {
+    hasZeored = false;
+    limitSwitch = new DigitalInput(0);
     climberMotor = new TalonFX(ClimberConstants.climberMotorID);
     // 0.008;
 
@@ -47,15 +53,6 @@ public class ClimberIOTalon implements ClimberIO {
 
     BaseStatusSignal.setUpdateFrequencyForAll(10.0, climbVelocity, climbAppliedVolts, climbCurrent);
     ParentDevice.optimizeBusUtilizationForAll(climberMotor);
-
-    // TalonFXConfiguration ClimberConfig = new TalonFXConfiguration();
-    // var Slot0Configs = new Slot0Configs();
-    // Slot0Configs = ClimberConfig.Slot0;
-    // Slot0Configs.kP = 0.0;
-    // Slot0Configs.kI = 0.0;
-    // Slot0Configs.kD = 0.0;
-
-    // climberMotor.getConfigurator().apply(ClimberConfig);
     zeroClimber();
     climberMotor.getConfigurator().apply(ClimberConfig);
   }
@@ -69,6 +66,7 @@ public class ClimberIOTalon implements ClimberIO {
     inputs.climberCurrentAmps = climberMotor.getSupplyCurrent().getValueAsDouble();
     inputs.climberPosition = (climberMotor.getPosition().getValueAsDouble());
     inputs.climberVelocity = RotationsPerSecond.of(climberMotor.getVelocity().getValueAsDouble());
+    inputs.limitSwitchState = limitSwitch.get();
   }
 
   @Override
@@ -79,9 +77,13 @@ public class ClimberIOTalon implements ClimberIO {
   @Override
   public void setClimberSpeed(double speed) {
     setpoint = speed;
-    Logger.recordOutput("Setpoinit for climber", setpoint);
-    // climberMotor.setControl(new PositionVoltage(setpoint));
-    climberMotor.setControl(new DutyCycleOut(setpoint));
+    System.out.println("Is Going UP: " + isGoingUp(speed));
+    if (limitSwitch.get() || isGoingUp(speed)) {
+      hasZeored = false;
+      climberMotor.setControl(new DutyCycleOut(setpoint));
+    } else {
+      limitHitFunc(speed);
+    }
   }
 
   @Override
@@ -91,13 +93,86 @@ public class ClimberIOTalon implements ClimberIO {
   }
 
   @Override
+  public double getClimberPosition() {
+    return climberMotor.getPosition().getValueAsDouble();
+  }
+
+  @Override
+  public void limitHitFunc(double speed) {
+    // if (!hasZeored) {
+    //   zeroClimber();
+    //   hasZeored = true;
+    // }
+    // if (!isGoingUp(speed)) {
+    //   stopMotor();
+    // }
+
+    zeroClimber();
+    // if (!hasZeored) {
+    //   updateDirection = true;
+    //   if (speed < 0) {
+    //     ClimberConstants.climberClockwise = true;
+    //   } else if (speed > 0) {
+    //     ClimberConstants.climberClockwise = false;
+    //   } else {
+    //   }
+    //   hasZeored = true;
+    // }
+    if (!isGoingUp(speed)) {
+      stopMotor();
+    }
+    // if (limitSwitch.get()) {
+    //   climberMotor.setControl(new DutyCycleOut(-speed));
+    // } else {
+    //   stopMotor();
+    // }
+  }
+
+  @Override
   public double getSetpoint() {
     return setpoint;
+  }
+
+  @Override
+  public double getVelocity() {
+    return climberMotor.getVelocity().getValueAsDouble();
+  }
+
+  @Override
+  public boolean isGoingUp(double speed) {
+    if (speed < 0 && !ClimberConstants.climberClockwise) {
+      return true;
+    } else if (speed < 0 && ClimberConstants.climberClockwise) {
+      return false;
+    } else if (speed > 0 && !ClimberConstants.climberClockwise) {
+      return false;
+    } else if (speed > 0 && ClimberConstants.climberClockwise) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  @Override
+  public boolean hasZeroed() {
+    boolean temp = updateDirection;
+    updateDirection = false;
+    return temp;
   }
 
   @Override
   public void updatePID(double p, double i, double d, double v) {
     Slot0Configs c = new Slot0Configs().withKP(p).withKI(i).withKD(d).withKV(v);
     climberMotor.getConfigurator().apply(c);
+  }
+
+  @Override
+  public boolean getLimitSwitch() {
+    return limitSwitch.get();
+  }
+
+  @Override
+  public void stopMotor() {
+    climberMotor.stopMotor();
   }
 }

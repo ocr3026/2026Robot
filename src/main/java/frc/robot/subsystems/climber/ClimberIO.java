@@ -14,6 +14,7 @@ public interface ClimberIO {
     public AngularVelocity climberVelocity = DegreesPerSecond.of(0);
     public double climberAppliedVolts = 0;
     public double climberCurrentAmps = 0;
+    public boolean limitSwitchState = false;
   }
 
   public default void updateInputs(ClimberIOInputs inputs) {}
@@ -35,4 +36,24 @@ public interface ClimberIO {
   public default void setClimberPos(double pos) {}
 
   public default void zeroClimber() {}
+
+  public default boolean getLimitSwitch() {
+    return false;
+  }
+
+  public default void stopMotor() {}
+
+  public default void limitHitFunc(double speed) {}
+
+  public default boolean hasZeroed() {
+    return false;
+  }
+
+  public default double getVelocity() {
+    return 0.0;
+  }
+
+  public default boolean isGoingUp(double speed) {
+    return false;
+  }
 }

@@ -70,7 +70,7 @@ public class GyroIONavX implements GyroIO {
 
     // navX.enableLogging(true);
     yawTimestampQueue = PhoenixOdometryThread.getInstance().makeTimestampQueue();
-    
+
     // yawPositionQueue = PhoenixOdometryThread.getInstance().registerSignal(navX::getYaw);
     yawPositionQueue = PhoenixOdometryThread.getInstance().registerSignal(ahrs::getYaw);
     // System.out.println("NavxPort: " + navX.getPort());
@@ -148,7 +148,6 @@ public class GyroIONavX implements GyroIO {
       buffer.put(rawPacket, 0, rawPacket.length);
       buffer.flip();
 
-      // Signed Hundredths
       this.yaw = buffer.getShort(YAW_OFFSET) / 100.0f;
       long curTimestamp = System.currentTimeMillis();
       this.pitch = buffer.getShort(PITCH_OFFSET) / 100.0f;
@@ -171,32 +170,27 @@ public class GyroIONavX implements GyroIO {
       this.prevYaw = this.yaw;
       this.prevTimestamp = curTimestamp;
 
-      // Unsigned Hundredths (using 0xFFFF to treat short as unsigned)
       this.compassHeading = (buffer.getShort(COMPASS_HEADING_OFFSET) & 0xFFFF) / 100.0f;
       this.fusedHeading = (buffer.getShort(FUSED_HEADING_OFFSET) & 0xFFFF) / 100.0f;
 
-      // Signed Thousandths
       this.accelX = buffer.getShort(LINEAR_ACCEL_X_OFFSET) / 1000.0f;
       this.accelY = buffer.getShort(LINEAR_ACCEL_Y_OFFSET) / 1000.0f;
       this.accelZ = buffer.getShort(LINEAR_ACCEL_Z_OFFSET) / 1000.0f;
 
-      // Signed 16:16 Fixed Point
       this.altitude = buffer.getInt(ALTITUDE_OFFSET) / 65536.0f;
       this.velX = buffer.getInt(VELOCITY_X_OFFSET) / 65536.0f;
-      this.velY = buffer.getInt(VELOCITY_Y_OFFSET) / 24.0f; // Simplified: 24 is just the offset
+      this.velY = buffer.getInt(VELOCITY_Y_OFFSET) / 24.0f;
       this.velY = buffer.getInt(VELOCITY_Y_OFFSET) / 65536.0f;
       this.velZ = buffer.getInt(VELOCITY_Z_OFFSET) / 65536.0f;
       this.dispX = buffer.getInt(DISPLACEMENT_X_OFFSET) / 65536.0f;
       this.dispY = buffer.getInt(DISPLACEMENT_Y_OFFSET) / 65536.0f;
       this.dispZ = buffer.getInt(DISPLACEMENT_Z_OFFSET) / 65536.0f;
 
-      // Signed Pi Radians (Quaternions)
       this.quatW = buffer.getShort(QUATERNION_W_OFFSET) / 16384.0f;
       this.quatX = buffer.getShort(QUATERNION_X_OFFSET) / 16384.0f;
       this.quatY = buffer.getShort(QUATERNION_Y_OFFSET) / 16384.0f;
       this.quatZ = buffer.getShort(QUATERNION_Z_OFFSET) / 16384.0f;
 
-      // Status Bytes
       this.opStatus = buffer.get(OP_STATUS_OFFSET);
       this.sensorStatus = buffer.get(SENSOR_STATUS_OFFSET);
       this.calStatus = buffer.get(CAL_STATUS_OFFSET);

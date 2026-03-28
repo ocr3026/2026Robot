@@ -10,9 +10,11 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import frc.autonomous.Test;
 import frc.robot.Constants;
 import frc.robot.Keybinds;
+import frc.robot.commands.ClimberCommands;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.climber.ClimberIOSim;
+import frc.robot.subsystems.climber.ClimberIOTalon;
 import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
@@ -59,6 +61,7 @@ public class BaseRobotContainer extends RobotContainerAbstract {
         vision = new Vision(
             drive,
             new VisionIOPhotonvision(VisionConstants.camera0Name, VisionConstants.robotToCamera0));
+        climber = new ClimberSubsystem(new ClimberIOTalon());
         break;
       case SIM:
         driveSimulation = new SwerveDriveSimulation(
@@ -134,6 +137,12 @@ public class BaseRobotContainer extends RobotContainerAbstract {
                 .getSimulatedDriveTrainPose()) // reset odometry to actual robot pose during
         // simulation
         : () -> drive.setPose(new Pose2d(drive.getPose().getTranslation(), new Rotation2d()));
+
+    Keybinds.climberUp.whileTrue(ClimberCommands.runClimber(climber, -1.0));
+    Keybinds.climberDown.whileTrue(ClimberCommands.reverseCLimber(climber, 1.0));
+
+    Keybinds.climberPosUp.whileTrue(ClimberCommands.runClimber(climber, -0.1));
+    Keybinds.climberPosDown.whileTrue(ClimberCommands.reverseCLimber(climber, 0.1));
 
     // Keybinds.playSong.onTrue(new InstantCommand(() -> DriveConstants.m_orchestra.play()));
     // Keybinds.playSong.onFalse(new InstantCommand(() -> DriveConstants.m_orchestra.stop()));
