@@ -2,7 +2,6 @@
 package frc.robot.subsystems.climber;
 
 import com.orangefrc.annotation.GenerateJson;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.climber.ClimberConstants.*;
@@ -73,7 +72,11 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public void climberUp(double speed) {
-    io.setClimberSpeed(speed);
+    if (Math.abs(io.getClimberPosition()) <= ClimberConstants.maxHeight - 50) {
+      io.setClimberSpeed(speed);
+    } else {
+      io.stopMotor();
+    }
   }
 
   public void setClimberPos(double pos) {
@@ -92,15 +95,15 @@ public class ClimberSubsystem extends SubsystemBase {
   public void periodic() {
     // hasZeroed = io.hasZeroed();
     json.updateVals();
-    if (json.hasUpdated()) {
-      timesupdated++;
-      // io.updatePID(json.getp(), json.geti(), json.getd(), json.getv());
-      NetworkTableInstance.getDefault()
-          .getTable("Tuning")
-          .getStringTopic("ClimberJson/Hasupdated")
-          .publish()
-          .set("Has updated the pid" + timesupdated);
-    }
+    // if (json.hasUpdated()) {
+    //   timesupdated++;
+    //   // io.updatePID(json.getp(), json.geti(), json.getd(), json.getv());
+    //   NetworkTableInstance.getDefault()
+    //       .getTable("Tuning")
+    //       .getStringTopic("ClimberJson/Hasupdated")
+    //       .publish()
+    //       .set("Has updated the pid" + timesupdated);
+    // }
     io.updateInputs(inputs);
     Logger.processInputs("Climber", inputs);
     Logger.recordOutput("Climber/ClimberDirection", ClimberConstants.climberClockwise);

@@ -10,4 +10,6 @@ public class ClimberConstants {
 
   public static boolean downNegative = false;
   public static boolean upNegative = false;
+
+  public static final int maxHeight = 500;
 }

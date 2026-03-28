@@ -99,33 +99,10 @@ public class ClimberIOTalon implements ClimberIO {
 
   @Override
   public void limitHitFunc(double speed) {
-    // if (!hasZeored) {
-    //   zeroClimber();
-    //   hasZeored = true;
-    // }
-    // if (!isGoingUp(speed)) {
-    //   stopMotor();
-    // }
-
     zeroClimber();
-    // if (!hasZeored) {
-    //   updateDirection = true;
-    //   if (speed < 0) {
-    //     ClimberConstants.climberClockwise = true;
-    //   } else if (speed > 0) {
-    //     ClimberConstants.climberClockwise = false;
-    //   } else {
-    //   }
-    //   hasZeored = true;
-    // }
     if (!isGoingUp(speed)) {
       stopMotor();
     }
-    // if (limitSwitch.get()) {
-    //   climberMotor.setControl(new DutyCycleOut(-speed));
-    // } else {
-    //   stopMotor();
-    // }
   }
 
   @Override
