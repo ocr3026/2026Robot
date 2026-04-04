@@ -1,10 +1,7 @@
+/* Generated and Formatted by yours truly <3*/
 package frc.robot.ZRobotContainerAbstract;
 
-import org.ironmaple.simulation.SimulatedArena;
-import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
-
 import com.orangefrc.annotation.GSON;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -40,12 +37,13 @@ import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
 import frc.robot.subsystems.vision.VisionIOPhotonvisionSim;
+import org.ironmaple.simulation.SimulatedArena;
+import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 
-public class TopRobotContainer extends RobotContainerAbstract{
-    
+public class TopRobotContainer extends RobotContainerAbstract {
 
-    @Override
-    public void configureBindings() {
+  @Override
+  public void configureBindings() {
     Keybinds.intakeFuel.whileTrue(IntakeCommands.intakeFuel(intake, intakeSpeed));
     Keybinds.intakeLiftUp.whileTrue(IntakeCommands.intakeLift(intake, intakeLiftSpeed));
     // Keybinds.intakeLiftDown.whileTrue(IntakeCommands.intakeLift(intake, -intakeLiftSpeed));
@@ -54,22 +52,24 @@ public class TopRobotContainer extends RobotContainerAbstract{
     Keybinds.reverseIntake.whileTrue(IntakeCommands.intakeFuel(intake, -intakeSpeed));
 
     Keybinds.shootFuel.whileTrue(new ParallelCommandGroup(
-        ShooterCommands.shootFuel(shooter, shooterSpeed, shooter2Speed, shooterKickupSpeed),
+        ShooterCommands.shootFuel(shooter, -shooter2Speed, shooter2Speed, shooterKickupSpeed),
         HopperCommands.runHopper(hopper, hopperSpeed)));
     Keybinds.shooterFlywheel.whileTrue(
         ShooterCommands.runShooter(shooter, shooterSpeed, shooter2Speed));
 
-        
     Keybinds.runHopper.whileTrue(HopperCommands.runHopper(hopper, hopperSpeed));
     Keybinds.reverseHopper.whileTrue(HopperCommands.reverseHopper(hopper, -hopperSpeed));
 
-        Keybinds.climberUp.whileTrue(ClimberCommands.runClimber(climber, -1.0));
-    Keybinds.climberDown.whileTrue(ClimberCommands.runClimber(climber, 0.6));
-    }
+    Keybinds.climberUp.whileTrue(ClimberCommands.runClimber(climber, -1.0));
+    Keybinds.climberDown.whileTrue(ClimberCommands.reverseCLimber(climber, 1.0));
 
-    @Override
-    public void init() {
-switch (Constants.currentMode) {
+    Keybinds.climberPosUp.whileTrue(ClimberCommands.runClimber(climber, -0.1));
+    Keybinds.climberPosDown.whileTrue(ClimberCommands.reverseCLimber(climber, 0.1));
+  }
+
+  @Override
+  public void init() {
+    switch (Constants.currentMode) {
       case REAL:
         hopper = new HopperSubsystem(new HopperIOSpark());
         shooter = new ShooterSubsystem(new ShooterIOSpark());
@@ -117,13 +117,11 @@ switch (Constants.currentMode) {
         climber = new ClimberSubsystem(new ClimberIOSim() {});
 
         break;
-        }
-        
     }
+  }
 
-    @Override
-    public void initAutos() {
-        compileAutos();
-    }
-
+  @Override
+  public void initAutos() {
+    compileAutos();
+  }
 }

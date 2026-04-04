@@ -11,6 +11,7 @@ import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Current;
@@ -50,7 +51,7 @@ public class ClimberIOTalon implements ClimberIO {
     Slot0Configs.kD = 0.0;
     Slot0Configs.kV = 0.0005;
     ClimberConfig.Slot0 = Slot0Configs;
-
+    ClimberConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     BaseStatusSignal.setUpdateFrequencyForAll(10.0, climbVelocity, climbAppliedVolts, climbCurrent);
     ParentDevice.optimizeBusUtilizationForAll(climberMotor);
     zeroClimber();

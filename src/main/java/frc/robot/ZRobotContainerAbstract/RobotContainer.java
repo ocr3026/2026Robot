@@ -56,4 +56,9 @@ public class RobotContainer {
   public void updateSimulation(RobotContainerAbstract... abstracts) {
     RobotContainerAbstract.updateSimulation();
   }
+
+  public static double calculateShooterSpeed(double dist) {
+    // Calculate with formula from Desmos.
+    return 0.0;
+  }
 }

@@ -34,7 +34,7 @@ public class IntakeIOSpark implements IntakeIO {
 
     intakeConfig = new SparkFlexConfig();
     intakeConfig.idleMode(IdleMode.kBrake);
-    intakeConfig.closedLoop.p(0.00015).i(0).d(0.0);
+    intakeConfig.closedLoop.p(0.00015).i(0.000001).d(0.0);
     intakeConfig.closedLoop.apply(intakeConf);
 
     FeedForwardConfig intakeLiftConf = new FeedForwardConfig();
@@ -42,7 +42,7 @@ public class IntakeIOSpark implements IntakeIO {
 
     intakeLiftConfig = new SparkFlexConfig();
     intakeLiftConfig.idleMode(IdleMode.kBrake);
-    intakeLiftConfig.closedLoop.p(0.000005).i(0).d(0);
+    intakeLiftConfig.closedLoop.p(0.000005).i(0.000).d(0);
     intakeLiftConfig.closedLoop.apply(intakeLiftConf);
 
     intakeConfig.smartCurrentLimit(70);

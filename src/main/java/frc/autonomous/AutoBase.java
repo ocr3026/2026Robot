@@ -4,16 +4,23 @@ package frc.autonomous;
 import static edu.wpi.first.units.Units.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.IdealStartingState;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
+import com.pathplanner.lib.trajectory.PathPlannerTrajectoryState;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.AngularAcceleration;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -32,6 +39,7 @@ import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.hopper.HopperSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
+import org.littletonrobotics.junction.Logger;
 
 public class AutoBase extends SequentialCommandGroup {
   static Timer timer = new Timer();
@@ -51,6 +59,9 @@ public class AutoBase extends SequentialCommandGroup {
           ANGLE_MAX_ACCELERATION.in(RadiansPerSecondPerSecond)));
 
   static PIDController turretController = new PIDController(5.8, 0.0, ANGLE_KD);
+
+  static PPHolonomicDriveController controller = new PPHolonomicDriveController(
+      new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(0.5, 0.0, 0.0));
 
   /**
    * @param name
@@ -95,9 +106,99 @@ public class AutoBase extends SequentialCommandGroup {
     return AutoBuilder.followPath(path);
   }
 
+  public static final Command followPathYOnly(PathPlannerPath path) {
+    return AutoBuilder.followPath(path).beforeStarting(() -> {
+      PPHolonomicDriveController.overrideRotationFeedback(() -> 0.0);
+    });
+  }
+
   public static final Command pathFindToStartPose(PathPlannerPath path) {
     return AutoBuilder.pathfindToPoseFlipped(
         path.getStartingHolonomicPose().get(), DriveConstants.PATH_CONSTRAINTS);
+  }
+
+  public static final Command pathFindToStartPoseSlow(PathPlannerPath path) {
+    return AutoBuilder.pathfindToPoseFlipped(
+            path.getStartingHolonomicPose().get(), DriveConstants.PATH_CONSTRAINTS_SLOW)
+        .beforeStarting(() -> {
+          PPHolonomicDriveController.clearRotationFeedbackOverride();
+        });
+  }
+
+  public static PathPlannerTrajectory currentTrajectory;
+  public static boolean isFlipped;
+
+  public static final Command pathFindToStartPoseNoRotation(
+      PathPlannerPath path, DriveSubsystem drive) {
+
+    return Commands.run(
+            () -> {
+              PathPlannerTrajectoryState state = currentTrajectory.sample(timer.get());
+              ChassisSpeeds speeds =
+                  controller.calculateRobotRelativeSpeeds(drive.getPose(), state);
+
+              Logger.recordOutput("PPState", state.pose);
+              Logger.recordOutput(
+                  "ChassisSpeeds",
+                  ChassisSpeeds.fromFieldRelativeSpeeds(
+                      speeds,
+                      isFlipped
+                          ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                          : drive.getRotation()));
+              Logger.recordOutput("Whatwe think the drive pose is: ", drive.getPose());
+              speeds.omegaRadiansPerSecond = 0;
+              drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(
+                  speeds,
+                  isFlipped
+                      ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                      : drive.getRotation()));
+            },
+            drive)
+        .beforeStarting(() -> {
+          PathPlannerPath newpath = new PathPlannerPath(
+              PathPlannerPath.waypointsFromPoses(
+                  drive.getPose(), path.getStartingHolonomicPose().get()),
+              DriveConstants.PATH_CONSTRAINTS_SLOW,
+              new IdealStartingState(0, drive.getRotation()),
+              new GoalEndState(0, path.getStartingHolonomicPose().get().getRotation()));
+          isFlipped = DriverStation.getAlliance().isPresent()
+              && DriverStation.getAlliance().get() == Alliance.Red;
+          timer.stop();
+          timer.reset();
+          controller.setEnabled(true);
+
+          currentTrajectory = newpath.generateTrajectory(
+              new ChassisSpeeds(), drive.getRotation(), DriveConstants.PP_CONFIG);
+          timer.start();
+
+          for (PathPlannerTrajectoryState state : currentTrajectory.getStates()) {
+            state.fieldSpeeds.omegaRadiansPerSecond = 0;
+          }
+        });
+    // return new FunctionalCommand(
+    //     () -> {
+    //       // for (PathPlannerTrajectoryState state : traj.getStates()) {
+    //       //   state.fieldSpeeds.omegaRadiansPerSecond = 0;
+    //       // }
+    //       timer.stop();
+    //       timer.reset();
+    //       timer.start();
+    //     },
+    //     () -> {
+    //       PathPlannerTrajectoryState state = traj.sample(timer.get());
+    //       ChassisSpeeds robotRel = controller.calculateRobotRelativeSpeeds(drive.getPose(),
+    // state);
+    //       ChassisSpeeds fieldRel =
+    //           ChassisSpeeds.fromRobotRelativeSpeeds(robotRel, drive.getRotation());
+
+    //       Logger.recordOutput("PPState", state.pose);
+    //       Logger.recordOutput("ChassisSpeeds", fieldRel);
+    //       drive.runVelocity(fieldRel);
+    //     },
+    //     (interrupted) -> {},
+    //     () -> {
+    //       return false;
+    //     });
   }
 
   public static final ParallelCommandGroup runHopperAndShooter(
@@ -215,7 +316,29 @@ public class AutoBase extends SequentialCommandGroup {
               drive.getTargetRotation(poseToLockOnTo, drive.getPose())));
         })
         .finallyDo(() -> {
-          // PPHolonomicDriveController.clearRotationFeedbackOverride();
+          PPHolonomicDriveController.clearRotationFeedbackOverride();
+          turretController.close();
+        });
+  }
+
+  public static final Command pathFindToPoseOneRotation(
+      DriveSubsystem drive, Pose2d poseWithDesiredRotation, PathPlannerPath poseToPathfindTo) {
+    turretController.enableContinuousInput(-Math.PI, Math.PI);
+    turretController.setTolerance(0.007);
+
+    return AutoBuilder.pathfindToPoseFlipped(
+            poseToPathfindTo.getStartingHolonomicPose().get(), DriveConstants.PATH_CONSTRAINTS)
+        .alongWith(Commands.waitUntil(() -> turretController.atSetpoint()))
+        .beforeStarting(() -> {
+          PPHolonomicDriveController.overrideRotationFeedback(() -> -turretController.calculate(
+              drive.getPose().getRotation().minus(new Rotation2d(Math.PI)).getRadians(),
+              poseWithDesiredRotation
+                  .getRotation()
+                  .minus(new Rotation2d(Math.PI))
+                  .getRadians()));
+        })
+        .finallyDo(() -> {
+          PPHolonomicDriveController.clearRotationFeedbackOverride();
           turretController.close();
         });
   }
@@ -243,5 +366,8 @@ public class AutoBase extends SequentialCommandGroup {
     public static final PathPlannerPath midRightPickup = getPathFromFile("RightMidPickup");
     public static final PathPlannerPath aimTurret = getPathFromFile("Turret Aim Point");
     public static final PathPlannerPath leftShoot = getPathFromFile("LeftShoot");
+    public static final PathPlannerPath leftClimb = getPathFromFile("LeftClimb");
+    public static final PathPlannerPath leftClimbSlow = getPathFromFile("LeftClimbSlow");
+    public static final PathPlannerPath leftLadderPose = getPathFromFile("LeftLadderPose");
   }
 }

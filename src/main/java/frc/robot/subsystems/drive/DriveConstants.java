@@ -71,6 +71,9 @@ public class DriveConstants {
 
   public static final PathConstraints PATH_CONSTRAINTS =
       new PathConstraints(achievedMaxSpeed, maxAccel, maxAngularVelo, 12.5663706);
+
+  public static final PathConstraints PATH_CONSTRAINTS_SLOW = new PathConstraints(
+      achievedMaxSpeed * 0.1, maxAccel * 0.1, maxAngularVelo * 0.1, 12.5663706 * 0.1);
   // Drivetrain for Simulation
   public static final DriveTrainSimulationConfig mapleSimConfig =
       DriveTrainSimulationConfig.Default()

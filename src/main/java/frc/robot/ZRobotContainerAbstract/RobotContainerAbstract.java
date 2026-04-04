@@ -43,7 +43,7 @@ public abstract class RobotContainerAbstract {
 
   public static double hopperSpeed = -400;
   public static double intakeSpeed = -3300;
-  public static double intakeLiftSpeed = 25;
+  public static double intakeLiftSpeed = 50;
   public static double shooterSpeed = -4000;
   public static double shooter2Speed = 4000;
   public static double shooterKickupSpeed = -3000;

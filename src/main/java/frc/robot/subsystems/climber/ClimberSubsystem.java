@@ -3,7 +3,6 @@ package frc.robot.subsystems.climber;
 
 import com.orangefrc.annotation.GenerateJson;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.climber.ClimberConstants.*;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -51,7 +50,7 @@ public class ClimberSubsystem extends SubsystemBase {
   public ClimberSubsystem(ClimberIO io) {
     this.io = io;
     try (Reader reader = new FileReader(filePath)) {
-      climberDirection = TunerConstants.gson.fromJson(reader, Json.class);
+      climberDirection = ClimberConstants.climberGson.fromJson(reader, Json.class);
       ClimberConstants.climberClockwise = climberDirection.getIsClockwise();
       startUpBool = climberDirection.getIsClockwise();
     } catch (FileNotFoundException e) {
@@ -72,11 +71,15 @@ public class ClimberSubsystem extends SubsystemBase {
   }
 
   public void climberUp(double speed) {
-    if (Math.abs(io.getClimberPosition()) <= ClimberConstants.maxHeight - 50) {
+    if (Math.abs(io.getClimberPosition()) <= ClimberConstants.maxHeight) {
       io.setClimberSpeed(speed);
     } else {
       io.stopMotor();
     }
+  }
+
+  public boolean isAtHeight() {
+    return Math.abs(io.getClimberPosition()) <= ClimberConstants.maxHeight;
   }
 
   public void setClimberPos(double pos) {
@@ -134,7 +137,7 @@ public class ClimberSubsystem extends SubsystemBase {
       climberDirection = new Json(ClimberConstants.climberClockwise);
 
       try (Writer writer = new FileWriter(filePath)) {
-        TunerConstants.gson.toJson(climberDirection, writer);
+        ClimberConstants.climberGson.toJson(climberDirection, writer);
         writer.close();
       } catch (IOException e) {
         System.err.println(Arrays.stream(e.getStackTrace())

@@ -39,6 +39,7 @@ import frc.autonomous.AutoBase.Paths;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
 import frc.robot.Util.LocalADStarAK;
+import frc.robot.ZRobotContainerAbstract.RobotContainerAbstract;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.vision.*;
 import java.io.File;
@@ -191,7 +192,7 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
         this::getChassisSpeeds,
         this::runVelocity,
         new PPHolonomicDriveController(
-            new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(5.0, 0.0, 0.0)),
+            new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(0.5, 0.0, 0.0)),
         DriveConstants.PP_CONFIG,
         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
         this);
@@ -302,11 +303,24 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
     return sqrt;
   }
 
+  public double calculateShooterSpeed() {
+    double dist = getDistanceFromPose(
+        DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue
+            ? DriveConstants.hubPose
+            : FlippingUtil.flipFieldPose(DriveConstants.hubPose),
+        getPose());
+
+    // Fomrula to calc the speed;
+    double speed = dist;
+    return speed;
+  }
+
   @Override
   public void periodic() {
     Logger.recordOutput(
         "TypeScript/Dtheta",
         getDeltaRotation(Paths.aimTurret.getStartingHolonomicPose().get(), getPose()));
+    RobotContainerAbstract.shooterSpeed = calculateShooterSpeed();
     // // boolean isWriteable = file.setWritable(true);
     // Logger.recordOutput("PIDJson/fileWriteable", file.canWrite());
 
@@ -390,6 +404,12 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
     }
     odometryLock.unlock();
 
+    SwerveModuleState measuredStates[] = new SwerveModuleState[modules.length];
+    for (int i = 0; i < modules.length; i++) {
+      measuredStates[i] = modules[i].getState();
+    }
+    Logger.recordOutput("SwerveStates/Measured", measuredStates);
+
     // Logger.recordOutput("PIDJson/realP", TunerConstants.steerGains.kP);
 
     // stops all modules if driver station is disabled
@@ -434,9 +454,11 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
   }
 
   public void runVelocity(ChassisSpeeds speeds) {
+    Logger.recordOutput("SwerveChassisSpeeds/UnDescritzedspeeds", speeds);
     speeds = ChassisSpeeds.discretize(speeds, 0.02);
 
     SwerveModuleState[] setpointStates = kinematics.toSwerveModuleStates(speeds);
+
     SwerveDriveKinematics.desaturateWheelSpeeds(setpointStates, TunerConstants.kSpeedAt12Volts);
 
     // Log unoptimized setpoints and setpoint speeds
@@ -446,8 +468,6 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
     for (int i = 0; i < 4; i++) {
       // runSetpoint in Module.Java optomizes the setpoints
       modules[i].runSetpoint(setpointStates[i]);
-      Logger.recordOutput("position/moduleX" + i, modules[i].constants.LocationX);
-      Logger.recordOutput("position/moduleY" + i, modules[i].constants.LocationY);
     }
 
     // Log optimized setpoints (runSetpoint mutates each state)

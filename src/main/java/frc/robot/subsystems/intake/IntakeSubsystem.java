@@ -62,20 +62,20 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // json.updateVals();
-    // if (json.hasUpdated()) {
-    //   io.updatePID(
-    //       json.getiP(),
-    //       json.getiI(),
-    //       json.getiD(),
-    //       json.getiV(),
-    //       json.getiA(),
-    //       json.getlP(),
-    //       json.getlI(),
-    //       json.getlD(),
-    //       json.getlV(),
-    //       json.getlA());
-    // }
+    json.updateVals();
+    if (json.hasUpdated()) {
+      io.updatePID(
+          json.getiP(),
+          json.getiI(),
+          json.getiD(),
+          json.getiV(),
+          json.getiA(),
+          json.getlP(),
+          json.getlI(),
+          json.getlD(),
+          json.getlV(),
+          json.getlA());
+    }
     io.updateInputs(inputs);
     io.getIntakePosition();
     Logger.processInputs("Intake", inputs);
