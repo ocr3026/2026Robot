@@ -30,7 +30,8 @@ public class ModuleIOSim extends ModuleIOTalon {
 
     inputs.odometryTimestamps = Util.getSimulationOdometryTimeStamps();
 
-    inputs.odometryDrivePositionsRad = Arrays.stream(simulation.getCachedDriveWheelFinalPositions())
+    inputs.odometryDrivePositionsRad =
+Arrays.stream(simulation.getCachedDriveWheelFinalPositions())
         .mapToDouble(angle -> angle.in(Radians))
         .toArray();
 

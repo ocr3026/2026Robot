@@ -136,7 +136,8 @@ public class ModuleIOTalon implements ModuleIO {
     turnCurrent = turnTalon.getStatorCurrent();
 
     timestampQueue = PhoenixOdometryThread.getInstance().makeTimestampQueue();
-    drivePositionQueue = PhoenixOdometryThread.getInstance().registerSignal(drivePosition.clone());
+    drivePositionQueue =
+PhoenixOdometryThread.getInstance().registerSignal(drivePosition.clone());
     turnPositionQueue =
         PhoenixOdometryThread.getInstance().registerSignal(turnAbsolutePosition.clone());
 
@@ -165,7 +166,8 @@ public class ModuleIOTalon implements ModuleIO {
   @Override
   public void updateInputs(ModuleIOInputs inputs) {
     var driveStatus =
-        BaseStatusSignal.refreshAll(drivePosition, driveVelocity, driveAppliedVolts, driveCurrent);
+        BaseStatusSignal.refreshAll(drivePosition, driveVelocity, driveAppliedVolts,
+driveCurrent);
     var turnStatus = BaseStatusSignal.refreshAll(turnVelocity, turnAppliedVolts, turnCurrent);
     var turnEncoderStatus = BaseStatusSignal.refreshAll(turnAbsolutePosition);
 
@@ -187,15 +189,19 @@ public class ModuleIOTalon implements ModuleIO {
     turnPositionQueue.clear();
     inputs.driveConnected = driveConnectedDebounce.calculate(driveStatus.isOK());
     inputs.drivePositionRad =
-        Units.rotationsToRadians(drivePosition.getValueAsDouble()) / constants.DriveMotorGearRatio;
+        Units.rotationsToRadians(drivePosition.getValueAsDouble()) /
+constants.DriveMotorGearRatio;
     inputs.driveVelocityRadPerSec =
-        Units.rotationsToRadians(driveVelocity.getValueAsDouble()) / constants.DriveMotorGearRatio;
+        Units.rotationsToRadians(driveVelocity.getValueAsDouble()) /
+constants.DriveMotorGearRatio;
     inputs.driveAppliedVolts = driveAppliedVolts.getValueAsDouble();
     inputs.driveCurrentAmps = driveCurrent.getValueAsDouble();
 
     inputs.turnConnected = turnConnectedDebounce.calculate(turnStatus.isOK());
-    inputs.turnEncoderConnected = turnEncoderConnectedDebounce.calculate(turnEncoderStatus.isOK());
-    inputs.turnAbsolutePosition = Rotation2d.fromRotations(turnAbsolutePosition.getValueAsDouble());
+    inputs.turnEncoderConnected =
+turnEncoderConnectedDebounce.calculate(turnEncoderStatus.isOK());
+    inputs.turnAbsolutePosition =
+Rotation2d.fromRotations(turnAbsolutePosition.getValueAsDouble());
     inputs.turnVelocityRadPerSec = Units.rotationsToRadians(turnVelocity.getValueAsDouble());
     inputs.turnAppliedVolts = turnAppliedVolts.getValueAsDouble();
     inputs.turnCurrentAmps = turnCurrent.getValueAsDouble();

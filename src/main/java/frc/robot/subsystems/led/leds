@@ -1,0 +1,36 @@
+import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
+// Or import edu.wpi.first.wpilibj.motorcontrol.VictorSP;
+import edu.wpi.first.wpilibj.Joystick; 
+
+public class Robot extends TimedRobot {
+  private final Spark m_intakeMotor = new Spark(0); // Connect to PWM port 0
+  private final Joystick m_joystick = new Joystick(0); // Connect joystick to USB port 0
+
+    @Override
+  public void teleopPeriodic() {
+    // Run the motor at 80% power (0.8) when the first joystick button is pressed
+    if (m_joystick.getRawButton(1)) {
+      m_intakeMotor.set(0.8); 
+    } else {
+      m_intakeMotor.set(0.0); // Stop the motor otherwise
+    }
+  }
+}
+import edu.wpi.first.wpilibj.motorcontrol.Servo;
+
+public class Robot extends TimedRobot {
+  private final Servo m_servo = new Servo(1); // Connect to PWM port 1
+
+  @Override
+  public void robotInit() {
+    // Set the servo angle to 90 degrees (midpoint) upon initialization
+    m_servo.setAngle(90.0); 
+  }
+}
+
+
+public class main{import edu.wpi.first.wpilibj.motorcontrol.Spark;
+Spark m_motor = new Spark(6);
+m_motor.set(-0.63)}
+//Makes the LED light up in the lava palette sequence (BPM)

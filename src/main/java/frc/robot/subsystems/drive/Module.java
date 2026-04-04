@@ -41,7 +41,8 @@ public class Module {
     turnDisconnectedAlert = new Alert(
         "Disconnected turn motor on module " + Integer.toString(index) + ".", AlertType.kError);
     turnEncoderDisconnectedAlert = new Alert(
-        "Disconnected turn encoder on module " + Integer.toString(index) + ".", AlertType.kError);
+        "Disconnected turn encoder on module " + Integer.toString(index) + ".",
+AlertType.kError);
   }
 
   // Periodic function for each module, runs once every period (20ms)
@@ -86,7 +87,8 @@ public class Module {
     io.setTurnPosition(state.angle);
   }
 
-  /** Runs the module with the specified output while controlling to zero degrees. (Straight line) */
+  /** Runs the module with the specified output while controlling to zero degrees. (Straight
+line) */
   public void runCharacterization(double output) {
     io.setDriveOpenLoop(output);
     io.setTurnPosition(new Rotation2d());

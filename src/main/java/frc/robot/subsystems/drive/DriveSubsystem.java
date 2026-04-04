@@ -35,7 +35,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.autonomous.AutoBase.Paths;
+//import frc.autonomous.AutoBase.Paths;
 import frc.robot.Constants;
 import frc.robot.Constants.Mode;
 import frc.robot.Util.LocalADStarAK;
@@ -78,7 +78,8 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
   };
 
   private final SwerveDrivePoseEstimator poseEstimator =
-      new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
+      new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new
+Pose2d());
   private final Consumer<Pose2d> resetSimulationPoseCallback;
 
   private final Field2d field = new Field2d();
@@ -181,7 +182,8 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
               .collect(Collectors.joining(System.lineSeparator() + "\tat")));
     }
 
-    HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_AdvantageKit);
+    HAL.report(tResourceType.kResourceType_RobotDrive,
+tInstances.kRobotDriveSwerve_AdvantageKit);
 
     PhoenixOdometryThread.getInstance().start();
 
@@ -200,7 +202,8 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
 
     Pathfinding.setPathfinder(new LocalADStarAK());
     PathPlannerLogging.setLogActivePathCallback((activePath) -> {
-      Logger.recordOutput("Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
+      Logger.recordOutput("Odometry/Trajectory", activePath.toArray(new
+Pose2d[activePath.size()]));
     });
     PathPlannerLogging.setLogTargetPoseCallback((targetPose) -> {
       Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
@@ -208,17 +211,20 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
 
     sysId = new SysIdRoutine(
         new SysIdRoutine.Config(
-            null, null, null, (state) -> Logger.recordOutput("Drive/SysIdState", state.toString())),
+            null, null, null, (state) -> Logger.recordOutput("Drive/SysIdState",
+state.toString())),
         new SysIdRoutine.Mechanism(
             (voltage) -> runCharacterization(voltage.in(Volts)), null, this));
   }
 
   File file = new File(TunerConstants.filePath);
 
-  /**A function that returns the target rotation in order for the robot to be facing/heading towards the target pose
+  /**A function that returns the target rotation in order for the robot to be facing/heading
+towards the target pose
    * @param targetPose The target pose you want to find the rotation for the robot to be facing
    * @param currentPose The current robot pose
-   * @return Returns the target angle that the robot should be at in order to be facing the target pose
+   * @return Returns the target angle that the robot should be at in order to be facing the
+target pose
    */
   public double getTargetRotation(Pose2d targetPose, Pose2d currentPose) {
     Pose2d robotP = currentPose;
@@ -241,10 +247,12 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
     return (robotToPoseTheta);
   }
 
-  /**A function that returns a double of the difference in rotation between current robot heading and where the robot would be pointing at a pose
+  /**A function that returns a double of the difference in rotation between current robot heading
+and where the robot would be pointing at a pose
    * @param targetPose The target pose you want the robot to be pointing at
    * @param robotPose The current robot pose
-   * @return Returns the difference between the current heading of the robot and the heading of the robot if it was pointing at the given pose
+   * @return Returns the difference between the current heading of the robot and the heading of
+the robot if it was pointing at the given pose
    */
   public double getDeltaRotation(Pose2d targetPose, Pose2d robotPose) {
     Pose2d robotP = robotPose;
@@ -466,7 +474,8 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
   }
 
   /**
-   * Stops the drive and turns the modules to an X arrangement to resist movement. The modules will return to their
+   * Stops the drive and turns the modules to an X arrangement to resist movement. The modules
+will return to their
    * normal orientations the next time a nonzero velocity is requested.
    */
   public void stopWithX() {
@@ -485,7 +494,8 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
   }
 
   public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-    return run(() -> runCharacterization(0.0)).withTimeout(1.0).andThen(sysId.dynamic(direction));
+    return run(() ->
+runCharacterization(0.0)).withTimeout(1.0).andThen(sysId.dynamic(direction));
   }
 
   /** Returns the module states (turn angles and drive velocities) for all of the modules */
@@ -569,7 +579,8 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
   public Translation2d[] getModuleTranslations() {
     return new Translation2d[] {
       new Translation2d(TunerConstants.FrontLeft.LocationX, TunerConstants.FrontLeft.LocationY),
-      new Translation2d(TunerConstants.FrontRight.LocationX, TunerConstants.FrontRight.LocationY),
+      new Translation2d(TunerConstants.FrontRight.LocationX,
+TunerConstants.FrontRight.LocationY),
       new Translation2d(TunerConstants.BackLeft.LocationX, TunerConstants.BackLeft.LocationY),
       new Translation2d(TunerConstants.BackRight.LocationX, TunerConstants.BackRight.LocationY)
     };

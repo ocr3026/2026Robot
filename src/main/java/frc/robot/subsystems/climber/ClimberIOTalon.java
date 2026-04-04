@@ -45,7 +45,8 @@ public class ClimberIOTalon implements ClimberIO {
     Slot0Configs.kV = 0.0005;
     ClimberConfig.Slot0 = Slot0Configs;
 
-    BaseStatusSignal.setUpdateFrequencyForAll(10.0, climbVelocity, climbAppliedVolts, climbCurrent);
+    BaseStatusSignal.setUpdateFrequencyForAll(10.0, climbVelocity, climbAppliedVolts,
+climbCurrent);
     ParentDevice.optimizeBusUtilizationForAll(climberMotor);
 
     // TalonFXConfiguration ClimberConfig = new TalonFXConfiguration();
@@ -68,7 +69,8 @@ public class ClimberIOTalon implements ClimberIO {
     inputs.climberConnected = true;
     inputs.climberCurrentAmps = climberMotor.getSupplyCurrent().getValueAsDouble();
     inputs.climberPosition = (climberMotor.getPosition().getValueAsDouble());
-    inputs.climberVelocity = RotationsPerSecond.of(climberMotor.getVelocity().getValueAsDouble());
+    inputs.climberVelocity =
+RotationsPerSecond.of(climberMotor.getVelocity().getValueAsDouble());
   }
 
   @Override

@@ -3,6 +3,9 @@ package frc.robot.subsystems.hopper;
 
 import com.orangefrc.annotation.GenerateJson;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.hopper.HopperIOInputsAutoLogged;
+import frc.robot.subsystems.hopper.HopperJson;
+
 import org.littletonrobotics.junction.Logger;
 
 public class HopperSubsystem extends SubsystemBase {
@@ -53,7 +56,8 @@ public class HopperSubsystem extends SubsystemBase {
     // RobotContainer.hopperSpeed = SmartDashboard.getNumber("HopperSpeed", 0.123);
     // SmartDashboard.putNumber("HopperSetpoint", io.getSetpoint());
     // SmartDashboard.putNumber(
-    //     "HopperError", (io.getSetpoint() - (60 * inputs.hopperVelocity.in(RotationsPerSecond))));
+    //     "HopperError", (io.getSetpoint() - (60 *
+inputs.hopperVelocity.in(RotationsPerSecond);
   }
 
   @Override
