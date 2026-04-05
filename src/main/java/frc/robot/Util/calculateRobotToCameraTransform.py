@@ -50,18 +50,18 @@ from wpimath.geometry import Pose3d, Transform3d, Translation3d, Rotation3d, Qua
 
 # Note: the constant values below are for example only - see the steps above for setting real/correct values.
 
-TARGET_TO_ROBOT_TRANSLATION_X: units.meters = units.inchesToMeters(115.5) # distance from center of robot to face of AprilTag
-TARGET_TO_ROBOT_TRANSLATION_Y: units.meters = 0.03 # distance from center of robot to center of AprilTag (should be zero using alignment method above)
-TARGET_TO_ROBOT_TRANSLATION_Z: units.meters = units.inchesToMeters(-44.125) # distance from center of AprilTag to the floor (will be negative value as the robot is below the AprilTag)
-TARGET_TO_ROBOT_ROTATION_YAW: units.degrees = -124 # rotation of robot to AprilTag (e.g. front of robot turned to face toward AprilTag is 180 degrees, rear of robot facing tag will be 0 degrees, sides will be -90/90 accordingly)
+TARGET_TO_ROBOT_TRANSLATION_X: units.meters = units.inchesToMeters(119) # distance from center of robot to face of AprilTag
+TARGET_TO_ROBOT_TRANSLATION_Y: units.meters = 0.0 # distance from center of robot to center of AprilTag (should be zero using alignment method above)
+TARGET_TO_ROBOT_TRANSLATION_Z: units.meters = units.inchesToMeters(-44.25) # distance from center of AprilTag to the floor (will be negative value as the robot is below the AprilTag)
+TARGET_TO_ROBOT_ROTATION_YAW: units.degrees = -164 # rotation of robot to AprilTag (e.g. front of robot turned to face toward AprilTag is 180 degrees, rear of robot facing tag will be 0 degrees, sides will be -90/90 accordingly)
 
-TARGET_TO_CAMERA_TRANSLATION_X = 2.480   # calculated/average median value under targetPose reported by PhotonVision via AdvantageScope statistics
-TARGET_TO_CAMERA_TRANSLATION_Y = -0.080 # calculated/average median value under targetPose reported by PhotonVision via AdvantageScope statistics
-TARGET_TO_CAMERA_TRANSLATION_Z = 0.031 # calculated/average median value under targetPose reported by PhotonVision via AdvantageScope statistics
-TARGET_TO_CAMERA_QUATERNION_W = -0.017 # calculated/average median value under targetPose reported by PhotonVision via AdvantageScope statistics
-TARGET_TO_CAMERA_QUATERNION_X = 0.025 # calculated/average median value under targetPose reported by PhotonVision via AdvantageScope statistics
-TARGET_TO_CAMERA_QUATERNION_Y = 0.099 # calculated/average median value under targetPose reported by PhotonVision via AdvantageScope statistics
-TARGET_TO_CAMERA_QUATERNION_Z = -0.982  # calculated/average median value under targetPose reported by PhotonVision via AdvantageScope statistics
+TARGET_TO_CAMERA_TRANSLATION_X = 2.815 # calculated/average median value under targetPose reported by PhotonVision via AdvantageScope statistics
+TARGET_TO_CAMERA_TRANSLATION_Y = 0.158 # calculated/average median value under targetPose reported by PhotonVision via AdvantageScope statistics
+TARGET_TO_CAMERA_TRANSLATION_Z = 0.347 # calculated/average median value under targetPose reported by PhotonVision via AdvantageScope statistics
+TARGET_TO_CAMERA_QUATERNION_W = -0.049 # calculated/average median value under targetPose reported by PhotonVision via AdvantageScope statistics
+TARGET_TO_CAMERA_QUATERNION_X = -0.047 # calculated/average median value under targetPose reported by PhotonVision via AdvantageScope statistics
+TARGET_TO_CAMERA_QUATERNION_Y = -0.019 # calculated/average median value under targetPose reported by PhotonVision via AdvantageScope statistics
+TARGET_TO_CAMERA_QUATERNION_Z = -0.978  # calculated/average median value under targetPose reported by PhotonVision via AdvantageScope statistics
 
 # ===========================================================================
 
@@ -78,4 +78,6 @@ robotToCamera = Pose3d().transformBy(targetToCamera.inverse()) - Pose3d().transf
 
 constant = str(robotToCamera).replace("x=", "").replace("y=", "").replace("z=", "")
 
-print(constant)
+formed = str(constant).replace("Transform3d", "new Transform3d").replace("Translation3d", "new Translation3d").replace("Rotation3d", "new Rotation3d")
+
+print(formed)

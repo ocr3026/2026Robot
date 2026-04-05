@@ -24,22 +24,20 @@ public final class VisionConstants {
   //     new Translation3d(0.322175, -0.046373, 0.222987),
   //     new Rotation3d(0.009869, 0.022058, -0.011891));
 
+  // Positive Positive cammera - april 5 2026
+  public static Transform3d robotToCamera0 = new Transform3d(
+      new Translation3d(0.253182, 0.182888, 0.381300),
+      new Rotation3d(0.128744, -0.392545, 0.267920));
+
+  // Positive Negative cammera - april 5 2026
+
   public static Transform3d robotToCamera1 = new Transform3d(
-      new Translation3d(0.320790, 0.496752, 0.398105),
-      new Rotation3d(-0.006354, 0.049945, -0.963226));
+      new Translation3d(0.157125, -0.479281, 0.498840),
+      new Rotation3d(0.034032, -0.097710, -0.180796));
 
   //   new Transform3d(
-  //       new Translation3d(0.284608, 0.366303, 0.271689),
-  //       new Rotation3d(-0.000084, 0.027998, 0.779397));
-
-  // new Transform3d(
-  //     new Translation3d(Inches.of(-13).in(Meters), Inches.of(-13.5).in(Meters), 0.3),
-  //     new Rotation3d(0.009869, 0.022058, -Math.PI / 4));
-  // public static Transform3d robotToCamera1 = new Transform3d(new Translation3d(0.284608,
-  // 0.366303, 0.271689), new Rotation3d(-0.000084, 0.027998, 0.779397));
-  public static Transform3d robotToCamera0 = new Transform3d(
-      new Translation3d(0.278442, -0.359510, 1.208001),
-      new Rotation3d(-0.200164, 0.053835, 0.948172));
+  //       new Translation3d(0.239132, -0.498375, 0.492634),
+  //       new Rotation3d(0.035506, -0.101815, -0.188851));
 
   //   new Transform3d(
   //       new Translation3d(0.366303, -0.284608, 0.271689),
