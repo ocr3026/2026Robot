@@ -52,10 +52,14 @@ public class TopRobotContainer extends RobotContainerAbstract {
     Keybinds.reverseIntake.whileTrue(IntakeCommands.intakeFuel(intake, -intakeSpeed));
 
     Keybinds.shootFuel.whileTrue(new ParallelCommandGroup(
-        ShooterCommands.shootFuel(shooter, -shooter2Speed, shooter2Speed, shooterKickupSpeed),
+        ShooterCommands.shootFuel(
+            shooter, () -> -shooterSpeed, () -> shooterSpeed, shooterKickupSpeed),
         HopperCommands.runHopper(hopper, hopperSpeed)));
+    // Keybinds.shooterFlywheel.whileTrue(
+    //     ShooterCommands.runShooter(shooter, () -> -shooter2Speed, () -> shooter2Speed));
+
     Keybinds.shooterFlywheel.whileTrue(
-        ShooterCommands.runShooter(shooter, shooterSpeed, shooter2Speed));
+        ShooterCommands.shootFuel(shooter, () -> -shooterSpeed, () -> shooterSpeed, 1000));
 
     Keybinds.runHopper.whileTrue(HopperCommands.runHopper(hopper, hopperSpeed));
     Keybinds.reverseHopper.whileTrue(HopperCommands.reverseHopper(hopper, -hopperSpeed));

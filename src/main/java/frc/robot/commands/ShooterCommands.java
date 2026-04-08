@@ -4,20 +4,22 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
+import java.util.function.DoubleSupplier;
 
 public class ShooterCommands {
   ShooterSubsystem shooterSubsystem;
 
   public static Command shootFuel(
       ShooterSubsystem shooterSubsystem,
-      double shooterSpeed,
-      double shooter2Speed,
+      DoubleSupplier shooterSpeed,
+      DoubleSupplier shooter2Speed,
       double kickupSpeed) {
     return Commands.runEnd(
         () -> {
-          shooterSubsystem.runShooter(shooterSpeed);
-          shooterSubsystem.runShooter2(shooter2Speed);
+          shooterSubsystem.runShooter(shooterSpeed.getAsDouble());
+          shooterSubsystem.runShooter2(shooter2Speed.getAsDouble());
           shooterSubsystem.runShooterKickup(kickupSpeed);
+          System.out.println("SHooter speed: " + shooter2Speed.getAsDouble());
         },
         () -> {
           shooterSubsystem.runShooter(0.0);
@@ -36,11 +38,13 @@ public class ShooterCommands {
         });
   }
 
-  public static Command runShooter(ShooterSubsystem shooterSubsystem, double speed, double speed2) {
+  public static Command runShooter(
+      ShooterSubsystem shooterSubsystem, DoubleSupplier speed, DoubleSupplier speed2) {
     return Commands.runEnd(
         () -> {
-          shooterSubsystem.runShooter(speed);
-          shooterSubsystem.runShooter2(speed2);
+          shooterSubsystem.runShooter(speed.getAsDouble());
+          shooterSubsystem.runShooter2(speed2.getAsDouble());
+          System.out.println("SHooter speed: " + speed2.getAsDouble());
         },
         () -> {
           shooterSubsystem.runShooter(0.0);

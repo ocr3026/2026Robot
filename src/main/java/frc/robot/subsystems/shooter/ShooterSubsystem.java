@@ -3,6 +3,7 @@ package frc.robot.subsystems.shooter;
 
 import com.orangefrc.annotation.GenerateJson;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.ZRobotContainerAbstract.RobotContainerAbstract;
 import org.littletonrobotics.junction.Logger;
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -28,6 +29,8 @@ public class ShooterSubsystem extends SubsystemBase {
     double kickD;
     double kickV;
     double kickMaxAccel;
+
+    double shooterSpeed;
   }
 
   ShooterJson json = new ShooterJson();
@@ -52,6 +55,11 @@ public class ShooterSubsystem extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Shooter", inputs);
+    json.updateVals();
+    if (json.hasUpdated()) {
+      RobotContainerAbstract.shooter2Speed = json.getshooterSpeed();
+      System.out.println(RobotContainerAbstract.shooter2Speed);
+    }
     // json.updateVals();
     // if (json.hasUpdated()) {
     //   io.updatePID(

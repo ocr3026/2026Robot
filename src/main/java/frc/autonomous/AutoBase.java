@@ -207,15 +207,16 @@ public class AutoBase extends SequentialCommandGroup {
         HopperCommands.runHopper(hopper, RobotContainerAbstract.hopperSpeed),
         ShooterCommands.shootFuel(
             shooter,
-            RobotContainerAbstract.shooterSpeed,
-            RobotContainerAbstract.shooter2Speed,
+            () -> RobotContainerAbstract.shooterSpeed,
+            () -> RobotContainerAbstract.shooter2Speed,
             RobotContainerAbstract.shooterKickupSpeed));
   }
 
   public static final ParallelCommandGroup stopHopperAndShooter(
       HopperSubsystem hopper, ShooterSubsystem shooter) {
     return new ParallelCommandGroup(
-        HopperCommands.runHopper(hopper, 0.0), ShooterCommands.shootFuel(shooter, 0.0, 0.0, 0.0));
+        HopperCommands.runHopper(hopper, 0.0),
+        ShooterCommands.shootFuel(shooter, () -> 0.0, () -> 0.0, 0.0));
   }
 
   public static final FunctionalCommand lowerIntake(IntakeSubsystem intake) {

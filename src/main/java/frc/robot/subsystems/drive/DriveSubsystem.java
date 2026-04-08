@@ -41,6 +41,7 @@ import frc.robot.Constants.Mode;
 import frc.robot.Util.LocalADStarAK;
 import frc.robot.ZRobotContainerAbstract.RobotContainerAbstract;
 import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.shooter.ShooterConstants;
 import frc.robot.subsystems.vision.*;
 import java.io.File;
 import java.io.FileReader;
@@ -304,14 +305,13 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
   }
 
   public double calculateShooterSpeed() {
-    double dist = getDistanceFromPose(
-        DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue
-            ? DriveConstants.hubPose
-            : FlippingUtil.flipFieldPose(DriveConstants.hubPose),
-        getPose());
+    double dist = getDistanceFromPose(DriveConstants.hubPose, getPose());
 
     // Fomrula to calc the speed;
-    double speed = dist;
+    System.out.println("Calculated dist from hub: " + dist);
+    double speed = ShooterConstants.b * Math.pow(dist, 3)
+        + ShooterConstants.c * Math.pow(dist, 2)
+        + ShooterConstants.d * dist;
     return speed;
   }
 
@@ -321,12 +321,12 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
         "TypeScript/Dtheta",
         getDeltaRotation(Paths.aimTurret.getStartingHolonomicPose().get(), getPose()));
     RobotContainerAbstract.shooterSpeed = calculateShooterSpeed();
+    System.out.println("Calculated shooter speed: " + RobotContainerAbstract.shooterSpeed);
     // // boolean isWriteable = file.setWritable(true);
     // Logger.recordOutput("PIDJson/fileWriteable", file.canWrite());
 
-    // Logger.recordOutput(
-    //     "currentDistFromHub",
-    //     getDistanceFromHub(Paths.aimTurret.getStartingHolonomicPose().get(), getPose()));
+    Logger.recordOutput(
+        "currentDistFromHub", getDistanceFromPose(DriveConstants.hubPose, getPose()));
 
     // if (SmartDashboard.getNumber("changeSP", 0.0) != updateSteerP
     //     || SmartDashboard.getNumber("changeSI", 0.0) != updateSteerI
