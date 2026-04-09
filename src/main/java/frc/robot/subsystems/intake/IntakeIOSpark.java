@@ -46,6 +46,7 @@ public class IntakeIOSpark implements IntakeIO {
     intakeLiftConfig.closedLoop.apply(intakeLiftConf);
 
     intakeConfig.smartCurrentLimit(70);
+    intakeConfig.secondaryCurrentLimit(100);
     intakeMotor.configure(
         intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     intakeLift.configure(

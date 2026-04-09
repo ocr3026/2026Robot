@@ -95,9 +95,9 @@ public class BaseRobotContainer extends RobotContainerAbstract {
   public void configureBindings() {
     drive.setDefaultCommand(DriveCommands.joystickDrive(
         drive,
-        () -> -translationJoystick.getY(),
-        () -> -translationJoystick.getX(),
-        () -> rotationJoystick.getX() * 0.8));
+        () -> -translationJoystick.getY() * 0.7,
+        () -> -translationJoystick.getX() * 0.7,
+        () -> rotationJoystick.getX() * 0.7));
 
     Logger.recordOutput("THe pose we get rotation from", DriveConstants.hubPose);
 
@@ -105,16 +105,16 @@ public class BaseRobotContainer extends RobotContainerAbstract {
     Keybinds.lockOnHubDrive
         .whileTrue(DriveCommands.turretDrive(
             drive,
-            () -> -translationJoystick.getY(),
-            () -> -translationJoystick.getX(),
+            () -> -translationJoystick.getY() * 0.7,
+            () -> -translationJoystick.getX() * 0.7,
             () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red
                 ? drive.getTargetRotation(DriveConstants.hubPose, drive.getPose())
                 : drive.getTargetRotation(DriveConstants.hubPose, drive.getPose())))
         .whileFalse(DriveCommands.joystickDrive(
             drive,
-            () -> -translationJoystick.getY(),
-            () -> -translationJoystick.getX(),
-            () -> rotationJoystick.getX() * 0.8));
+            () -> -translationJoystick.getY() * 0.7,
+            () -> -translationJoystick.getX() * 0.7,
+            () -> rotationJoystick.getX() * 0.7));
 
     final Runnable resetGyro = Constants.currentMode == Constants.Mode.SIM
         ? () -> drive.setPose(

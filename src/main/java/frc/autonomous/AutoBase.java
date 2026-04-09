@@ -210,12 +210,41 @@ public class AutoBase extends SequentialCommandGroup {
   public static final ParallelCommandGroup runHopperAndShooter(
       HopperSubsystem hopper, ShooterSubsystem shooter) {
     return new ParallelCommandGroup(
-        HopperCommands.runHopper(hopper, RobotContainerAbstract.hopperSpeed),
         ShooterCommands.shootFuel(
             shooter,
-            () -> RobotContainerAbstract.shooterSpeed,
             () -> -RobotContainerAbstract.shooterSpeed,
-            RobotContainerAbstract.shooterKickupSpeed));
+            () -> RobotContainerAbstract.shooterSpeed,
+            RobotContainerAbstract.shooterKickupSpeed),
+        HopperCommands.runHopper(hopper, RobotContainerAbstract.hopperSpeed));
+  }
+
+  public static final ParallelRaceGroup runHopperAndShooterForTime(
+      HopperSubsystem hopper, ShooterSubsystem shooter, double time) {
+    return new ParallelRaceGroup(
+        ShooterCommands.shootFuel(
+            shooter,
+            () -> -RobotContainerAbstract.shooterSpeed,
+            () -> RobotContainerAbstract.shooterSpeed,
+            RobotContainerAbstract.shooterKickupSpeed),
+        HopperCommands.runHopper(hopper, RobotContainerAbstract.hopperSpeed),
+        timerHasElapsed(time));
+  }
+
+  public static final FunctionalCommand timerHasElapsed(double time) {
+
+    return new FunctionalCommand(
+        () -> {
+          timer.stop();
+          timer.reset();
+          timer.start();
+        },
+        () -> {},
+        (interrupted) -> {
+          timer.stop();
+        },
+        () -> {
+          return timer.hasElapsed(time);
+        });
   }
 
   public static final ParallelCommandGroup stopHopperAndShooter(
@@ -383,5 +412,8 @@ public class AutoBase extends SequentialCommandGroup {
     public static final PathPlannerPath leftClimb = getPathFromFile("LeftClimb");
     public static final PathPlannerPath leftClimbSlow = getPathFromFile("LeftClimbSlow");
     public static final PathPlannerPath leftLadderPose = getPathFromFile("LeftLadderPose");
+    public static final PathPlannerPath depotStart = getPathFromFile("DepotStartPose");
+    public static final PathPlannerPath depotIntakePath = getPathFromFile("DepotIntakePath");
+    public static final PathPlannerPath depotShootPose = getPathFromFile("DepotBackShoot");
   }
 }

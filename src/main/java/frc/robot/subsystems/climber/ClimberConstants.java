@@ -15,7 +15,7 @@ public class ClimberConstants {
 
   public static Gson climberGson = new Gson();
 
-  public static final int maxHeight = 530;
+  public static final int maxHeight = 600;
 
   public class Animal {
     public String sound;
