@@ -7,13 +7,14 @@ import frc.robot.subsystems.hopper.HopperSubsystem;
 import frc.robot.subsystems.intake.IntakeSubsystem;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
 
-public class DriveBackAndShoot extends AutoBase {
+public class LeftBackAndShoot extends AutoBase {
 
-  public DriveBackAndShoot(
+  public LeftBackAndShoot(
       HopperSubsystem hopper,
       ShooterSubsystem shooter,
       IntakeSubsystem intake,
       DriveSubsystem drive) {
+    super(hopper, shooter, intake, drive);
     addCommands(delayStartTime());
     // addCommands(setStartPose(Paths.driveBackSimple));
     addCommands(lowerIntake(intake));

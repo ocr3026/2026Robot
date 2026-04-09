@@ -34,7 +34,7 @@ public class IntakeIOSpark implements IntakeIO {
 
     intakeConfig = new SparkFlexConfig();
     intakeConfig.idleMode(IdleMode.kBrake);
-    intakeConfig.closedLoop.p(0.00015).i(0.000001).d(0.0);
+    intakeConfig.closedLoop.p(0.00015).i(0.00000).d(0.0);
     intakeConfig.closedLoop.apply(intakeConf);
 
     FeedForwardConfig intakeLiftConf = new FeedForwardConfig();

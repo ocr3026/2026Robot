@@ -14,6 +14,7 @@ public class RightMidPickup extends AutoBase {
       ShooterSubsystem shooter,
       IntakeSubsystem intake,
       DriveSubsystem drive) {
+    super(hopper, shooter, intake, drive);
     addCommands(setStartPose(Paths.driveBackSimple));
 
     addCommands(delayStartTime());

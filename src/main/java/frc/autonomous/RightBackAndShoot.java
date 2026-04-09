@@ -14,6 +14,7 @@ public class RightBackAndShoot extends AutoBase {
       ShooterSubsystem shooter,
       IntakeSubsystem intake,
       DriveSubsystem drive) {
+    super(hopper, shooter, intake, drive);
     addCommands(delayStartTime());
     // addCommands(setStartPose(Paths.driveBackSimple));
     addCommands(lowerIntake(intake));

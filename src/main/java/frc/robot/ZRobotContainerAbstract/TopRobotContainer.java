@@ -2,8 +2,6 @@
 package frc.robot.ZRobotContainerAbstract;
 
 import com.orangefrc.annotation.GSON;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants;
 import frc.robot.Keybinds;
@@ -11,16 +9,9 @@ import frc.robot.commands.ClimberCommands;
 import frc.robot.commands.HopperCommands;
 import frc.robot.commands.IntakeCommands;
 import frc.robot.commands.ShooterCommands;
-import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.climber.ClimberIOSim;
 import frc.robot.subsystems.climber.ClimberIOTalon;
 import frc.robot.subsystems.climber.ClimberSubsystem;
-import frc.robot.subsystems.drive.DriveConstants;
-import frc.robot.subsystems.drive.DriveSubsystem;
-import frc.robot.subsystems.drive.GyroIO;
-import frc.robot.subsystems.drive.GyroIOSim;
-import frc.robot.subsystems.drive.ModuleIO;
-import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.hopper.HopperIO;
 import frc.robot.subsystems.hopper.HopperIOSim;
 import frc.robot.subsystems.hopper.HopperIOSpark;
@@ -33,12 +24,6 @@ import frc.robot.subsystems.shooter.ShooterIO;
 import frc.robot.subsystems.shooter.ShooterIOSim;
 import frc.robot.subsystems.shooter.ShooterIOSpark;
 import frc.robot.subsystems.shooter.ShooterSubsystem;
-import frc.robot.subsystems.vision.Vision;
-import frc.robot.subsystems.vision.VisionConstants;
-import frc.robot.subsystems.vision.VisionIO;
-import frc.robot.subsystems.vision.VisionIOPhotonvisionSim;
-import org.ironmaple.simulation.SimulatedArena;
-import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 
 public class TopRobotContainer extends RobotContainerAbstract {
 
@@ -82,39 +67,13 @@ public class TopRobotContainer extends RobotContainerAbstract {
         GSON.createDir();
         break;
       case SIM:
-        driveSimulation = new SwerveDriveSimulation(
-            DriveConstants.mapleSimConfig, new Pose2d(3, 3, new Rotation2d()));
-        SimulatedArena.getInstance().addDriveTrainSimulation(driveSimulation);
-        drive = new DriveSubsystem(
-            new GyroIOSim(driveSimulation.getGyroSimulation()),
-            new ModuleIOSim(TunerConstants.FrontLeft, driveSimulation.getModules()[0]),
-            new ModuleIOSim(TunerConstants.FrontRight, driveSimulation.getModules()[1]),
-            new ModuleIOSim(TunerConstants.BackLeft, driveSimulation.getModules()[2]),
-            new ModuleIOSim(TunerConstants.BackRight, driveSimulation.getModules()[3]),
-            driveSimulation::setSimulationWorldPose);
-
         hopper = new HopperSubsystem(new HopperIOSim());
         shooter = new ShooterSubsystem(new ShooterIOSim());
         intake = new IntakeSubsystem(new IntakeIOSim());
         climber = new ClimberSubsystem(new ClimberIOSim());
 
-        vision = new Vision(
-            drive,
-            new VisionIOPhotonvisionSim(
-                VisionConstants.camera0Name,
-                VisionConstants.robotToCamera0,
-                driveSimulation::getSimulatedDriveTrainPose));
-
         break;
       default:
-        drive = new DriveSubsystem(
-            new GyroIO() {},
-            new ModuleIO() {},
-            new ModuleIO() {},
-            new ModuleIO() {},
-            new ModuleIO() {},
-            (pose) -> {});
-        vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
         hopper = new HopperSubsystem(new HopperIO() {});
         shooter = new ShooterSubsystem(new ShooterIO() {});
         intake = new IntakeSubsystem(new IntakeIO() {});
@@ -126,6 +85,7 @@ public class TopRobotContainer extends RobotContainerAbstract {
 
   @Override
   public void initAutos() {
+    System.out.println("Does it change: " + test);
     compileAutos();
   }
 }

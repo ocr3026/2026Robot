@@ -308,7 +308,7 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
     double dist = getDistanceFromPose(DriveConstants.hubPose, getPose());
 
     // Fomrula to calc the speed;
-    System.out.println("Calculated dist from hub: " + dist);
+    // System.out.println("Calculated dist from hub: " + dist);
     double speed = ShooterConstants.b * Math.pow(dist, 3)
         + ShooterConstants.c * Math.pow(dist, 2)
         + ShooterConstants.d * dist;
@@ -321,7 +321,7 @@ public class DriveSubsystem extends SubsystemBase implements Vision.VisionConsum
         "TypeScript/Dtheta",
         getDeltaRotation(Paths.aimTurret.getStartingHolonomicPose().get(), getPose()));
     RobotContainerAbstract.shooterSpeed = calculateShooterSpeed();
-    System.out.println("Calculated shooter speed: " + RobotContainerAbstract.shooterSpeed);
+    // System.out.println("Calculated shooter speed: " + RobotContainerAbstract.shooterSpeed);
     // // boolean isWriteable = file.setWritable(true);
     // Logger.recordOutput("PIDJson/fileWriteable", file.canWrite());
 

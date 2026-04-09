@@ -44,6 +44,12 @@ import org.littletonrobotics.junction.Logger;
 public class AutoBase extends SequentialCommandGroup {
   static Timer timer = new Timer();
 
+  public AutoBase(
+      HopperSubsystem hopper,
+      ShooterSubsystem shooter,
+      IntakeSubsystem intake,
+      DriveSubsystem drive) {}
+
   private static final double ANGLE_KP = 5.0;
   private static final double ANGLE_KD = 0.4;
   private static final AngularVelocity ANGLE_MAX_VELOCITY = RadiansPerSecond.of(8.0);
@@ -208,7 +214,7 @@ public class AutoBase extends SequentialCommandGroup {
         ShooterCommands.shootFuel(
             shooter,
             () -> RobotContainerAbstract.shooterSpeed,
-            () -> RobotContainerAbstract.shooter2Speed,
+            () -> -RobotContainerAbstract.shooterSpeed,
             RobotContainerAbstract.shooterKickupSpeed));
   }
 
@@ -221,17 +227,24 @@ public class AutoBase extends SequentialCommandGroup {
 
   public static final FunctionalCommand lowerIntake(IntakeSubsystem intake) {
     return new FunctionalCommand(
-        () -> {},
+        () -> {
+          intake.zeroIntakeLift();
+        },
         () -> {
           intake.runIntakeLiftUntil(RobotContainerAbstract.intakeLiftPos, -0.1);
         },
-        (interrupted) -> {
-          intake.intakeLift(0.0);
-        },
+        (interrupted) -> {},
         () -> {
-          return (intake.getIntakeLiftPos() >= RobotContainerAbstract.intakeLiftPos);
-        });
+          return (intake.getIntakeLiftPos() <= RobotContainerAbstract.intakeLiftPos);
+        },
+        intake);
   }
+
+  // public static final Command lowerIntakeTest(IntakeSubsystem intake) {
+  //   return new FunctionalCommand(() -> {
+  //     intake.runIntakeLiftUntil(RobotContainerAbstract.intakeLiftPos, -0.1);
+  //   });
+  // }
 
   // public static final Command raiseIntake(IntakeSubsystem intake) {
   //   return new FunctionalCommand(() -> {}, () -> {

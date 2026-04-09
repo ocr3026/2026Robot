@@ -11,8 +11,6 @@ import frc.robot.Constants;
 import frc.robot.Keybinds;
 import frc.robot.commands.DriveCommands;
 import frc.robot.generated.TunerConstants;
-import frc.robot.subsystems.climber.ClimberIOSim;
-import frc.robot.subsystems.climber.ClimberSubsystem;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.DriveSubsystem;
 import frc.robot.subsystems.drive.GyroIO;
@@ -21,15 +19,6 @@ import frc.robot.subsystems.drive.GyroIOSim;
 import frc.robot.subsystems.drive.ModuleIO;
 import frc.robot.subsystems.drive.ModuleIOSim;
 import frc.robot.subsystems.drive.ModuleIOTalon;
-import frc.robot.subsystems.hopper.HopperIO;
-import frc.robot.subsystems.hopper.HopperIOSim;
-import frc.robot.subsystems.hopper.HopperSubsystem;
-import frc.robot.subsystems.intake.IntakeIO;
-import frc.robot.subsystems.intake.IntakeIOSim;
-import frc.robot.subsystems.intake.IntakeSubsystem;
-import frc.robot.subsystems.shooter.ShooterIO;
-import frc.robot.subsystems.shooter.ShooterIOSim;
-import frc.robot.subsystems.shooter.ShooterSubsystem;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.subsystems.vision.VisionConstants;
 import frc.robot.subsystems.vision.VisionIO;
@@ -62,6 +51,7 @@ public class BaseRobotContainer extends RobotContainerAbstract {
         // climber = new ClimberSubsystem(new ClimberIOTalon());
         break;
       case SIM:
+        test = 10;
         driveSimulation = new SwerveDriveSimulation(
             DriveConstants.mapleSimConfig,
             DriverStation.getAlliance().isPresent()
@@ -77,11 +67,8 @@ public class BaseRobotContainer extends RobotContainerAbstract {
             new ModuleIOSim(TunerConstants.BackRight, driveSimulation.getModules()[3]),
             driveSimulation::setSimulationWorldPose);
 
-        hopper = new HopperSubsystem(new HopperIOSim());
-        shooter = new ShooterSubsystem(new ShooterIOSim());
-        intake = new IntakeSubsystem(new IntakeIOSim());
-        climber = new ClimberSubsystem(new ClimberIOSim());
-
+        System.out.println(
+            "Initializing drive.. " + drive.getName() + "at : " + System.currentTimeMillis());
         vision = new Vision(
             drive,
             new VisionIOPhotonvisionSim(
@@ -99,10 +86,6 @@ public class BaseRobotContainer extends RobotContainerAbstract {
             new ModuleIO() {},
             (pose) -> {});
         vision = new Vision(drive, new VisionIO() {}, new VisionIO() {});
-        hopper = new HopperSubsystem(new HopperIO() {});
-        shooter = new ShooterSubsystem(new ShooterIO() {});
-        intake = new IntakeSubsystem(new IntakeIO() {});
-        climber = new ClimberSubsystem(new ClimberIOSim() {});
 
         break;
     }
@@ -148,6 +131,9 @@ public class BaseRobotContainer extends RobotContainerAbstract {
 
   @Override
   public void initAutos() {
+
+    compileAutos();
+
     // RobotContainer.autoChooser.addOption("Test", new Test(drive));
     // RobotContainer.autoChooser.addOption("ClimbTest", new ClimbAutoTest(climber, drive));
   }

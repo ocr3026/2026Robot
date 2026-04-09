@@ -50,8 +50,12 @@ public class IntakeSubsystem extends SubsystemBase {
     io.setIntakeLiftPos(pos);
   }
 
+  public void zeroIntakeLift() {
+    io.zeroIntakeLift();
+  }
+
   public void runIntakeLiftUntil(double pos, double speed) {
-    SmartDashboard.putNumber("intake lift shit.", getIntakeLiftPos());
+    SmartDashboard.putNumber("intake lift", getIntakeLiftPos());
 
     if (io.getIntakePosition() >= pos) {
       io.runWhileGreater(speed, pos);
@@ -62,20 +66,20 @@ public class IntakeSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    json.updateVals();
-    if (json.hasUpdated()) {
-      io.updatePID(
-          json.getiP(),
-          json.getiI(),
-          json.getiD(),
-          json.getiV(),
-          json.getiA(),
-          json.getlP(),
-          json.getlI(),
-          json.getlD(),
-          json.getlV(),
-          json.getlA());
-    }
+    // json.updateVals();
+    // if (json.hasUpdated()) {
+    //   io.updatePID(
+    //       json.getiP(),
+    //       json.getiI(),
+    //       json.getiD(),
+    //       json.getiV(),
+    //       json.getiA(),
+    //       json.getlP(),
+    //       json.getlI(),
+    //       json.getlD(),
+    //       json.getlV(),
+    //       json.getlA());
+    // }
     io.updateInputs(inputs);
     io.getIntakePosition();
     Logger.processInputs("Intake", inputs);

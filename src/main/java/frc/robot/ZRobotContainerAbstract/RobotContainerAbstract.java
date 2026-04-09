@@ -34,13 +34,14 @@ public abstract class RobotContainerAbstract {
   public static final CommandXboxController m_driverController = new CommandXboxController(2);
   protected SwerveDriveSimulation driveSimulation = null;
 
-  protected DriveSubsystem drive;
-  protected Vision vision;
-  protected ShooterSubsystem shooter;
-  protected HopperSubsystem hopper;
-  protected IntakeSubsystem intake;
-  protected ClimberSubsystem climber;
+  public static DriveSubsystem drive;
+  public static Vision vision;
+  public static ShooterSubsystem shooter;
+  public static HopperSubsystem hopper;
+  public static IntakeSubsystem intake;
+  public static ClimberSubsystem climber;
 
+  public static int test = 0;
   public static double hopperSpeed = -400;
   public static double intakeSpeed = -3300;
   public static double intakeLiftSpeed = 50;
@@ -49,7 +50,7 @@ public abstract class RobotContainerAbstract {
   public static double shooterKickupSpeed = -3000;
   public static double climberSpeed = 5;
   public static double climberPos = 50;
-  public static double intakeLiftPos = -24;
+  public static double intakeLiftPos = -20;
 
   protected void compileAutos() {
     Reflections reflection = new Reflections(new ConfigurationBuilder()

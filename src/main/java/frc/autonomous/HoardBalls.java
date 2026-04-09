@@ -13,6 +13,7 @@ public class HoardBalls extends AutoBase {
       ShooterSubsystem shooter,
       IntakeSubsystem intake,
       DriveSubsystem drive) {
+    super(hopper, shooter, intake, drive);
     addCommands(delayStartTime());
     // addCommands(setStartPose(Paths.hoardBalls));
     addCommands(pathFindToStartPose(Paths.hoardBalls));

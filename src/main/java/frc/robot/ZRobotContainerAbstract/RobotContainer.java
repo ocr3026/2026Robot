@@ -28,12 +28,14 @@ public class RobotContainer {
     // compileAutos();
 
     configureBindings(abstracts);
+
     if (Constants.hasConfiguredAutobuilder) {
       autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
     }
 
     for (RobotContainerAbstract abstract1 : abstracts) {
       abstract1.initAutos();
+      System.out.println("Init autos for: " + abstract1.getClass().getSimpleName());
     }
   }
 
