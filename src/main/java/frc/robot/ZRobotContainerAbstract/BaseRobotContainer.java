@@ -116,6 +116,12 @@ public class BaseRobotContainer extends RobotContainerAbstract {
             () -> -translationJoystick.getX() * 0.7,
             () -> rotationJoystick.getX() * 0.7));
 
+    // Keybinds.limitRobotSpeed.whileTrue(DriveCommands.joystickDrive(
+    //     drive,
+    //     () -> -translationJoystick.getY() * 0.3,
+    //     () -> -translationJoystick.getX() * 0.3,
+    //     () -> rotationJoystick.getX() * 0.7));
+
     final Runnable resetGyro = Constants.currentMode == Constants.Mode.SIM
         ? () -> drive.setPose(
             driveSimulation
