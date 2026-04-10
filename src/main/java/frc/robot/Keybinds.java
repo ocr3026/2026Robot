@@ -32,4 +32,7 @@ public class Keybinds {
   public static final Trigger climberPosDown = RobotContainerAbstract.m_driverController.povRight();
 
   public static final Trigger limitRobotSpeed = RobotContainerAbstract.rotationJoystick.button(1);
+
+  public static final Trigger zeroShooterReduction =
+      RobotContainerAbstract.rotationJoystick.button(7);
 }

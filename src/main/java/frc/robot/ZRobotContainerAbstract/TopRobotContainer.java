@@ -2,6 +2,7 @@
 package frc.robot.ZRobotContainerAbstract;
 
 import com.orangefrc.annotation.GSON;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants;
 import frc.robot.Keybinds;
@@ -38,13 +39,21 @@ public class TopRobotContainer extends RobotContainerAbstract {
 
     Keybinds.shootFuel.whileTrue(new ParallelCommandGroup(
         ShooterCommands.shootFuel(
-            shooter, () -> -shooterSpeed, () -> shooterSpeed, shooterKickupSpeed),
+            shooter,
+            () -> -shooterSpeed,
+            () -> shooterSpeed,
+            () -> (-rotationJoystick.getZ() + shooterReductionOffset) * 0.2 + 1.0,
+            shooterKickupSpeed),
         HopperCommands.runHopper(hopper, hopperSpeed)));
     // Keybinds.shooterFlywheel.whileTrue(
     //     ShooterCommands.runShooter(shooter, () -> -shooter2Speed, () -> shooter2Speed));
 
-    Keybinds.shooterFlywheel.whileTrue(
-        ShooterCommands.shootFuel(shooter, () -> -shooterSpeed, () -> shooterSpeed, 1000));
+    Keybinds.shooterFlywheel.whileTrue(ShooterCommands.shootFuel(
+        shooter,
+        () -> -shooterSpeed,
+        () -> shooterSpeed,
+        () -> (-rotationJoystick.getZ() + shooterReductionOffset) * 0.2 + 1.0,
+        1000));
 
     Keybinds.runHopper.whileTrue(HopperCommands.runHopper(hopper, hopperSpeed));
     Keybinds.reverseHopper.whileTrue(HopperCommands.reverseHopper(hopper, -hopperSpeed));
@@ -54,6 +63,12 @@ public class TopRobotContainer extends RobotContainerAbstract {
 
     Keybinds.climberPosUp.whileTrue(ClimberCommands.runClimber(climber, -0.1));
     Keybinds.climberPosDown.whileTrue(ClimberCommands.reverseCLimber(climber, 0.1));
+
+    Keybinds.zeroShooterReduction.onTrue(Commands.runOnce(() -> {
+      double curZPos = rotationJoystick.getZ();
+      shooterReductionOffset = curZPos;
+      System.out.println("Current OFfset: " + shooterReductionOffset);
+    }));
   }
 
   @Override

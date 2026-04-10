@@ -131,6 +131,31 @@ public class AutoBase extends SequentialCommandGroup {
         });
   }
 
+  public static final Command autoAim(DriveSubsystem drive) {
+    return new FunctionalCommand(
+        () -> {
+          turretController.enableContinuousInput(-Math.PI, Math.PI);
+          turretController.setTolerance(0.01);
+        },
+        () -> {
+          ChassisSpeeds speeds = new ChassisSpeeds(
+              0,
+              0,
+              -turretController.calculate(
+                  drive.getPose().getRotation().minus(new Rotation2d(Math.PI)).getRadians(),
+                  drive.getTargetRotation(DriveConstants.hubPose, drive.getPose())));
+          drive.runVelocity(ChassisSpeeds.fromFieldRelativeSpeeds(
+              speeds,
+              isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI)) : drive.getRotation()));
+        },
+        (interrupted) -> {
+          drive.runVelocity(new ChassisSpeeds());
+        },
+        () -> {
+          return turretController.atSetpoint();
+        });
+  }
+
   public static PathPlannerTrajectory currentTrajectory;
   public static boolean isFlipped;
 
@@ -214,6 +239,7 @@ public class AutoBase extends SequentialCommandGroup {
             shooter,
             () -> -RobotContainerAbstract.shooterSpeed,
             () -> RobotContainerAbstract.shooterSpeed,
+            () -> 1.0,
             RobotContainerAbstract.shooterKickupSpeed),
         HopperCommands.runHopper(hopper, RobotContainerAbstract.hopperSpeed));
   }
@@ -225,6 +251,7 @@ public class AutoBase extends SequentialCommandGroup {
             shooter,
             () -> -RobotContainerAbstract.shooterSpeed,
             () -> RobotContainerAbstract.shooterSpeed,
+            () -> 1.0,
             RobotContainerAbstract.shooterKickupSpeed),
         HopperCommands.runHopper(hopper, RobotContainerAbstract.hopperSpeed),
         timerHasElapsed(time));
@@ -251,7 +278,7 @@ public class AutoBase extends SequentialCommandGroup {
       HopperSubsystem hopper, ShooterSubsystem shooter) {
     return new ParallelCommandGroup(
         HopperCommands.runHopper(hopper, 0.0),
-        ShooterCommands.shootFuel(shooter, () -> 0.0, () -> 0.0, 0.0));
+        ShooterCommands.shootFuel(shooter, () -> 0.0, () -> 0.0, () -> 1.0, 0.0));
   }
 
   public static final FunctionalCommand lowerIntake(IntakeSubsystem intake) {
@@ -351,7 +378,7 @@ public class AutoBase extends SequentialCommandGroup {
     turretController.setTolerance(0.007);
 
     return AutoBuilder.pathfindToPoseFlipped(
-            poseToPathfindTo.getStartingHolonomicPose().get(), DriveConstants.PATH_CONSTRAINTS)
+            poseToPathfindTo.getStartingHolonomicPose().get(), DriveConstants.PATH_CONSTRAINTS_SLOW)
         .alongWith(Commands.waitUntil(() -> turretController.atSetpoint()))
         .beforeStarting(() -> {
           PPHolonomicDriveController.overrideRotationFeedback(() -> -turretController.calculate(
@@ -415,5 +442,6 @@ public class AutoBase extends SequentialCommandGroup {
     public static final PathPlannerPath depotStart = getPathFromFile("DepotStartPose");
     public static final PathPlannerPath depotIntakePath = getPathFromFile("DepotIntakePath");
     public static final PathPlannerPath depotShootPose = getPathFromFile("DepotBackShoot");
+    public static final PathPlannerPath centerShootPose = getPathFromFile("CenterShootSlow");
   }
 }

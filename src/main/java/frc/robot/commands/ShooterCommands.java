@@ -13,13 +13,16 @@ public class ShooterCommands {
       ShooterSubsystem shooterSubsystem,
       DoubleSupplier shooterSpeed,
       DoubleSupplier shooter2Speed,
+      DoubleSupplier shooterReduction,
       double kickupSpeed) {
     return Commands.runEnd(
         () -> {
-          shooterSubsystem.runShooter(shooterSpeed.getAsDouble());
-          shooterSubsystem.runShooter2(shooter2Speed.getAsDouble());
+          shooterSubsystem.runShooter(shooterSpeed.getAsDouble() * shooterReduction.getAsDouble());
+          shooterSubsystem.runShooter2(
+              shooter2Speed.getAsDouble() * shooterReduction.getAsDouble());
           shooterSubsystem.runShooterKickup(kickupSpeed);
-          System.out.println("SHooter speed: " + shooter2Speed.getAsDouble());
+          System.out.println(
+              "SHooter speed: " + shooter2Speed.getAsDouble() * shooterReduction.getAsDouble());
         },
         () -> {
           shooterSubsystem.runShooter(0.0);

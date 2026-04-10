@@ -118,6 +118,16 @@ public final class Util {
     return odometryTimeStamps;
   }
 
+  public static double minMax(double val, double min, double max) {
+    if (val < min) {
+      return min;
+    } else if (val > max) {
+      return max;
+    } else {
+      return val;
+    }
+  }
+
   public static SwerveModuleConstants regulateModuleConstantForSimulation(
       SwerveModuleConstants<?, ?, ?> moduleConstants) {
     // Skip regulation if running on a real robot

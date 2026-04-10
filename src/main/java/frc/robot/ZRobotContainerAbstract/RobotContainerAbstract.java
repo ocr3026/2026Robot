@@ -52,6 +52,8 @@ public abstract class RobotContainerAbstract {
   public static double climberPos = 50;
   public static double intakeLiftPos = -20;
 
+  public static double shooterReductionOffset = 0;
+
   protected void compileAutos() {
     Reflections reflection = new Reflections(new ConfigurationBuilder()
         .setUrls(ClasspathHelper.forPackage("frc.autonomous"))

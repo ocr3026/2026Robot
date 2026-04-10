@@ -19,8 +19,8 @@ public class IntakeDepotShoot extends AutoBase {
       DriveSubsystem drive) {
     super(hopper, shooter, intake, drive);
     addCommands(delayStartTime());
-    addCommands(lowerIntake(intake));
-    addCommands(pathFindToStartPose(Paths.depotStart));
+    // addCommands(lowerIntake(intake));
+    addCommands(pathFindToStartPoseSlow(Paths.depotStart));
     addCommands(new ParallelCommandGroup(
         IntakeCommands.intakeFuel(intake, RobotContainerAbstract.intakeSpeed),
         followPath(Paths.depotIntakePath)));
