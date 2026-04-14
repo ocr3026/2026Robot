@@ -49,18 +49,27 @@ public class Module {
     // Update inputs for logging
     io.updateInputs(inputs);
 
+    // Put all the inputs on the dashboard
     Logger.processInputs("Drive/Module" + Integer.toString(index), inputs);
 
+    // Get how many timestamps were recorded - how many "samples" for odometry there are in this
+    // period
     int sampleCount = inputs.odometryTimestamps.length;
+    // Initialze the array for all swerve module positions for how many samples there were in this
+    // period
     odometryPositions = new SwerveModulePosition[sampleCount];
+
+    // Go through each sample
     for (int i = 0; i < sampleCount; i++) {
-      Logger.recordOutput("constants/WheeLRadius", constants.WheelRadius);
+      // Get the position in meters based off of the current drive position in radians times the
+      // wheel radius, dividing by the gear reduction
       double positionMeters = (inputs.odometryDrivePositionsRad[i] * constants.WheelRadius)
           / constants.DriveMotorGearRatio;
-      Logger.recordOutput("constants/posmeters", positionMeters);
-      Logger.recordOutput("constants/odoDrivePosRad", inputs.odometryDrivePositionsRad[i]);
 
+      // Get the angle from the encoder in radians
       Rotation2d angle = inputs.turnPositionsRad[i];
+      // Make a new swerve module position object to hold these values easily (the object is almost
+      // just a container for these values)
       odometryPositions[i] = new SwerveModulePosition(positionMeters, angle);
     }
 
@@ -69,16 +78,27 @@ public class Module {
     turnEncoderDisconnectedAlert.set(!inputs.turnEncoderConnected);
   }
 
+  /**
+   *
+   * @return the current turn angle
+   */
   public Rotation2d getAngle() {
     return inputs.turnAbsolutePosition;
   }
 
+  /**
+   * @deprecated Call this function to update the PID on the motors for this module
+   */
   public void updatePID() {
     io.updateMotorConfigs();
   }
 
+  /**
+   * Runs the module to a certain "state" - drive velocity and turn angle
+   * @param state The swerve module state desired
+   */
   public void runSetpoint(SwerveModuleState state) {
-    // Optimize velocity setpoint
+    // Optimize velocity setpoint - read documentation for these functions for more information
     state.optimize(getAngle());
     state.cosineScale(inputs.turnAbsolutePosition);
 

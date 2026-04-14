@@ -42,8 +42,20 @@ import frc.robot.subsystems.shooter.ShooterSubsystem;
 import org.littletonrobotics.junction.Logger;
 
 public class AutoBase extends SequentialCommandGroup {
+  /*
+   * This class is the "blueprint" for all autonomouses we have
+   * It contains many central functions which are the building blocks for each autonomous
+   */
+
   static Timer timer = new Timer();
 
+  /**
+   * This constructor is here to guarantee that when using reflections, each class is set up with the subsystems in this exact order to reduce the amount of try-catches needed to account for each permutation of subsystems
+   * @param hopper
+   * @param shooter
+   * @param intake
+   * @param drive
+   */
   public AutoBase(
       HopperSubsystem hopper,
       ShooterSubsystem shooter,
@@ -70,7 +82,7 @@ public class AutoBase extends SequentialCommandGroup {
       new PIDConstants(5.0, 0.0, 0.0), new PIDConstants(0.5, 0.0, 0.0));
 
   /**
-   * @param name
+   * @param name Path name
    * @return PathPlannerPath
    */
   public static PathPlannerPath getPathFromFile(String name) {
@@ -91,7 +103,10 @@ public class AutoBase extends SequentialCommandGroup {
   public static final Command wait(double time) {
     return new WaitCommand(time);
   }
-
+  /**
+   * Command that delays start time of autonomous
+   * @return a command that delays the start time of the autonomous
+   */
   public static final Command delayStartTime() {
     return new FunctionalCommand(
         () -> {
@@ -108,21 +123,30 @@ public class AutoBase extends SequentialCommandGroup {
         });
   }
 
+  /**
+   *
+   * @param path Path to follow
+   * @return a command that makes the robot follow a path
+   * @see AutoBuilder Make sure AutoBuilder is configured
+   */
   public static final Command followPath(PathPlannerPath path) {
     return AutoBuilder.followPath(path);
   }
 
-  public static final Command followPathYOnly(PathPlannerPath path) {
-    return AutoBuilder.followPath(path).beforeStarting(() -> {
-      PPHolonomicDriveController.overrideRotationFeedback(() -> 0.0);
-    });
-  }
-
+  /**
+   * Pathfinds to the startPose of the given path
+   * @param path Path containing the start pose you want to pathfind to
+   * @see AutoBuilder Make sure AutoBuilder is configured
+   */
   public static final Command pathFindToStartPose(PathPlannerPath path) {
     return AutoBuilder.pathfindToPoseFlipped(
         path.getStartingHolonomicPose().get(), DriveConstants.PATH_CONSTRAINTS);
   }
-
+  /**
+   * Pathfinds to the startPose of the given path using slow constraints
+   * @param path Path containing the start pose you want to pathfind to
+   * @see AutoBuilder Make sure AutoBuilder is configured
+   */
   public static final Command pathFindToStartPoseSlow(PathPlannerPath path) {
     return AutoBuilder.pathfindToPoseFlipped(
             path.getStartingHolonomicPose().get(), DriveConstants.PATH_CONSTRAINTS_SLOW)
@@ -131,6 +155,10 @@ public class AutoBase extends SequentialCommandGroup {
         });
   }
 
+  /**
+   * A command that lines up robot to the hub within a tolerance of 0.01
+   * @param drive DriveSubsystem containing functions like getPose()
+   */
   public static final Command autoAim(DriveSubsystem drive) {
     return new FunctionalCommand(
         () -> {
@@ -158,7 +186,11 @@ public class AutoBase extends SequentialCommandGroup {
 
   public static PathPlannerTrajectory currentTrajectory;
   public static boolean isFlipped;
-
+  /**
+   * Command that pathfinds to a start pose of a path without rotating the robot, using PathPlannerTrajecotry to generate a trajectory
+   * @param path Path containing the start pose you want to pathfind to
+   * @param drive DriveSubsystem to run the motors
+   */
   public static final Command pathFindToStartPoseNoRotation(
       PathPlannerPath path, DriveSubsystem drive) {
 

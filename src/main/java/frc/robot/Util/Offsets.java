@@ -1,6 +1,9 @@
 /* Generated and Formatted by yours truly <3*/
 package frc.robot.Util;
 
+/**
+ * This class just contains all the offsets for the gyro packet message
+ */
 public class Offsets {
   public static final int YAW_OFFSET = 4;
   public static final int PITCH_OFFSET = 6;

@@ -27,7 +27,13 @@ import frc.robot.generated.TunerConstants;
 import java.util.Queue;
 import org.littletonrobotics.junction.Logger;
 
+/**
+ * This class is what defines the swerve modules for Talon motors
+ */
 public class ModuleIOTalon implements ModuleIO {
+  /**
+   * Constants for each module, containing configs for drive motor, turn motor, and the cancoder.
+   */
   protected final SwerveModuleConstants<
           TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>
       constants;
@@ -47,10 +53,16 @@ public class ModuleIOTalon implements ModuleIO {
   // protected final VelocityTorqueCurrentFOC velocityTorqueCurrentRequest = new
   // VelocityTorqueCurrentFOC(0.0);
 
+  /*
+   * These queues are used to hold timestamps and positions before any processing
+   */
   private final Queue<Double> timestampQueue;
   private final Queue<Double> drivePositionQueue;
   private final Queue<Double> turnPositionQueue;
 
+  /*
+   * A status signal is a special object that really just holds the value for each of these, we never use anything else from the status signal
+   */
   protected final StatusSignal<Angle> drivePosition;
   protected final StatusSignal<AngularVelocity> driveVelocity;
   protected final StatusSignal<Current> driveCurrent;
@@ -61,6 +73,9 @@ public class ModuleIOTalon implements ModuleIO {
   protected final StatusSignal<Current> turnCurrent;
   protected final StatusSignal<Voltage> turnAppliedVolts;
 
+  /*
+   * Debouncer to prevent "disconnections" from extremely small disconnect and reconnect times
+   */
   private final Debouncer driveConnectedDebounce = new Debouncer(0.5);
   private final Debouncer turnConnectedDebounce = new Debouncer(0.5);
   private final Debouncer turnEncoderConnectedDebounce = new Debouncer(0.5);
@@ -71,15 +86,17 @@ public class ModuleIOTalon implements ModuleIO {
       SwerveModuleConstants<TalonFXConfiguration, TalonFXConfiguration, CANcoderConfiguration>
           constants) {
     this.constants = constants;
+    /*
+     * Create new instances of motors and encoders for each instance of this moduleIOTalon
+     */
     driveTalon = new TalonFX(constants.DriveMotorId, TunerConstants.kCANBus);
     turnTalon = new TalonFX(constants.SteerMotorId, TunerConstants.kCANBus);
     encoder = new CANcoder(constants.EncoderId, TunerConstants.kCANBus);
     driveConfig = constants.DriveMotorInitialConfigs;
-    // var statusD = DriveConstants.m_orchestra.addInstrument(driveTalon);
-    // var statusT = DriveConstants.m_orchestra.addInstrument(turnTalon);
-    // Logger.recordOutput("DriveMotorStatus", statusD);
-    // Logger.recordOutput("TurnMotorStatus", statusT);
 
+    /*
+     * Mass of configs...
+     */
     driveConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     driveConfig.Slot0 = constants.DriveMotorGains;
     driveConfig.TorqueCurrent.PeakForwardTorqueCurrent = constants.SlipCurrent;
@@ -135,6 +152,9 @@ public class ModuleIOTalon implements ModuleIO {
     turnAppliedVolts = turnTalon.getMotorVoltage();
     turnCurrent = turnTalon.getStatorCurrent();
 
+    /*
+     * Initialize the queues
+     */
     timestampQueue = PhoenixOdometryThread.getInstance().makeTimestampQueue();
     drivePositionQueue = PhoenixOdometryThread.getInstance().registerSignal(drivePosition.clone());
     turnPositionQueue =
@@ -153,6 +173,9 @@ public class ModuleIOTalon implements ModuleIO {
     ParentDevice.optimizeBusUtilizationForAll(driveTalon, turnTalon);
   }
 
+  /**
+   * @deprecated Used this function in the early stages of the JSON library testing
+   */
   @Override
   public void updateMotorConfigs() {
     turnConfig.Slot0 = constants.SteerMotorGains;
@@ -162,6 +185,10 @@ public class ModuleIOTalon implements ModuleIO {
     tryUntilOk(5, () -> driveTalon.getConfigurator().apply(driveConfig, 0.25));
   }
 
+  /**
+   * Call this function to update all the inputs from the motors and encoder
+   * @param inputs the inputs to update
+   */
   @Override
   public void updateInputs(ModuleIOInputs inputs) {
     var driveStatus =
@@ -174,14 +201,16 @@ public class ModuleIOTalon implements ModuleIO {
         timestampQueue.stream().mapToDouble((Double value) -> value).toArray();
     // Logger.recordOutput("constants/stream", drivePositionQueue.stream().mapToDouble(null));
     Logger.recordOutput("constants/drviepositionsignal", drivePosition.getValueAsDouble());
+    // Update drive motor positions
     inputs.odometryDrivePositionsRad = drivePositionQueue.stream()
         .mapToDouble((Double value) -> Units.rotationsToRadians(value))
         .toArray();
-
+    // Update turn motor positions
     inputs.turnPositionsRad = turnPositionQueue.stream()
         .map((Double value) -> Rotation2d.fromRotations(value))
         .toArray(Rotation2d[]::new);
 
+    // Clear the queue until next call of updateInputs
     timestampQueue.clear();
     drivePositionQueue.clear();
     turnPositionQueue.clear();
@@ -201,16 +230,28 @@ public class ModuleIOTalon implements ModuleIO {
     inputs.turnCurrentAmps = turnCurrent.getValueAsDouble();
   }
 
+  /**
+   * Sets the drive talon motor to a certain voltage
+   * @param output the output to run the motor at
+   */
   @Override
   public void setDriveOpenLoop(double output) {
     driveTalon.setControl(voltageRequest.withOutput(output));
   }
 
+  /**
+   * Sets the turn talon motor to a certain voltage
+   * @param output the output to run the motor at
+   */
   @Override
   public void setTurnOpenLoop(double output) {
     turnTalon.setControl(voltageRequest.withOutput(output));
   }
 
+  /**
+   * Sets the drive talon motor to a requested velocity
+   * @param velocityRadPerSec the velocity the motor should run at in Radians per Second
+   */
   @Override
   public void setDriveVelocity(double veloctiyRadPerSec) {
     double motorVeloctyRotationsPerSec =
@@ -219,7 +260,10 @@ public class ModuleIOTalon implements ModuleIO {
     driveTalon.setControl(velocityVoltageRequest.withVelocity(motorVeloctyRotationsPerSec));
   }
 
-  // Sets the turn positions
+  /**
+   * Sets the turn motor to a requested position
+   * @param rotation the position the motor should go to (in degrees)
+   */
   @Override
   public void setTurnPosition(Rotation2d rotation) {
     turnTalon.setControl(positionVoltageRequest.withPosition(rotation.getRotations()));

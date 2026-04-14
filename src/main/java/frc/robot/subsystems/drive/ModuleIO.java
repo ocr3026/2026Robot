@@ -4,7 +4,11 @@ package frc.robot.subsystems.drive;
 import edu.wpi.first.math.geometry.Rotation2d;
 import org.littletonrobotics.junction.AutoLog;
 
+/**
+ * This interface is the base of the Module.java file, similar to any other subsystem's IO interface
+ */
 public interface ModuleIO {
+
   @AutoLog
   public static class ModuleIOInputs {
     public boolean driveConnected = false;

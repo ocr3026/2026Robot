@@ -8,6 +8,9 @@ import frc.robot.Util.Util;
 import java.util.Arrays;
 import org.ironmaple.simulation.drivesims.SwerveModuleSimulation;
 
+/**
+ * This class is the ModuleIO for simulation, using the same function calls as ModuleIOTalon as CTRE uses the same functions for both simulation and real life
+ */
 public class ModuleIOSim extends ModuleIOTalon {
   private final SwerveModuleSimulation simulation;
 
